@@ -13,7 +13,7 @@ const HomePageSection = () => {
                     Oferta indywidualna
                 </h3>
                 <button className="button button--landing button--homePageSection">
-                    <a className="button--landing__link button--homePageSection__link" href="#">
+                    <a className="button--landing__link button--homePageSection__link" href="/oferta-indywidualna">
                         Więcej informacji
                     </a>
                 </button>
@@ -22,10 +22,10 @@ const HomePageSection = () => {
             <div className="homePageSection__item">
                 <img className="homePageSection__img" src={productImg} alt="produkt" />
                 <h3 className="homePageSection__item__header">
-                    Oferta indywidualna
+                    Oferta dla grup
                 </h3>
                 <button className="button button--landing button--homePageSection">
-                    <a className="button--landing__link button--homePageSection__link" href="#">
+                    <a className="button--landing__link button--homePageSection__link" href="/dla-grup">
                         Więcej informacji
                     </a>
                 </button>
@@ -34,10 +34,10 @@ const HomePageSection = () => {
             <div className="homePageSection__item">
                 <img className="homePageSection__img" src={productImg} alt="produkt" />
                 <h3 className="homePageSection__item__header">
-                    Oferta indywidualna
+                    Menu bankietowe
                 </h3>
                 <button className="button button--landing button--homePageSection">
-                    <a className="button--landing__link button--homePageSection__link" href="#">
+                    <a className="button--landing__link button--homePageSection__link" href="/menu-bankietowe">
                         Więcej informacji
                     </a>
                 </button>

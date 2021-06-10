@@ -2,17 +2,35 @@ import React from 'react'
 import './static/style/style.css'
 import './static/style/mobile.css'
 import HomePage from "./pages/HomePage";
-import Landing from "./components/Landing";
-import HomePageSection from "./components/HomePageSection";
-import Footer from "./components/Footer";
+
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Offer from "./pages/Offer";
+import SingleProduct from "./pages/SingleProduct";
 
 function App() {
   return (
     <div className="App">
-      <HomePage />
-      <Landing />
-      <HomePageSection />
-      <Footer />
+        <Router>
+            <Switch>
+                <Route exact path="/">
+                    <HomePage />
+                </Route>
+                <Route path="/oferta-indywidualna">
+                    <Offer type="indywidualna" />
+                </Route>
+                <Route path="/dla-grup">
+                    <Offer type="grupowa" />
+                </Route>
+                <Route path="/menu-bankietowe">
+                    <Offer type="bankietowa" />
+                </Route>
+
+                {/* Page for all products */}
+                <Route path="/produkt">
+                    <SingleProduct />
+                </Route>
+            </Switch>
+        </Router>
     </div>
   );
 }
