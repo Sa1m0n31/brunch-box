@@ -4,6 +4,7 @@ import poland from '../static/img/poland.png'
 import uk from '../static/img/united-kingdom.png'
 import hamburgerMenu from '../static/img/hamburger.png'
 import closeImg from '../static/img/close.png'
+import cart from '../static/img/cartIcon.png'
 
 const TopMenu = () => {
     const mobileMenu = useRef(null);
@@ -67,6 +68,14 @@ const TopMenu = () => {
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="#">
                         Kontakt
+                    </a>
+                </li>
+                <li className="topMenu__list__item">
+                    <a className="topMenu__list__item__link" href="/koszyk">
+                        <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
+                        <span className="cartCounter">
+                            0
+                        </span>
                     </a>
                 </li>
             </ul>

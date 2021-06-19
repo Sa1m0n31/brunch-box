@@ -6,6 +6,8 @@ import HomePage from "./pages/HomePage";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Offer from "./pages/Offer";
 import SingleProduct from "./pages/SingleProduct";
+import CartPage from "./pages/CartPage";
+import ShippingAndPaymentPage from "./pages/ShippingAndPaymentPage";
 
 function App() {
   return (
@@ -28,6 +30,16 @@ function App() {
                 {/* Page for all products */}
                 <Route path="/produkt">
                     <SingleProduct />
+                </Route>
+
+                {/* Shipping and payment */}
+                <Route path="/dostawa-i-platnosc">
+                    <ShippingAndPaymentPage />
+                </Route>
+
+                {/* Cart */}
+                <Route path="/koszyk">
+                    <CartPage />
                 </Route>
             </Switch>
         </Router>

@@ -1,5 +1,4 @@
 import React from 'react'
-import landing from '../static/img/landing.png'
 import logo from '../static/img/brunch-box-logo.png'
 
 const Landing = () => {

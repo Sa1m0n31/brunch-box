@@ -1,4 +1,5 @@
 import React from 'react'
+import cart from '../static/img/cartIcon.png'
 
 const Footer = () => {
     return <footer className="footer">
