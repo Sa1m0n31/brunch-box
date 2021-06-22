@@ -40,6 +40,7 @@ const OfferContent = ({type}) => {
                       to={{
                        pathname: `/produkt/${item.link}`,
                        state: {
+                           id: index,
                            title: item.title,
                            price: item.price
                        }

@@ -6,13 +6,18 @@ import 'react-image-lightbox/style.css'; // This only needs to be imported once 
 import productImg from '../static/img/product-image.png'
 import cartImg from '../static/img/cartIcon.png'
 
-import addToCart from "../helpers/addToCart";
+import { editCart } from "../helpers/editCart";
+import Modal from 'react-modal'
+import closeImg from '../static/img/close.png'
+import tickImg from '../static/img/tick-sign.svg'
 
 const SingleProductContent = () => {
-    const [size, setSize] = useState(0);
-    const [option, setOption] = useState(0);
+    const [size, setSize] = useState("");
+    const [option, setOption] = useState("");
     const [photoIndex, setPhotoIndex] = useState(0);
     const [galleryOpen, setGalleryOpen] = useState(false);
+
+    const [modal, setModal] = useState(false);
 
     const images = [
         productImg,
@@ -21,7 +26,38 @@ const SingleProductContent = () => {
         productImg
     ];
 
+    const addToCart = (id, option, size) => {
+        editCart(id, option, size, 1);
+        setModal(true);
+    }
+
     return <main className="singleProduct">
+
+        <Modal
+            isOpen={modal}
+            onRequestClose={() => { setModal(false) }}
+        >
+
+            <button className="modalClose" onClick={() => { setModal(false) }}>
+                <img className="modalClose__img" src={closeImg} alt="zamknij" />
+            </button>
+
+            <img className="modalTick" src={tickImg} alt="dodano-do-koszyka" />
+            <h2 className="modalHeader">
+                Produkt został dodany do koszyka
+            </h2>
+            <section className="modal__buttons">
+                <button className="modal__btn" onClick={() => { setModal(false) }}>
+                    Kontynuuj zakupy
+                </button>
+                <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
+                    Przejdź do kasy
+                </button>
+            </section>
+
+        </Modal>
+
+
         <section className="singleProduct__left">
             <button className="singleProduct__mainImage" onClick={() => setGalleryOpen(true)}>
                 <img className="singleProduct__img" src={productImg} alt="produkt" />
@@ -33,20 +69,25 @@ const SingleProductContent = () => {
             </div>
         </section>
         <section className="singleProduct__right">
-            <h1 className="singleProduct__title">
-                DateBox <span className="thin">(romantyczny wieczór)</span>
-            </h1>
+            <section className="singleProduct__right__header">
+                <h1 className="singleProduct__title">
+                    DateBox <span className="thin">(romantyczny wieczór)</span>
+                </h1>
+                <h2 className="singleProduct__price">
+                    50 PLN
+                </h2>
+            </section>
             <div className="singleProduct__options">
                 <h3 className="singleProduct__options__header">
                     Dostępne rozmiary:
                 </h3>
                 <div className="singleProduct__options__buttons">
-                    <button className={size === 0 ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setSize(0)}>
+                    <button className={size === "M" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                            onClick={() => setSize("M")}>
                         M
                     </button>
-                    <button className={size === 1 ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setSize(1)}>
+                    <button className={size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                            onClick={() => setSize("L")}>
                         L
                     </button>
                 </div>
@@ -56,20 +97,20 @@ const SingleProductContent = () => {
                     Dostępne opcje:
                 </h3>
                 <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
-                    <button className={option === 0 ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setOption(0)}
+                    <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                            onClick={() => setOption("Wegetariańska")}
                     >
                         Wegetariańska
                     </button>
-                    <button className={option === 1 ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setOption(1)}
+                    <button className={option === "Mięsna" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                            onClick={() => setOption("Mięsna")}
                     >
                         Mięsna
                     </button>
                 </section>
             </div>
             <section className="singleProduct__options">
-                <button className="button button--addToCart" onClick={() => addToCart(1, option, size, 1)}>
+                <button className="button button--addToCart" onClick={() => { addToCart(1, option, size) }}>
                     Dodaj do koszyka
                     <img className="button--addToCart__img" src={cartImg} alt="koszyk" />
                 </button>

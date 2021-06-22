@@ -74,7 +74,7 @@ const TopMenu = () => {
                     <a className="topMenu__list__item__link" href="/koszyk">
                         <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
                         <span className="cartCounter">
-                            0
+                            { JSON.parse(localStorage.getItem('sec-cart')).length }
                         </span>
                     </a>
                 </li>
