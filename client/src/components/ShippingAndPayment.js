@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-
+import axios from 'axios'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 
 const ShippingAndPayment = () => {
     const [msg, setMsg] = useState("");
+    const [ribbon, setRibbon] = useState(false);
 
     const validationSchema = Yup.object({
         firstName: Yup.string()
@@ -36,26 +37,86 @@ const ShippingAndPayment = () => {
             postalCode: "",
             street: "",
             building: "",
-            flat: ""
+            flat: "",
+            ribbon: "",
+            comment: ""
         },
         validationSchema,
         onSubmit: values => {
-
+            console.log(values);
         }
     });
 
-    return <main className="cartContent">
-        <h1 className="cart__header">
+    const goPay = () => {
+        formik.handleSubmit();
+
+        /* Add user */
+        axios.post("http://localhost:5000/auth/add-user", {
+            firstName: formik.values.firstName,
+            lastName: formik.values.lastName,
+            email: formik.values.email,
+            phoneNumber: formik.values.phoneNumber
+        })
+            .then(res => {
+                let insertedUserId = res.data.result;
+
+                /* Add order */
+                axios.post("http://localhost:5000/order/add", {
+                    paymentMethod: null,
+                    shippingMethod: null,
+                    city: formik.values.city,
+                    street: formik.values.street,
+                    building: formik.values.building,
+                    flat: formik.values.flat,
+                    postalCode: formik.values.postalCode,
+                    user: insertedUserId,
+                    comment: formik.values.comment,
+                    ribbon: formik.values.ribbon
+                })
+                    .then(res => {
+                        const orderId = res.data.result;
+
+                        /* Add sells */
+                        const cart = JSON.parse(localStorage.getItem('sec-cart'));
+                        cart.forEach(item => {
+                            console.log(item);
+                            axios.post("http://localhost:5000/order/add-sell", {
+                                orderId,
+                                productId: item.id,
+                                option: item.option,
+                                quantity: item.quantity,
+                                size: item.size
+                            })
+                                .then(res => {
+                                    let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                                    axios.post("http://localhost:5000/payment/payment", {
+                                        amount: 100,
+                                        email: "test@gmail.com"
+                                    })
+                                        .then(res => {
+                                            const token = res.data.result;
+                                            window.location.href = `${paymentUri}${token}`;
+                                        });
+                                });
+                        });
+                    })
+            });
+    }
+
+    return <form className="cartContent" onSubmit={formik.handleSubmit}>
+        <h1 className="cart__header cart__header--shippingAndPayment">
             Wpisz swoje dane i dokończ zamówienie
         </h1>
 
-        <main className="cart cart--flex">
+        <main className="cart cart--flex"
+        >
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
                     Dane osobowe
                 </h2>
 
-                <form className="shippingAndPayment__form">
+                <div className="shippingAndPayment__form">
                     <label className="shippingAndPayment__label label-100">
                         <input className="shippingAndPayment__input"
                                name="firstName"
@@ -131,17 +192,36 @@ const ShippingAndPayment = () => {
                                placeholder="Numer mieszkania"
                                type="text" />
                     </label>
-                </form>
+                </div>
             </section>
 
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
-                    Dostawa i płatność
+                    Pozostałe informacje
                 </h2>
 
                 <textarea
                     className="shippingAndPayment__textArea"
+                    name="comment"
+                    value={formik.values.comment}
+                    onChange={formik.handleChange}
                     placeholder="Komentarz do zamówienia (opcjonalnie)" />
+
+                <label className="ribbonBtnLabel">
+                    <button className="ribbonBtn" onClick={() => { setRibbon(!ribbon) }}>
+                        <span className={ribbon ? "ribbon" : "d-none"}></span>
+                    </button>
+                    Wstążka z dedykacją (10 PLN)
+                </label>
+
+                <label className={ribbon ? "ribbonDedication" : "o-none"}>
+                    <input className="shippingAndPayment__input"
+                           name="ribbon"
+                           type="text"
+                           value={formik.values.ribbon}
+                           onChange={formik.handleChange}
+                           placeholder="Dedykacja na wstążce" />
+                </label>
             </section>
         </main>
 
@@ -154,13 +234,11 @@ const ShippingAndPayment = () => {
                     123 PLN
                 </h4>
             </header>
-            <button className="cart__summary__button">
-                <a className="button--landing__link button__link--smaller" href="/dostawa-i-platnosc">
+            <button className="cart__summary__button button__link--small" onClick={() => { goPay() }} type="submit">
                     Przechodzę do płatności
-                </a>
             </button>
         </section>
-    </main>
+    </form>
 }
 
 export default ShippingAndPayment;
