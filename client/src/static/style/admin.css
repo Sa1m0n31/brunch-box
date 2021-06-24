@@ -394,13 +394,24 @@ ul {
     margin: 25px 0;
 }
 
+.fileInputLabel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+}
+
 .addProduct__form {
     width: 600px;
     padding-bottom: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .addProduct__form__section {
-    width: 49%;
+    width: 46%;
 }
 
 .addProduct__form--addProduct {
@@ -484,7 +495,7 @@ ul {
     flex-wrap: wrap;
     width: 50%;
     min-width: 400px;
-    margin: auto;
+    margin: 10px auto 50px;
 }
 
 .addProduct__allergies__item {
@@ -659,10 +670,10 @@ input[type=file] {
     align-items: center;
 }
 
-.panel .ReactModal__Content {
+.panelModal .ReactModal__Content {
     position: relative !important;
-    width: 400px;
-    height: 400px;
+    width: 400px !important;
+    height: 400px !important;
     display: flex;
     flex-direction: column;
     justify-content: center;

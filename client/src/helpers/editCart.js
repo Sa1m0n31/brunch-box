@@ -3,7 +3,7 @@ const editCart = (id, option, size, quantity) => {
 
     /* Iterrate over array of products - find if product is on the list */
    let newProduct = 1;
-   if(currentCart.length) {
+   if(currentCart?.length) {
        currentCart.forEach(item => {
            if((item.id === id)&&(item.size === size)&&(item.option === option)) {
                item.quantity += 1;
@@ -45,4 +45,19 @@ const deleteFromCart = ({ id, size, option }) => {
     localStorage.setItem('sec-cart', JSON.stringify(newCart));
 }
 
-export { editCart, deleteFromCart }
+const calculatePrice = (size, option, quantity, prices) => {
+    let price;
+    if(size === "M") {
+        if(option === "Mięsna") price = prices.mMeat;
+        else price = prices.mVege;
+    }
+    else {
+        if(option === "Mięsna") price = prices.lMeat;
+        else price = prices.lVege;
+    }
+
+    price *= quantity;
+    return price;
+}
+
+export { editCart, deleteFromCart, calculatePrice }

@@ -9,23 +9,31 @@ import JoditEditor from 'jodit-react';
 const AddProductContent = () => {
     const editorR = useRef(null);
 
+    const [update, setUpdate] = useState(false);
     const [name, setName] = useState("");
     const [bracket, setBracket] = useState("");
-    const [priceM, setPriceM] = useState("");
-    const [priceS, setPriceS] = useState("");
-    const [priceL, setPriceL] = useState("");
-    const [content, setContent] = useState("");
-    const [contentHidden, setContentHidden] = useState("");
-    const [mainImg, setMainImg] = useState(null);
     const [id, setId] = useState(0);
+    const [categoryId, setCategoryId] = useState(0);
     const [product, setProduct] = useState([]);
     const [allergens, setAllergens] = useState([]);
     const [categories, setCategories] = useState([]);
     const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-    const [optionMeat, setOptionMeat] = useState(false);
+    /* Prices */
+    const [priceMMeat, setPriceMMeat] = useState("");
+    const [priceLMeat, setPriceLMeat] = useState("");
+    const [priceMWege, setPriceMWege] = useState("");
+    const [priceLWege, setPriceLWege] = useState("");
+
+    /* Descriptions */
+    const [shortDescription, setShortDescription] = useState("");
+    const [longDescription, setLongDescription] = useState("");
+    const [meatDescription, setMeatDescription] = useState("");
+    const [vegeDescription, setVegeDescription] = useState("");
+
+    /* Options */
+    const [optionMeat, setOptionMeat] = useState(true);
     const [optionWege, setOptionWege] = useState(false);
-    const [sizeS, setSizeS] = useState(false);
     const [sizeM, setSizeM] = useState(true);
     const [sizeL, setSizeL] = useState(false);
 
@@ -36,11 +44,18 @@ const AddProductContent = () => {
     const location = useLocation();
 
     useEffect(() => {
-        /* Check if need to add added message */
+        /* PRODUCT ADDED */
         const added = parseInt(new URLSearchParams(location.search).get("add"));
         if(added) {
             if(added === 1) {
                 setAddMsg("Produkt został dodany");
+                /* Add allergens */
+                addAllergens(parseInt(localStorage.getItem('sec-product-id')), JSON.parse(localStorage.getItem('sec-allergens-to-add')))
+                    .then(res => {
+                        console.log(res.data.result);
+                        localStorage.removeItem('sec-product-id');
+                        localStorage.removeItem('sec-allergens-to-add');
+                    });
             }
             else if(added === 0) {
                 setAddMsg("Nie udało się dodać produktu. Prosimy spróbować później lub skontaktować się z administratorem systemu");
@@ -53,86 +68,78 @@ const AddProductContent = () => {
                 setCategories(res.data.result);
             });
 
-        /* Check if it's product to edit */
+        /* UPDATE PRODUCT MODE */
         const param = parseInt(new URLSearchParams(location.search).get("id"));
         if(param) {
             setId(param);
+            setUpdate(true);
 
             getProductDetails(param)
                 .then(async res => {
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
                     setInitialAllergens(res.data.result);
+                    console.log(res.data.result);
                 });
         }
         else {
             getNewId()
                 .then(res => {
-                   setId(res.data.result);
+                   setId(res.data.result+1);
                 });
         }
     }, []);
 
     const setInitialAllergens = (allergensData) => {
-        console.log(allergensData);
         let newAllergies = allergies;
         allergensList.forEach((nameItem, nameIndex) => {
             allergensData.forEach((dataItem) => {
-                console.log(nameItem + " " + dataItem.allergen);
                 if(nameItem === dataItem.allergen) {
                     newAllergies = newAllergies.map((item, index) => {
                         if(index === nameIndex) return 1;
                         else return item;
                     });
-                    console.log(newAllergies);
                     setAllergies(newAllergies);
                 }
             });
         })
-
-        console.log(allergensData);
     }
 
     const setInitialValues = (productData) => {
         setName(productData.name);
         setBracket(productData.bracket_name);
-        setContent(productData.description);
-        setContentHidden(productData.hidden_description);
+
         setOptionMeat(productData.meat);
-        setOptionWege(productData.vegan);
+        setOptionWege(productData.vege);
         setSizeL(productData.l);
         setSizeM(productData.m);
-        setSizeS(productData.s);
-        setPriceL(productData.price_l);
-        setPriceM(productData.price_m);
-        setPriceS(productData.price_s);
 
-    }
+        setPriceMMeat(productData.price_m_meat);
+        setPriceLMeat(productData.price_l_meat);
+        setPriceMWege(productData.price_m_vege);
+        setPriceLWege(productData.price_l_vege);
 
-    const editorFocus = () => {
-        document.querySelector(".editor").style.borderWidth = "2px";
-    }
+        setCategoryId(productData.category_id);
 
-    const editorBlur = () => {
-        document.querySelector(".editor").style.borderWidth = "1px";
+        setShortDescription(productData.short_description);
+        setLongDescription(productData.long_description);
+        setMeatDescription(productData.meat_description);
+        setVegeDescription(productData.vege_description);
     }
 
     const handleSubmit = (e) => {
+        console.log(update);
         /* Sending normal form */
 
         /* Add description */
 
 
-        /* Add allergens */
+        /* Add allergens to local storage */
         const allergensToAdd = allergensList.filter((item, index) => {
             return allergies[index];
-        })
-        setTimeout(() => {
-            addAllergens(id+1, allergensToAdd)
-                .then(res => {
-                    console.log(res.data.result);
-                });
-        }, 3000);
+        });
+        localStorage.setItem('sec-allergens-to-add', JSON.stringify(allergensToAdd));
+        localStorage.setItem('sec-product-id', id.toString());
     }
 
     const toggleAllergies = (e, i) => {
@@ -147,10 +154,6 @@ const AddProductContent = () => {
         setAllergies(newAllergies);
     }
 
-    const contentStateChange = (contentState) => {
-        console.log(contentState);
-    }
-
     return <main className="panelContent addProduct">
         <header className="addProduct__header">
             <h1 className="addProduct__header__h">
@@ -160,7 +163,7 @@ const AddProductContent = () => {
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
                                onSubmit={(e) => { handleSubmit(e) }}
-                               action="http://localhost:5000/product/add-product"
+                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -182,36 +185,48 @@ const AddProductContent = () => {
                            onChange={(e) => { setBracket(e.target.value) }}
                            placeholder="Nazwa w nawiasie" />
                 </label>
-                <label className={sizeM ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeM ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceM"
+
+                {/* PRICES */}
+                <label className={sizeM && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
+                    <input className={sizeM && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
+                           name="priceM_meat"
                            type="number"
                            step={0.01}
-                           value={priceM}
-                           onChange={(e) => { setPriceM(e.target.value) }}
-                           placeholder="Cena dla rozmiaru M" />
+                           value={priceMMeat}
+                           onChange={(e) => { setPriceMMeat(e.target.value) }}
+                           placeholder="Cena dla rozmiaru M - opcja mięsna (domyślna)" />
                 </label>
-                <label className={sizeS ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeS ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceS"
+                <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
+                    <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
+                           name="priceL_meat"
                            type="number"
                            step={0.01}
-                           value={priceS}
-                           onChange={(e) => { setPriceS(e.target.value) }}
-                           placeholder="Cena dla rozmiaru S" />
-                </label>
-                <label className={sizeL ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeL ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceL"
-                           type="number"
-                           step={0.01}
-                           value={priceL}
-                           onChange={(e) => { setPriceL(e.target.value) }}
-                           placeholder="Cena dla rozmiaru L" />
+                           value={priceLMeat}
+                           onChange={(e) => { setPriceLMeat(e.target.value) }}
+                           placeholder="Cena dla rozmiaru L - opcja mięsna (domyślna)" />
                 </label>
 
-                <select className="addProduct__categorySelect" name="categoryId">
-                    <option>
+                <label className={sizeM && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
+                    <input className={sizeM && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
+                           name="priceM_vege"
+                           type="number"
+                           step={0.01}
+                           value={priceMWege}
+                           onChange={(e) => { setPriceMWege(e.target.value) }}
+                           placeholder="Cena dla rozmiaru M - opcja wege" />
+                </label>
+                <label className={sizeL && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
+                    <input className={sizeL && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
+                           name="priceL_vege"
+                           type="number"
+                           step={0.01}
+                           value={priceLWege}
+                           onChange={(e) => { setPriceLWege(e.target.value) }}
+                           placeholder="Cena dla rozmiaru L - opcja wege" />
+                </label>
+
+                <select className="addProduct__categorySelect" name="categoryId" value={categoryId} onChange={(e) => { setCategoryId(e.target.value) }}>
+                    <option value={0}>
                         Wybierz kategorię
                     </option>
                     {categories.map((item, index) => {
@@ -221,25 +236,26 @@ const AddProductContent = () => {
 
 
                 <label className="jodit--label">
-                    <span>Opis widoczny (po lewej stronie produktu)</span>
+                    <span>Krótki opis</span>
                     <JoditEditor
-                        name="editor"
+                        name="shortDescription"
                         ref={editorR}
-                        value={content}
+                        value={shortDescription}
                         tabIndex={1} // tabIndex of textarea
                         onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                        onChange={newContent => { setContent(newContent) }}
+                        onChange={newContent => { setShortDescription(newContent) }}
                     />
                 </label>
 
                 <label className="jodit--label">
-                    <span>Opis ukryty (po prawej stronie produktu)</span>
+                    <span>Długi opis</span>
                     <JoditEditor
-                        name="hiddenDescription"
-                        value={contentHidden}
+                        name="longDescription"
+                        ref={editorR}
+                        value={longDescription}
                         tabIndex={1} // tabIndex of textarea
                         onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                        onChange={newContent => { setContentHidden(newContent) }}
+                        onChange={newContent => { setLongDescription(newContent) }}
                     />
                 </label>
 
@@ -247,19 +263,22 @@ const AddProductContent = () => {
 
             <section className="addProduct__form__section">
 
-                <input type="file"
-                       className="product__fileInput"
-                       name="mainImage" />
+               <label className="fileInputLabel">
+                   <span>Zdjęcie produktu</span>
+                   <input type="file"
+                          className="product__fileInput"
+                          name="mainImage" />
+               </label>
 
                 <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft">
                     <h4 className="addProduct__form__subsection__header">
                         Dostępne opcje
                     </h4>
                     <label className="panelContent__filters__btnWrapper">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setOptionMeat(!optionMeat) }}>
+                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); }}>
                             <span className={optionMeat ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>
-                        Mięsna
+                        Mięsna (domyślna)
                     </label>
                     <label>
                         <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setOptionWege(!optionWege) }}>
@@ -274,16 +293,10 @@ const AddProductContent = () => {
                         Dostępne rozmiary
                     </h4>
                     <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setSizeS(!sizeS); }}>
-                            <span className={sizeS ? "panelContent__filters__btn--active" : "d-none"} />
-                        </button>
-                        S
-                    </label>
-                    <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setSizeM(!sizeM); }}>
+                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); }}>
                             <span className={sizeM ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>
-                        M
+                        M (domyślna)
                     </label>
                     <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
                         <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setSizeL(!sizeL); }}>
@@ -302,9 +315,6 @@ const AddProductContent = () => {
                        name="vegan"
                        value={optionWege} />
                 <input className="input--hidden"
-                       name="s"
-                       value={sizeS} />
-                <input className="input--hidden"
                        name="m"
                        value={sizeM} />
                 <input className="input--hidden"
@@ -320,6 +330,28 @@ const AddProductContent = () => {
                             </button>
                         ))}
                     </section>
+                </label>
+
+                <label className="jodit--label">
+                    <span>Składniki produktu w wersji mięsnej (domyślne)</span>
+                    <JoditEditor
+                        name="meatDescription"
+                        value={meatDescription}
+                        tabIndex={1} // tabIndex of textarea
+                        onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                        onChange={newContent => { setMeatDescription(newContent) }}
+                    />
+                </label>
+
+                <label className="jodit--label">
+                    <span>Składniki produktu w wersji vege</span>
+                    <JoditEditor
+                        name="vegeDescription"
+                        value={vegeDescription}
+                        tabIndex={1} // tabIndex of textarea
+                        onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                        onChange={newContent => { setVegeDescription(newContent) }}
+                    />
                 </label>
             </section>
 

@@ -26,10 +26,6 @@ const Footer = () => {
                 </li>
             </ul>
         </menu>
-
-        <h6 className="footer__header">
-            Projekt i wykonanie <a className="footer__link" href="https://skylo.pl" rel="noreferrer">skylo.pl</a>
-        </h6>
     </footer>
 }
 

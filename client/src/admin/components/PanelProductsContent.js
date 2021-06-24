@@ -51,6 +51,7 @@ const PanelProductsContent = () => {
     return <main className="panelContent">
 
         <Modal
+            portalClassName="panelModal"
             isOpen={modal}>
 
             {deleteMsg === "" ? <>

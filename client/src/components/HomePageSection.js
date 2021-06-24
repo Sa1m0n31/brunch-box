@@ -3,6 +3,7 @@ import productImg from '../static/img/product-image.png'
 
 const HomePageSection = () => {
     return <section className="homePageSection">
+        <span id="zestawy"></span>
         <h2 className="homePageSection__header">
             Zestawy podstawowe
         </h2>

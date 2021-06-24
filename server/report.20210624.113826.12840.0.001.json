@@ -1,0 +1,435 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20210624.113826.12840.0.001.json",
+    "dumpEventTime": "2021-06-24T11:38:26Z",
+    "dumpEventTimeStamp": "1624527506942",
+    "processId": 12840,
+    "cwd": "C:\\Users\\sajmo\\Desktop\\Programowanie\\Projekty\\brunchbox\\server",
+    "commandLine": [
+      "node",
+      "app.js"
+    ],
+    "nodejsVersion": "v12.16.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "win32",
+    "componentVersions": {
+      "node": "12.16.1",
+      "v8": "7.8.279.23-node.31",
+      "uv": "1.34.0",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.40.0",
+      "napi": "5",
+      "llhttp": "2.0.4",
+      "http_parser": "2.9.3",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.16.1/node-v12.16.1.tar.gz",
+      "libUrl": "https://nodejs.org/download/release/v12.16.1/win-x64/node.lib"
+    },
+    "osName": "Windows_NT",
+    "osRelease": "10.0.19041",
+    "osVersion": "Windows 10 Home",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 370375,
+        "nice": 0,
+        "sys": 455093,
+        "idle": 2708609,
+        "irq": 43375
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 371265,
+        "nice": 0,
+        "sys": 308421,
+        "idle": 2854203,
+        "irq": 9281
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 469640,
+        "nice": 0,
+        "sys": 400375,
+        "idle": 2663875,
+        "irq": 3000
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 415625,
+        "nice": 0,
+        "sys": 267796,
+        "idle": 2850468,
+        "irq": 1734
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 317953,
+        "nice": 0,
+        "sys": 247765,
+        "idle": 2968171,
+        "irq": 1859
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 275406,
+        "nice": 0,
+        "sys": 215187,
+        "idle": 3043296,
+        "irq": 1390
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 216312,
+        "nice": 0,
+        "sys": 165359,
+        "idle": 3152218,
+        "irq": 2000
+      },
+      {
+        "model": "AMD Ryzen 7 2700U with Radeon Vega Mobile Gfx  ",
+        "speed": 2196,
+        "user": 209984,
+        "nice": 0,
+        "sys": 147062,
+        "idle": 3176828,
+        "irq": 4765
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "Ethernet 2",
+        "internal": false,
+        "mac": "0a:00:27:00:00:04",
+        "address": "fe80::3c4a:2432:38ea:bbef",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 4
+      },
+      {
+        "name": "Ethernet 2",
+        "internal": false,
+        "mac": "0a:00:27:00:00:04",
+        "address": "192.168.56.1",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Wi-Fi",
+        "internal": false,
+        "mac": "b0:fc:36:f7:11:ff",
+        "address": "fe80::1c4c:9f43:9196:8f0a",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 15
+      },
+      {
+        "name": "Wi-Fi",
+        "internal": false,
+        "mac": "b0:fc:36:f7:11:ff",
+        "address": "192.168.43.112",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "Loopback Pseudo-Interface 1",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      }
+    ],
+    "host": "LAPTOP-2GA7FN22"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x00007ff77cc119f9",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+10873"
+    },
+    {
+      "pc": "0x00007ff77cc15e1c",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+28316"
+    },
+    {
+      "pc": "0x00007ff77cc14dd8",
+      "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+24152"
+    },
+    {
+      "pc": "0x00007ff77cd134cb",
+      "symbol": "v8::base::CPU::has_sse+38363"
+    },
+    {
+      "pc": "0x00007ff77d529f4e",
+      "symbol": "v8::Isolate::ReportExternalAllocationLimitReached+94"
+    },
+    {
+      "pc": "0x00007ff77d512021",
+      "symbol": "v8::SharedArrayBuffer::Externalize+833"
+    },
+    {
+      "pc": "0x00007ff77d3de57c",
+      "symbol": "v8::internal::Heap::EphemeronKeyWriteBarrierFromCode+1436"
+    },
+    {
+      "pc": "0x00007ff77d3e97d0",
+      "symbol": "v8::internal::Heap::ProtectUnprotectedMemoryChunks+1312"
+    },
+    {
+      "pc": "0x00007ff77d3e62f4",
+      "symbol": "v8::internal::Heap::PageFlagsAreConsistent+3204"
+    },
+    {
+      "pc": "0x00007ff77d3dbb13",
+      "symbol": "v8::internal::Heap::CollectGarbage+1283"
+    },
+    {
+      "pc": "0x00007ff77d3da184",
+      "symbol": "v8::internal::Heap::AddRetainedMap+2452"
+    },
+    {
+      "pc": "0x00007ff77d3fb36d",
+      "symbol": "v8::internal::Factory::NewFillerObject+61"
+    },
+    {
+      "pc": "0x00007ff77d160c51",
+      "symbol": "v8::internal::interpreter::JumpTableTargetOffsets::iterator::operator=+1665"
+    },
+    {
+      "pc": "0x00007ff77d974ddd",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+546637"
+    },
+    {
+      "pc": "0x00007ff77d8f57b1",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+24865"
+    },
+    {
+      "pc": "0x00007ff77d8f524f",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+23487"
+    },
+    {
+      "pc": "0x00007ff77d9d95c0",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+958256"
+    },
+    {
+      "pc": "0x00007ff77d8f9d8c",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+42748"
+    },
+    {
+      "pc": "0x00000026c4472d10",
+      "symbol": ""
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 2162917376,
+    "totalCommittedMemory": 2162917376,
+    "usedMemory": 2150076640,
+    "availableMemory": 44385760,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 262144,
+        "capacity": 32808,
+        "used": 32808,
+        "available": 0
+      },
+      "new_space": {
+        "memorySize": 10485760,
+        "committedMemory": 10485760,
+        "capacity": 5237280,
+        "used": 1204024,
+        "available": 4033256
+      },
+      "old_space": {
+        "memorySize": 2142650368,
+        "committedMemory": 2142650368,
+        "capacity": 2140290648,
+        "used": 2140073344,
+        "available": 217304
+      },
+      "code_space": {
+        "memorySize": 430080,
+        "committedMemory": 430080,
+        "capacity": 307648,
+        "used": 307648,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 1052672,
+        "committedMemory": 1052672,
+        "capacity": 485120,
+        "used": 485120,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 7987200,
+        "committedMemory": 7987200,
+        "capacity": 7970912,
+        "used": 7970912,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 49152,
+        "committedMemory": 49152,
+        "capacity": 2784,
+        "used": 2784,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 5237280,
+        "used": 0,
+        "available": 5237280
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 83.796,
+    "kernelCpuSeconds": 2.046,
+    "cpuConsumptionPercent": 171.684,
+    "maxRss": 2259529728,
+    "pageFaults": {
+      "IORequired": 636554,
+      "IONotRequired": 0
+    },
+    "fsActivity": {
+      "reads": 361,
+      "writes": 6
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "=::": "::\\",
+    "=C:": "C:\\Users\\sajmo\\Desktop\\Programowanie\\Projekty\\brunchbox\\server",
+    "=ExitCode": "C000013A",
+    "ALLUSERSPROFILE": "C:\\ProgramData",
+    "APPDATA": "C:\\Users\\sajmo\\AppData\\Roaming",
+    "CommonProgramFiles": "C:\\Program Files\\Common Files",
+    "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
+    "CommonProgramW6432": "C:\\Program Files\\Common Files",
+    "COMPUTERNAME": "LAPTOP-2GA7FN22",
+    "ComSpec": "C:\\WINDOWS\\system32\\cmd.exe",
+    "configsetroot": "C:\\WINDOWS\\ConfigSetRoot",
+    "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
+    "HOMEDRIVE": "C:",
+    "HOMEPATH": "\\Users\\sajmo",
+    "JAVA_HOME": "C:\\Program Files\\Java\\jdk-12.0.2",
+    "LOCALAPPDATA": "C:\\Users\\sajmo\\AppData\\Local",
+    "LOGONSERVER": "\\\\LAPTOP-2GA7FN22",
+    "NUMBER_OF_PROCESSORS": "8",
+    "OneDrive": "C:\\Users\\sajmo\\OneDrive",
+    "OneDriveConsumer": "C:\\Users\\sajmo\\OneDrive",
+    "OS": "Windows_NT",
+    "Path": "C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\Java\\jdk-12.0.2\\bin;C:\\Program Files\\PuTTY\\;C:\\Program Files\\nodejs\\;C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64\\;C:\\Program Files\\Git\\cmd;C:\\Users\\sajmo\\AppData\\Local\\Programs\\Python\\Python38-32\\Scripts\\;C:\\Users\\sajmo\\AppData\\Local\\Programs\\Python\\Python38-32\\;C:\\Program Files\\apache-maven-3.6.1\\bin;C:\\Users\\sajmo\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\sajmo\\AppData\\Roaming\\npm;C:\\Users\\sajmo\\Downloads\\mongodb-shell-win32-x86_64-2012plus-4.2.7\\mongodb-win32-x86_64-2012plus-4.2.7\\bin;C:\\Program Files\\heroku\\bin",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC",
+    "PROCESSOR_ARCHITECTURE": "AMD64",
+    "PROCESSOR_IDENTIFIER": "AMD64 Family 23 Model 17 Stepping 0, AuthenticAMD",
+    "PROCESSOR_LEVEL": "23",
+    "PROCESSOR_REVISION": "1100",
+    "ProgramData": "C:\\ProgramData",
+    "ProgramFiles": "C:\\Program Files",
+    "ProgramFiles(x86)": "C:\\Program Files (x86)",
+    "ProgramW6432": "C:\\Program Files",
+    "PROMPT": "$P$G",
+    "PSModulePath": "C:\\Program Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
+    "PUBLIC": "C:\\Users\\Public",
+    "SESSIONNAME": "Console",
+    "SystemDrive": "C:",
+    "SystemRoot": "C:\\WINDOWS",
+    "TEMP": "C:\\Users\\sajmo\\AppData\\Local\\Temp",
+    "TMP": "C:\\Users\\sajmo\\AppData\\Local\\Temp",
+    "USERDOMAIN": "LAPTOP-2GA7FN22",
+    "USERDOMAIN_ROAMINGPROFILE": "LAPTOP-2GA7FN22",
+    "USERNAME": "sajmo",
+    "USERPROFILE": "C:\\Users\\sajmo",
+    "VBOX_MSI_INSTALL_PATH": "C:\\Program Files\\Oracle\\VirtualBox\\",
+    "windir": "C:\\WINDOWS"
+  },
+  "sharedObjects": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+    "C:\\Program Files\\Avast Software\\Avast\\aswhook.dll",
+    "C:\\WINDOWS\\System32\\KERNEL32.DLL",
+    "C:\\WINDOWS\\System32\\KERNELBASE.dll",
+    "C:\\WINDOWS\\System32\\WS2_32.dll",
+    "C:\\WINDOWS\\System32\\RPCRT4.dll",
+    "C:\\WINDOWS\\System32\\PSAPI.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\dbghelp.dll",
+    "C:\\WINDOWS\\System32\\ADVAPI32.dll",
+    "C:\\WINDOWS\\System32\\ucrtbase.dll",
+    "C:\\WINDOWS\\System32\\msvcrt.dll",
+    "C:\\WINDOWS\\System32\\sechost.dll",
+    "C:\\WINDOWS\\SYSTEM32\\USERENV.dll",
+    "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
+    "C:\\WINDOWS\\System32\\USER32.dll",
+    "C:\\WINDOWS\\System32\\win32u.dll",
+    "C:\\WINDOWS\\System32\\GDI32.dll",
+    "C:\\WINDOWS\\System32\\gdi32full.dll",
+    "C:\\WINDOWS\\System32\\msvcp_win.dll",
+    "C:\\WINDOWS\\System32\\CRYPT32.dll",
+    "C:\\WINDOWS\\System32\\bcrypt.dll",
+    "C:\\WINDOWS\\SYSTEM32\\WINMM.dll",
+    "C:\\WINDOWS\\System32\\IMM32.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\powrprof.dll",
+    "C:\\WINDOWS\\SYSTEM32\\UMPDC.dll",
+    "C:\\WINDOWS\\SYSTEM32\\CRYPTBASE.DLL",
+    "C:\\WINDOWS\\system32\\uxtheme.dll",
+    "C:\\WINDOWS\\System32\\combase.dll",
+    "C:\\WINDOWS\\system32\\mswsock.dll",
+    "C:\\WINDOWS\\SYSTEM32\\kernel.appcore.dll",
+    "C:\\WINDOWS\\System32\\bcryptprimitives.dll",
+    "C:\\WINDOWS\\System32\\NSI.dll",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc6.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\dhcpcsvc.DLL",
+    "C:\\WINDOWS\\SYSTEM32\\DNSAPI.dll",
+    "C:\\Windows\\System32\\rasadhlp.dll",
+    "C:\\WINDOWS\\System32\\fwpuclnt.dll",
+    "C:\\WINDOWS\\system32\\napinsp.dll",
+    "C:\\WINDOWS\\system32\\pnrpnsp.dll",
+    "C:\\WINDOWS\\system32\\wshbth.dll",
+    "C:\\WINDOWS\\system32\\NLAapi.dll",
+    "C:\\WINDOWS\\System32\\winrnr.dll"
+  ]
+}

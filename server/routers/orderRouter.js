@@ -5,8 +5,8 @@ const con = require("../databaseConnection");
 con.connect(err => {
    /* GET ALL ORDERS */
    router.get("/get-orders", (request, response) => {
-      const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, o1.price, pm.name, sm.name as shipping_method, o2.payment_status, o2.order_status, o2.date ' +
-          'FROM (SELECT o.id, SUM(s.quantity * p.price_m) price FROM orders o ' +
+      const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, sm.name as shipping_method, o2.payment_status, o2.order_status, o2.date ' +
+          'FROM (SELECT o.id, SUM(s.quantity * p.price_m_meat) price FROM orders o ' +
           'JOIN sells s ON o.id = s.order_id ' +
           'JOIN products p ON p.id = s.product_id GROUP BY o.id) o1 ' +
           'JOIN orders o2 USING(id) JOIN users u ON u.id = o2.user ' +
@@ -101,7 +101,7 @@ con.connect(err => {
     router.post("/get-order", (request, response) => {
        const { id } = request.body;
        const values = [id];
-       const query = 'SELECT o.id, o.order_comment, o.payment_method, o.shipping_method, o.city, o.street, o.building, o.flat, o.postal_code, o.payment_status, o.date, p.name, p.price_s, p.price_m, p.price_l, s.quantity, s.option, s.size, u.first_name, u.last_name, u.phone_number, u.email FROM sells s JOIN orders o ON o.id = s.order_id JOIN products p ON s.product_id = p.id JOIN users u ON u.id = o.user WHERE order_id = ?';
+       const query = 'SELECT o.id, o.order_comment, o.payment_method, o.shipping_method, o.city, o.street, o.building, o.flat, o.postal_code, o.payment_status, o.date, p.name, p.price_m_meat, p.price_l_meat, p.price_l_vege, p.price_l_meat, s.quantity, s.option, s.size, u.first_name, u.last_name, u.phone_number, u.email FROM sells s JOIN orders o ON o.id = s.order_id JOIN products p ON s.product_id = p.id JOIN users u ON u.id = o.user WHERE order_id = ?';
        con.query(query, values, (err, res) => {
           if(res) {
               response.send({

@@ -9,7 +9,7 @@ const Landing = () => {
                 Przekąski na <b>każdą okazję</b>
             </h1>
             <button className="button button--landing">
-                <a className="button--landing__link" href="#">
+                <a className="button--landing__link" href="#zestawy">
                     Zobacz dostępne zestawy
                 </a>
             </button>

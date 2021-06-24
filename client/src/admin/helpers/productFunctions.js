@@ -16,6 +16,7 @@ const deleteProductById = (id) => {
 }
 
 const addAllergens = (id, allergens) => {
+    console.log("SENDING: " + id + " " + allergens);
     return axios.post(`${API_URL}/product/add-allergens`, { id, allergens });
 }
 

@@ -4,14 +4,26 @@ import exampleImg from '../static/img/pudelko.png'
 import trash from '../static/img/trash.svg'
 import write from '../static/img/write.svg'
 
-import { deleteFromCart } from '../helpers/editCart'
+import {calculatePrice, deleteFromCart} from '../helpers/editCart'
+import { getSingleProduct } from "../helpers/productFunctions";
+import convertToURL from "../helpers/convertToURL";
 
 const Cart = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
-    let sum = 0;
+    const [cartProducts, setCartProducts] = useState([]);
+    const [update, setUpdate] = useState(false);
+
+    let sum = 1;
 
     useEffect(() => {
-
+           cart?.forEach(item => {
+               console.log(item.id);
+               getSingleProduct(item.id)
+                   .then(res => {
+                       setCartProducts([...res.data.result]);
+                       setUpdate(!update);
+                   });
+           });
     }, []);
 
     const deleteCart = id => {
@@ -37,7 +49,7 @@ const Cart = () => {
                                 Nazwa produktu
                             </h3>
                             <h2 className="cart__item__value">
-                                Brunch Box (Romantyczny wieczór)
+                                {cartProducts[index]?.name} ({cartProducts[index]?.bracket_name})
                             </h2>
                         </section>
 
@@ -63,7 +75,9 @@ const Cart = () => {
                             <h3 className="cart__item__label">
                                 Ilość
                             </h3>
-                            <input className="cart__item__input" type="number" value={item.quantity} name="size"/>
+                            <h2 className="cart__item__value">
+                                {item.quantity}
+                            </h2>
                         </section>
 
                         <section className="cart__item__column fifthCol">
@@ -71,7 +85,7 @@ const Cart = () => {
                                 Wartość
                             </h3>
                             <h2 className="cart__item__value noWrap">
-                                {item.price * item.quantity} PLN
+                                {calculatePrice(item.size, item.option, item.quantity, {mMeat: cartProducts[index]?.price_m_meat, lMeat: cartProducts[index]?.price_l_meat, mVege: cartProducts[index]?.price_m_vege, lVege: cartProducts[index]?.price_l_vege})} PLN
                             </h2>
                         </section>
 
@@ -81,7 +95,9 @@ const Cart = () => {
                             </h3>
                             <section className="cart__item__value cart__item__value--flex">
                                 <button className="cart__item__value cart__item__value--button">
-                                    <img className="cart__item__icon" src={write} alt="wroc-do-produktu"/>
+                                    <a href={"http://localhost:3000/produkt/" + convertToURL(cartProducts[index]?.name)}>
+                                        <img className="cart__item__icon" src={write} alt="wroc-do-produktu"/>
+                                    </a>
                                 </button>
                                 <button className="cart__item__value cart__item__value--button" onClick={() => {
                                     deleteCart({
@@ -112,9 +128,16 @@ const Cart = () => {
                         </a>
                     </button>
                 </section>
-            </> : <h2 className="emptyCart">
-                Twój koszyk jest pusty
-            </h2> }
+            </> : <>
+                <h2 className="emptyCart">
+                    Twój koszyk jest pusty
+                </h2>
+                <button className="button button--landing button--emptyCart">
+                    <a className="button--landing__link button--emptyCart__link" href="/">
+                        Wróć do sklepu
+                    </a>
+                </button>
+            </> }
 
 
         </main>
