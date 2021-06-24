@@ -31,26 +31,37 @@ con.connect(err => {
    router.post("/add-allergens", (request, response) => {
       const { id, allergens } = request.body;
 
+      console.log(request.body);
+
       allergens.forEach(item => {
          const values = [id, item];
          const query = 'INSERT INTO allergens VALUES (NULL, ?, ?)';
-         con.query(query, values);
+         con.query(query, values, (err, res) => {
+            console.log(err);
+         });
       });
       response.send({ result: 1 });
    });
 
    /* ADD PRODUCT */
    router.post("/add-product", upload.single("mainImage"), (request, response) => {
-      let { id, name, second_name, categoryId, editor, price } = request.body;
-      price = parseFloat(price);
+      console.log(request.body);
+
+      let { id, name, bracketName, categoryId, editor, priceS, priceM, priceL, s, m, l, vegan, meat, hiddenDescription } = request.body;
+      if(priceL !== '') priceL = parseFloat(priceL);
+      else priceL = null;
+      if(priceM !== '') priceM = parseFloat(priceM);
+      else priceM = null;
+      if(priceS !== '') priceS = parseFloat(priceS);
+      else priceS = null;
+
+      s = s === 'true';
+      m = m === 'true';
+      l = l === 'true';
+      vegan = vegan === 'true';
+      meat = meat === 'true';
+
       categoryId = parseInt(categoryId);
-
-      //if(!stock) stock = null;
-
-      /* Add cross-sells */
-      // crossSellsArray.forEach(item => {
-      //    addCrossSells(item.product1, item.product2);
-      // });
 
       if(request.file) {
          /* Add image to filesystem */
@@ -64,8 +75,8 @@ con.connect(err => {
             con.query(query, values, (err, res) => {
                console.log(err);
                console.log("END OF ERROR 1");
-               const values = [name, price, editor, res.insertId, categoryId];
-               const query = 'INSERT INTO products VALUES (NULL, ?, ?, ?, ?, NULL, ?, CURRENT_TIMESTAMP)';
+               const values = [name, priceS, priceM, priceL, editor, res.insertId, categoryId, bracketName, vegan, meat, s, m, l, hiddenDescription];
+               const query = 'INSERT INTO products VALUES (NULL, ?, ?, ?, ?, ?, ?, NULL, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)';
                con.query(query, values, (err, res) => {
                   console.log(err);
                   if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
@@ -76,14 +87,13 @@ con.connect(err => {
       }
       else {
          /* Add product without main image */
-         const values = [name, price, editor, categoryId];
-         const query = 'INSERT INTO products VALUES (NULL, ?, ?, ?, NULL, NULL, ?, CURRENT_TIMESTAMP)';
+         const values = [name, priceS, priceM, priceL, editor, categoryId, bracketName, vegan, meat, s, m, l, hiddenDescription];
+         const query = 'INSERT INTO products VALUES (NULL, ?, ?, ?, ?, ?, NULL, NULL, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?)';
          con.query(query, values, (err, res) => {
             let result = 0;
             if(res) result = 1;
-            response.send({
-               result
-            });
+            if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
+            else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
          });
       }
    });
@@ -157,9 +167,9 @@ con.connect(err => {
 
    /* GET ALL PRODUCTS */
    router.get("/get-all-products", (request, response) => {
-      const query = 'SELECT p.id, p.name as product_name, i.file_path as image, p.price, p.description, p.date, COALESCE(c.name, "Brak") as category_name FROM products p ' +
+      const query = 'SELECT p.id, p.name as product_name, i.file_path as image, p.price_s, p.price_m, p.price_l, p.description, p.date, COALESCE(c.name, "Brak") as category_name FROM products p ' +
       'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
-      'LEFT OUTER JOIN images i ON p.main_image = i.id';
+      'LEFT OUTER JOIN images i ON p.main_image = i.id ORDER BY p.date DESC';
 
       con.query(query, (err, res) => {
          if(res) {

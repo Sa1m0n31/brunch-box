@@ -117,16 +117,16 @@ const OrderDetailsContent = () => {
                                 <span>{item.name}</span>
                             </section>
                             <section className="panelContent__cart__column">
-                                <span>{item.price} PLN</span>
+                                <span>{item.price_m} PLN</span>
                             </section>
                             <section className="panelContent__cart__column">
                                 <span>{item.quantity} szt.</span>
                             </section>
                             <section className="panelContent__cart__column">
-                                <span>Mięsny</span>
+                                <span>{item.option}</span>
                             </section>
                             <section className="panelContent__cart__column">
-                                <span>Rozmiar L</span>
+                                <span>Rozmiar {item.size}</span>
                             </section>
                         </section>
                     })}

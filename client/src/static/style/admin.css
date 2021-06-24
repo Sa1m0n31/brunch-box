@@ -176,7 +176,7 @@ ul {
 .panelContent {
     background: #F9F9F9;
     width: 80%;
-    height: 100vh;
+    min-height: 100vh;
     margin-left: 20%;
     padding: 60px 40px;
 }
@@ -425,6 +425,7 @@ ul {
     padding: 5px 10px;
     width: 100%;
     height: 40px;
+    opacity: 1;
 }
 
 .fileUploader {
@@ -522,6 +523,50 @@ input[type=file] {
 
 .panelContent__filters__btn {
     margin-left: 20px;
+}
+
+.panelContent__filters__btn--options {
+    margin-right: 20px;
+    margin-left: 0;
+}
+
+.panelContent__filters__btnWrapper {
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.marginTop30 {
+    margin-top: 30px;
+}
+
+.addProduct__form__subsection--marginLeft {
+    margin-left: 120px;
+}
+
+.addProduct__input--invisible {
+    display: block;
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    transition: .4s all ease-in-out;
+}
+
+.jodit-container {
+    margin-top: 15px;
+    margin-bottom: 30px;
+}
+
+.jodit--label span {
+    font-size: 14px;
+}
+
+.input--hidden {
+    visibility: hidden !important;
+}
+
+.addMsg {
+    margin-top: 100px;
 }
 
 /* Panel - categories */
