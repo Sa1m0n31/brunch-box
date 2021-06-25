@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 
 const ShippingAndPayment = () => {
     const [msg, setMsg] = useState("");
+    const [amount, setAmount] = useState(parseInt(localStorage.getItem('sec-amount')));
     const [ribbon, setRibbon] = useState(false);
 
     const validationSchema = Yup.object({
@@ -91,10 +92,14 @@ const ShippingAndPayment = () => {
                                     let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
 
                                     axios.post("http://localhost:5000/payment/payment", {
-                                        amount: 100,
-                                        email: "test@gmail.com"
+                                        amount: parseInt(localStorage.getItem('sec-amount')),
+                                        email: formik.values.email
                                     })
                                         .then(res => {
+                                            /* Remove cart from local storage */
+                                            localStorage.removeItem('sec-cart');
+                                            localStorage.removeItem('sec-amount');
+
                                             const token = res.data.result;
                                             window.location.href = `${paymentUri}${token}`;
                                         });
@@ -102,6 +107,17 @@ const ShippingAndPayment = () => {
                         });
                     })
             });
+    }
+
+    const addRibbon = () => {
+        if(ribbon) {
+            setAmount(amount-10);
+            setRibbon(false);
+        }
+        else {
+            setAmount(amount+10);
+            setRibbon(true);
+        }
     }
 
     return <form className="cartContent" onSubmit={formik.handleSubmit}>
@@ -208,7 +224,7 @@ const ShippingAndPayment = () => {
                     placeholder="Komentarz do zamówienia (opcjonalnie)" />
 
                 <label className="ribbonBtnLabel">
-                    <button className="ribbonBtn" onClick={() => { setRibbon(!ribbon) }}>
+                    <button className="ribbonBtn" onClick={() => { addRibbon() }}>
                         <span className={ribbon ? "ribbon" : "d-none"}></span>
                     </button>
                     Wstążka z dedykacją (10 PLN)
@@ -231,7 +247,7 @@ const ShippingAndPayment = () => {
                     Łącznie do zapłaty:
                 </h3>
                 <h4 className="cart__summary__header__value">
-                    123 PLN
+                    {amount} PLN
                 </h4>
             </header>
             <button className="cart__summary__button button__link--small" onClick={() => { goPay() }} type="submit">

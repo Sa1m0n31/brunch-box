@@ -7,28 +7,52 @@ import write from '../static/img/write.svg'
 import {calculatePrice, deleteFromCart} from '../helpers/editCart'
 import { getSingleProduct } from "../helpers/productFunctions";
 import convertToURL from "../helpers/convertToURL";
+import {calculateCartSum} from "../admin/helpers/orderFunctions";
+import settings from "../admin/helpers/settings";
 
 const Cart = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
     const [cartProducts, setCartProducts] = useState([]);
     const [update, setUpdate] = useState(false);
+    const [cartSum, setCartSum] = useState(0);
 
-    let sum = 1;
+    let sum = 2;
 
     useEffect(() => {
+        let newArr = [];
            cart?.forEach(item => {
                console.log(item.id);
                getSingleProduct(item.id)
                    .then(res => {
-                       setCartProducts([...res.data.result]);
-                       setUpdate(!update);
+                       newArr.push(res.data.result[0]);
                    });
            });
+           setTimeout(() => {
+               setCartProducts(newArr);
+               setUpdate(!update);
+               setTimeout(() => {
+                   setCartSum(calculateSum());
+               }, 100);
+           }, 100);
     }, []);
+
+    const calculateSum = () => {
+        const s = document.querySelectorAll("#price");
+        let sum = 0;
+        s.forEach(item => {
+            console.log(sum);
+            sum += parseInt(item.textContent.substr(0, item.textContent.length-4));
+        });
+        localStorage.setItem('sec-amount', sum.toString());
+        return sum;
+    }
 
     const deleteCart = id => {
         deleteFromCart(id);
         setCart(JSON.parse(localStorage.getItem('sec-cart')));
+        setTimeout(() => {
+            setCartSum(calculateSum());
+        }, 100);
     }
 
     return <main className="cartContent">
@@ -36,12 +60,11 @@ const Cart = () => {
             Podsumowanie koszyka
         </h1>
         <main className="cart">
-            {cart.length ? <>
+            {cart?.length ? <>
                 {cart.map((item, index) => {
-                    sum += 1;
                     return <section className="cart__item">
                         <section className="cart__item__imgWrapper">
-                            <img className="cart__item__img" src={exampleImg} alt="produkt"/>
+                            <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>
                         </section>
 
                         <section className="cart__item__column firstCol">
@@ -84,7 +107,7 @@ const Cart = () => {
                             <h3 className="cart__item__label">
                                 Wartość
                             </h3>
-                            <h2 className="cart__item__value noWrap">
+                            <h2 className="cart__item__value noWrap" id="price">
                                 {calculatePrice(item.size, item.option, item.quantity, {mMeat: cartProducts[index]?.price_m_meat, lMeat: cartProducts[index]?.price_l_meat, mVege: cartProducts[index]?.price_m_vege, lVege: cartProducts[index]?.price_l_vege})} PLN
                             </h2>
                         </section>
@@ -119,7 +142,7 @@ const Cart = () => {
                             Łącznie do zapłaty:
                         </h3>
                         <h4 className="cart__summary__header__value">
-                            { sum } PLN
+                            { cartSum } PLN
                         </h4>
                     </header>
                     <button className="cart__summary__button">

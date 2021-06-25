@@ -426,8 +426,22 @@ ol {
     margin-right: 50px;
 }
 
+.marginRight15 {
+    margin-right: 15px;
+}
+
 .singleProduct__right {
     width: 45%;
+}
+
+.allergensImg--client {
+    margin: 0 10px 15px;
+}
+
+.singleProduct__options--allergens {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start !important;
 }
 
 .singleProduct__images {
@@ -675,6 +689,12 @@ ol {
     justify-content: center;
     align-items: center;
     padding: 0 30px;
+    flex: 1;
+}
+
+.firstCol {
+    flex: 2;
+    padding-left: 50px;
 }
 
 .cart__item__label {
@@ -908,4 +928,13 @@ ol {
 .o-none {
     transition: .4s all;
     opacity: 0;
+}
+
+/* TY page */
+.tyPage {
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }

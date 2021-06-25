@@ -241,7 +241,21 @@ con.connect(err => {
 
    /* GET SINGLE PRODUCT ALLERGENS */
    router.post("/single-allergens", (request, response) => {
-
+      const { id } = request.body;
+      const values = [id];
+      const query = 'SELECT a.allergen FROM products p JOIN allergens a ON p.id = a.product_id'
+      con.query(query, values, (err, res) => {
+         if(!err) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
+      });
    });
 
    /* GET PRODUCT DETAILS */

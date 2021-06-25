@@ -13,8 +13,9 @@ import tickImg from '../static/img/tick-sign.svg'
 import arrowDown from '../static/img/caret_down.svg'
 
 import { useLocation } from "react-router";
-import {getProductByName, getSingleProduct} from "../helpers/productFunctions";
+import {getProductAllergens, getProductByName, getSingleProduct} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
+import {allergensImg, allergensList} from "../helpers/allergens";
 
 const SingleProductContent = () => {
     const [size, setSize] = useState("M");
@@ -25,6 +26,7 @@ const SingleProductContent = () => {
     const [price, setPrice] = useState(0);
     const [longDesc, setLongDesc] = useState(false);
     const [currentDesc, setCurrentDesc] = useState("");
+    const [allergens, setAllergens] = useState([]);
 
     const [modal, setModal] = useState(false);
 
@@ -38,7 +40,6 @@ const SingleProductContent = () => {
     ];
 
     const getProductIdByURL = (name) => {
-        let id = 0;
         const newName = name[name.length-1].replace(/-/g, " ");
         return getProductByName(newName);
     }
@@ -49,10 +50,14 @@ const SingleProductContent = () => {
             id = location.state.id;
             getSingleProduct(id)
                 .then(res => {
-                    console.log(res.data.result);
                     setProduct(res.data.result[0]);
                     setPrice(res.data.result[0].price_m_meat);
                     setCurrentDesc(res.data.result[0].meat_description);
+                });
+            getProductAllergens(id)
+                .then(res => {
+                    console.log(res.data.result);
+                    setAllergens(res.data.result);
                 });
         }
         else {
@@ -63,13 +68,20 @@ const SingleProductContent = () => {
                 .then(() => {
                     getSingleProduct(id)
                         .then(res => {
-                            console.log(res.data.result);
                             setProduct(res.data.result[0]);
                             setPrice(res.data.result[0].price_m_meat);
                             setCurrentDesc(res.data.result[0].meat_description);
                         });
+                    getProductAllergens(id)
+                        .then(res => {
+                            console.log(res.data.result);
+                            setAllergens(res.data.result);
+                        });
                 });
         }
+        setTimeout(() => {
+            console.log(allergens);
+        }, 1000);
 
 
     }, []);
@@ -172,6 +184,21 @@ const SingleProductContent = () => {
                     </button>
                 </section>
             </div> : ""}
+
+            {allergens ? <div className="singleProduct__options singleProduct__options--allergens">
+                <h3 className="singleProduct__options__header marginRight15">
+                    Alergeny:
+                </h3>
+                {allergens.map(item => {
+                const allergen = allergensList.findIndex(itemOnTheList => {
+                return itemOnTheList === item.allergen;
+            });
+                if((allergen)||(allergen === 0)) return <img className="allergensImg allergensImg--client" src={allergensImg[allergen]} alt="alergen" />
+            })}
+            </div> : ""}
+
+
+
             <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc}}>
 
             </div>

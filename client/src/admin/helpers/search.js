@@ -23,11 +23,7 @@ const orderSearch = (str) => {
             const firstName = searchArray[0];
             const lastName = searchArray[1];
 
-            console.log(firstName);
-            console.log(lastName);
-
             const nameAndSurname = item.first_name + " " + item.last_name;
-            console.log(nameAndSurname);
 
             if(nameAndSurname.search(re) !== -1) return true;
 
@@ -55,9 +51,25 @@ const productSearch = (str) => {
     const allProducts = JSON.parse(sessionStorage.getItem('skylo-e-commerce-products'));
     const re = new RegExp(`.*${str}.*`, 'g');
 
-    return allProducts.filter(item => {
-       return item.name.search(re) !== -1;
-    });
+    let filteredProducts;
+    if(allProducts) {
+        filteredProducts = allProducts.filter((item, index) => {
+            const re = new RegExp(`.*${str}.*`, 'gi');
+
+            /* Search by first name */
+            if(item.product_name.search(re) !== -1) return true;
+
+            /* Search by last name */
+            if(item.bracket_name.search(re) !== -1) return true;
+
+            /* Search by email */
+            if(item.category_name.search(re) !== -1) return true;
+
+            return false;
+        });
+    }
+
+    return filteredProducts;
 }
 
 export { orderSearch, sortByDate, productSearch };

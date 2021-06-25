@@ -62,7 +62,7 @@ con.connect(err => {
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "https://google.com",
+                urlReturn: "https://localhost:5000/dziekujemy",
                 urlStatus: "http://localhost:5000/payment/verify",
                 sign: gen_hash
             };

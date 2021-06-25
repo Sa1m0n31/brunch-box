@@ -20,14 +20,15 @@ const PanelProductsContent = () => {
     useEffect(() => {
         getAllProducts()
             .then(res => {
-               setProducts(res.data.result);
+               const result = res.data.result;
+               setProducts(result);
+               sessionStorage.setItem('skylo-e-commerce-products', JSON.stringify(result));
             });
     }, [modal]);
 
     const search = e => {
         const filteredProducts = productSearch(e.target.value);
         setProducts(filteredProducts);
-        sessionStorage.setItem('skylo-e-commerce-products', JSON.stringify(filteredProducts));
     }
 
     const deleteProductById = () => {

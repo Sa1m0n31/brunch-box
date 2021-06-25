@@ -41,10 +41,12 @@ con.connect(err => {
        let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, ribbon } = request.body;
        if(ribbon === "") ribbon = null;
        if(flat === "") flat = null;
+       building = parseInt(building) || 0;
        const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, ribbon];
        const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "opłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?)';
        con.query(query, values, (err, res) => {
           let result = 0;
+          console.log("Welcome in /order/add");
           console.log(err);
           if(res) {
               if(res.insertId) result = res.insertId;

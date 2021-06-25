@@ -4,10 +4,30 @@ import {addAllergens, getNewId, getProductDetails} from "../helpers/productFunct
 import { useLocation } from "react-router";
 import {getAllCategories} from "../helpers/categoriesFunctions";
 
+import gluten from '../static/img/allergens/gluten.png'
+import grzyby from '../static/img/allergens/grzyby.png'
+import jajka from '../static/img/allergens/jajka.png'
+import kukurydza from '../static/img/allergens/kukurydza.png'
+import lubin from '../static/img/allergens/lubin.png'
+import mieczaki from '../static/img/allergens/mieczaki.png'
+import mleko from '../static/img/allergens/mleko.png'
+import musztarda from '../static/img/allergens/musztarda.png'
+import orzechy from '../static/img/allergens/orzechy.png'
+import orzechyZiemne from '../static/img/allergens/orzechy-ziemne.png'
+import ryba from '../static/img/allergens/ryba.png'
+import seler from '../static/img/allergens/seler.png'
+import sezam from '../static/img/allergens/sezam.png'
+import siarka from '../static/img/allergens/siarka.png'
+import skorupiaki from '../static/img/allergens/skorupiaki.png'
+import soja from '../static/img/allergens/soja.png'
+
 import JoditEditor from 'jodit-react';
 
 const AddProductContent = () => {
     const editorR = useRef(null);
+
+    const allergensImg = [gluten, grzyby, jajka, kukurydza, lubin, mieczaki, mleko, musztarda, orzechy, orzechyZiemne, ryba, seler,
+        sezam, siarka, skorupiaki, soja];
 
     const [update, setUpdate] = useState(false);
     const [name, setName] = useState("");
@@ -17,7 +37,7 @@ const AddProductContent = () => {
     const [product, setProduct] = useState([]);
     const [allergens, setAllergens] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
     /* Prices */
     const [priceMMeat, setPriceMMeat] = useState("");
@@ -39,7 +59,7 @@ const AddProductContent = () => {
 
     const [addMsg, setAddMsg] = useState("");
 
-    const allergensList = ["ryby", "orzechy", "al3", "al4", "al5", "al6", "al7", "al8", "al9", "al10"];
+    const allergensList = ["gluten", "grzyby", "jajka", "kukurydza", "łubin", "mięczaki", "mleko", "musztarda", "orzechy", "orzechy ziemne", "ryba", "seler", "sezam", "siarka", "skorupiaki", "soja"];
 
     const location = useLocation();
 
@@ -324,9 +344,9 @@ const AddProductContent = () => {
                 <label>
                     <p className="text-center">Zaznacz alergeny</p>
                     <section className="addProduct__allergies">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
+                        {allergensImg.map((item, index) => (
                             <button className={allergies[index] ? "addProduct__allergies__item allergiesChecked" : "addProduct__allergies__item"} key={index} onClick={(e) => { toggleAllergies(e, index) }}>
-                                {item}
+                                <img className="allergensImg" src={item} alt="alergen" />
                             </button>
                         ))}
                     </section>

@@ -19,6 +19,7 @@ import PanelShipping from "./admin/pages/PanelShipping";
 import PanelSettings from "./admin/pages/PanelSettings";
 import AddProductPage from "./admin/pages/AddProductPage";
 import OrderDetails from "./admin/pages/OrderDetails";
+import TYPage from "./pages/TYPage";
 
 function App() {
   return (
@@ -37,6 +38,9 @@ function App() {
                 </Route>
                 <Route path="/menu-bankietowe">
                     <Offer type="bankietowa" />
+                </Route>
+                <Route path="/dziekujemy">
+                    <TYPage />
                 </Route>
 
                 {/* Page for all products */}

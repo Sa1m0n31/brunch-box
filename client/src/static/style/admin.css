@@ -363,6 +363,11 @@ ul {
     min-height: 300px;
 }
 
+.allergensImg {
+    width: 40px;
+    height: auto;
+}
+
 .editorWrapper {
     max-width: 600px;
 }
@@ -503,13 +508,13 @@ ul {
     height: 40px;
     border-radius: 50%;
     background: transparent;
-    border: 2px solid #000;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 15px;
     cursor: pointer;
     transition: .2s all ease-in-out;
+    opacity: .3;
 }
 
 input[type=file] {
@@ -901,6 +906,5 @@ input[type=file] {
 }
 
 .allergiesChecked {
-    background: #000;
-    color: #fff;
+    opacity: 1;
 }
