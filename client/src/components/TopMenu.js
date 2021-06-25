@@ -43,6 +43,7 @@ const TopMenu = () => {
             <img className="topMenu__logo" src={logoImg} alt="brunch-box-logo" />
         </a>
 
+        {/* DESKTOP */}
         <menu className="topMenu__menu d-desktop">
             <ul className="topMenu__list">
                 <li className="topMenu__list__item">
@@ -91,6 +92,12 @@ const TopMenu = () => {
         </menu>
 
         {/* MOBILE */}
+        <a className="topMenu__list__item__link d-mobile" href="/koszyk">
+            <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
+            <span className="cartCounter">
+                            { JSON.parse(localStorage.getItem('sec-cart'))?.length || 0 }
+                        </span>
+        </a>
         <button className="button--hamburger d-mobile" onClick={() => openMobileMenu()}>
             <img className="hamburgerBtn__img" src={hamburgerMenu} alt="menu" />
         </button>

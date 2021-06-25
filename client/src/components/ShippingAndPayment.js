@@ -251,7 +251,7 @@ const ShippingAndPayment = () => {
             </section>
         </main>
 
-        <section className="cart__summary">
+        <section className="cart__summary cart__summary--shippingAndPayment">
             <header className="cart__summary__header">
                 <h3 className="cart__summary__header__label">
                     Łącznie do zapłaty:

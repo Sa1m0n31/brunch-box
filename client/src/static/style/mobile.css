@@ -275,6 +275,22 @@
         width: 100%;
         margin-bottom: 50px;
     }
+
+    /* Top menu */
+    .topMenu__list__item__img {
+        transform: translateY(5px);
+    }
+
+    .cartCounter {
+        top: -5px;
+    }
+
+    .footer__menu {
+        position: relative;
+        top: 50px;
+        right: 0;
+        transform: none;
+    }
 }
 
 @media(max-width: 768px) {
@@ -345,6 +361,15 @@
     /* Shipping and payemnt */
     .shippingAndPayment__form label {
         width: 100% !important;
+    }
+
+    /* Single product */
+    .singleProduct__bottom__btn {
+        font-size: 15px;
+    }
+
+    .singleProduct__longDesc p, .singleProduct__parts li {
+        font-size: 14px;
     }
 }
 
@@ -444,5 +469,36 @@
 
     .cart__summary {
         align-items: center;
+    }
+
+    /* Single product */
+    .singleProduct__options__btn {
+        font-size: 11px;
+        padding: 7px;
+    }
+
+    .singleProduct__options__buttons {
+        margin-left: 0;
+    }
+
+    .smallModal .ReactModal__Content {
+        width: 100%;
+        height: 101%;
+    }
+
+    .cart__summary--shippingAndPayment {
+        margin-top: -50px;
+    }
+
+    .cart__summary__button--shippingAndPayment:hover {
+        letter-spacing: 1px;
+    }
+
+    .ty__header {
+        font-size: 24px;
+    }
+
+    .ty__subheader {
+        font-size: 17px;
     }
 }

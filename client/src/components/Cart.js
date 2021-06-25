@@ -15,21 +15,28 @@ const Cart = () => {
     const [cartSum, setCartSum] = useState(0);
 
     useEffect(() => {
-        let newArr = [];
-           cart?.forEach(item => {
-               console.log(item.id);
-               getSingleProduct(item.id)
+       let newArr = [];
+       if(cart) {
+           const cb = () => {
+               setCartProducts(newArr);
+               setUpdate(!update);
+               setCartSum(calculateSum());
+           }
+
+           cart.forEach((item, index, array) => {
+               const pr = getSingleProduct(item.id)
                    .then(res => {
                        newArr.push(res.data.result[0]);
                    });
+
+               Promise.all([pr])
+                   .then(() => {
+                       if(index === array.length-1) {
+                           cb();
+                       }
+                   })
            });
-           setTimeout(() => {
-               setCartProducts(newArr);
-               setUpdate(!update);
-               setTimeout(() => {
-                   setCartSum(calculateSum());
-               }, 100);
-           }, 100);
+       }
     }, []);
 
     const calculateSum = () => {
