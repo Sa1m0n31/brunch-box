@@ -1,5 +1,5 @@
 import React from 'react'
-import productImg from '../static/img/product-image.png'
+import productImg from '../static/img/pudelko.png'
 
 const HomePageSection = () => {
     return <section className="homePageSection">

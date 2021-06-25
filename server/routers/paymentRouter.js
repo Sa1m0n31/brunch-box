@@ -62,7 +62,7 @@ con.connect(err => {
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "https://localhost:5000/dziekujemy",
+                urlReturn: "http://localhost:3000/dziekujemy",
                 urlStatus: "http://localhost:5000/payment/verify",
                 sign: gen_hash
             };
@@ -79,6 +79,15 @@ con.connect(err => {
             })
                 .then(res => {
                     responseToClient = res.body.data.token;
+                    if(res.body.data.token) {
+                        /* TMP */
+                        // const query = 'UPDATE orders SET payment_status = "opłacone" WHERE id = (SELECT id FROM orders ORDER BY date DESC LIMIT 1)';
+                        // con.query(query, (err, res) => {
+                        //     console.log("UPDATING PAYMENT STATUS");
+                        //     console.log(err);
+                        // });
+                    }
+
                     response.send({
                         result: responseToClient
                     });
@@ -99,9 +108,12 @@ con.connect(err => {
         let currency = request.body.currency;
         let orderId = request.body.orderId;
 
+        console.log("Veryfying 1");
+
         /* Get data */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
         con.query(query, (err, res) => {
+            console.log("Veryfying 2...");
             let marchantId = res[0].marchant_id;
             let crc = res[0].crc;
             let apiKey = res[0].api_key;
@@ -128,12 +140,15 @@ con.connect(err => {
                 }
             })
                 .then(res => {
+                    console.log("HEY!");
+                    console.log(res.body.data);
                     if(res.body.data.status === 'success') {
                         /* Change value in databse - payment complete */
                         const values = [orderId];
-                        const query = 'UPDATE orders SET payment_status = ? WHERE id = ?';
+                        const query = 'UPDATE orders SET payment_status = "opłacone" WHERE id = ?';
                         con.query(query, values, (err, res) => {
-
+                            console.log("UPDATING PAYMENT STATUS");
+                            console.log(err);
                         });
                     }
                 })

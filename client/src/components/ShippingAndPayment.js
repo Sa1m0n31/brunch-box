@@ -7,6 +7,11 @@ const ShippingAndPayment = () => {
     const [msg, setMsg] = useState("");
     const [amount, setAmount] = useState(parseInt(localStorage.getItem('sec-amount')));
     const [ribbon, setRibbon] = useState(false);
+    const [formValidate, setFormValidate] = useState(false);
+
+    useEffect(() => {
+        if(!amount) window.location = "/";
+    }, []);
 
     const validationSchema = Yup.object({
         firstName: Yup.string()
@@ -16,6 +21,8 @@ const ShippingAndPayment = () => {
         email: Yup.string()
             .required("Wpisz swój adres email")
             .email("Niepoprawny adres email"),
+        phoneNumber: Yup.string()
+            .required(),
         city: Yup.string()
             .required("Wpisz swoją miejscowość"),
         postalCode: Yup.string()
@@ -38,78 +45,81 @@ const ShippingAndPayment = () => {
             postalCode: "",
             street: "",
             building: "",
-            flat: "",
+            flat: null,
             ribbon: "",
             comment: ""
         },
         validationSchema,
         onSubmit: values => {
-            console.log(values);
+            setFormValidate(true);
         }
     });
 
-    const goPay = () => {
-        formik.handleSubmit();
+    useEffect(() => {
+        /* Payment */
+        if(formValidate) {
+            setFormValidate(false);
+            /* Add user */
+            axios.post("http://localhost:5000/auth/add-user", {
+                firstName: formik.values.firstName,
+                lastName: formik.values.lastName,
+                email: formik.values.email,
+                phoneNumber: formik.values.phoneNumber
+            })
+                .then(res => {
+                    let insertedUserId = res.data.result;
 
-        /* Add user */
-        axios.post("http://localhost:5000/auth/add-user", {
-            firstName: formik.values.firstName,
-            lastName: formik.values.lastName,
-            email: formik.values.email,
-            phoneNumber: formik.values.phoneNumber
-        })
-            .then(res => {
-                let insertedUserId = res.data.result;
-
-                /* Add order */
-                axios.post("http://localhost:5000/order/add", {
-                    paymentMethod: null,
-                    shippingMethod: null,
-                    city: formik.values.city,
-                    street: formik.values.street,
-                    building: formik.values.building,
-                    flat: formik.values.flat,
-                    postalCode: formik.values.postalCode,
-                    user: insertedUserId,
-                    comment: formik.values.comment,
-                    ribbon: formik.values.ribbon
-                })
-                    .then(res => {
-                        const orderId = res.data.result;
-
-                        /* Add sells */
-                        const cart = JSON.parse(localStorage.getItem('sec-cart'));
-                        cart.forEach(item => {
-                            console.log(item);
-                            axios.post("http://localhost:5000/order/add-sell", {
-                                orderId,
-                                productId: item.id,
-                                option: item.option,
-                                quantity: item.quantity,
-                                size: item.size
-                            })
-                                .then(res => {
-                                    let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
-
-                                    axios.post("http://localhost:5000/payment/payment", {
-                                        amount: parseInt(localStorage.getItem('sec-amount')),
-                                        email: formik.values.email
-                                    })
-                                        .then(res => {
-                                            /* Remove cart from local storage */
-                                            localStorage.removeItem('sec-cart');
-                                            localStorage.removeItem('sec-amount');
-
-                                            const token = res.data.result;
-                                            window.location.href = `${paymentUri}${token}`;
-                                        });
-                                });
-                        });
+                    /* Add order */
+                    axios.post("http://localhost:5000/order/add", {
+                        paymentMethod: null,
+                        shippingMethod: null,
+                        city: formik.values.city,
+                        street: formik.values.street,
+                        building: formik.values.building,
+                        flat: formik.values.flat,
+                        postalCode: formik.values.postalCode,
+                        user: insertedUserId,
+                        comment: formik.values.comment,
+                        ribbon: formik.values.ribbon
                     })
-            });
-    }
+                        .then(res => {
+                            const orderId = res.data.result;
 
-    const addRibbon = () => {
+                            /* Add sells */
+                            const cart = JSON.parse(localStorage.getItem('sec-cart'));
+                            cart.forEach(item => {
+                                console.log(item);
+                                axios.post("http://localhost:5000/order/add-sell", {
+                                    orderId,
+                                    productId: item.id,
+                                    option: item.option,
+                                    quantity: item.quantity,
+                                    size: item.size
+                                })
+                                    .then(res => {
+                                        let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                                        axios.post("http://localhost:5000/payment/payment", {
+                                            amount: parseInt(localStorage.getItem('sec-amount')),
+                                            email: formik.values.email
+                                        })
+                                            .then(res => {
+                                                /* Remove cart from local storage */
+                                                localStorage.removeItem('sec-cart');
+                                                localStorage.removeItem('sec-amount');
+
+                                                const token = res.data.result;
+                                                window.location.href = `${paymentUri}${token}`;
+                                            });
+                                    });
+                            });
+                        })
+                });
+        }
+    }, [formValidate]);
+
+    const addRibbon = (e) => {
+        e.preventDefault();
         if(ribbon) {
             setAmount(amount-10);
             setRibbon(false);
@@ -134,7 +144,7 @@ const ShippingAndPayment = () => {
 
                 <div className="shippingAndPayment__form">
                     <label className="shippingAndPayment__label label-100">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.firstName ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="firstName"
                                value={formik.values.firstName}
                                onChange={formik.handleChange}
@@ -142,7 +152,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-100">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.lastName ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="lastName"
                                value={formik.values.lastName}
                                onChange={formik.handleChange}
@@ -151,7 +161,7 @@ const ShippingAndPayment = () => {
                     </label>
 
                     <label className="shippingAndPayment__label label-50">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.email ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="email"
                                value={formik.values.email}
                                onChange={formik.handleChange}
@@ -159,7 +169,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-50">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.phoneNumber ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="phoneNumber"
                                value={formik.values.phoneNumber}
                                onChange={formik.handleChange}
@@ -168,7 +178,7 @@ const ShippingAndPayment = () => {
                     </label>
 
                     <label className="shippingAndPayment__label label-70">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.city ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="city"
                                value={formik.values.city}
                                onChange={formik.handleChange}
@@ -176,7 +186,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-30">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.postalCode ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="postalCode"
                                value={formik.values.postalCode}
                                onChange={formik.handleChange}
@@ -185,7 +195,7 @@ const ShippingAndPayment = () => {
                     </label>
 
                     <label className="shippingAndPayment__label label-60">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.street ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="street"
                                value={formik.values.street}
                                onChange={formik.handleChange}
@@ -193,7 +203,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-20">
-                        <input className="shippingAndPayment__input"
+                        <input className={formik.errors.building ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="building"
                                value={formik.values.building}
                                onChange={formik.handleChange}
@@ -224,7 +234,7 @@ const ShippingAndPayment = () => {
                     placeholder="Komentarz do zamówienia (opcjonalnie)" />
 
                 <label className="ribbonBtnLabel">
-                    <button className="ribbonBtn" onClick={() => { addRibbon() }}>
+                    <button className="ribbonBtn" onClick={(e) => { addRibbon(e) }}>
                         <span className={ribbon ? "ribbon" : "d-none"}></span>
                     </button>
                     Wstążka z dedykacją (10 PLN)
@@ -250,7 +260,7 @@ const ShippingAndPayment = () => {
                     {amount} PLN
                 </h4>
             </header>
-            <button className="cart__summary__button button__link--small" onClick={() => { goPay() }} type="submit">
+            <button className="cart__summary__button cart__summary__button--shippingAndPayment button__link--small" type="submit">
                     Przechodzę do płatności
             </button>
         </section>

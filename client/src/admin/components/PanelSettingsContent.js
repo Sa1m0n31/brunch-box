@@ -51,7 +51,9 @@ const PanelSettingsContent = () => {
     return <main className="panelContent">
 
         <Modal
-            isOpen={modal}>
+            isOpen={modal}
+            portalClassName="panelModal"
+        >
 
             {deleted === -1 ? <>
                 <h2 className="modalQuestion">

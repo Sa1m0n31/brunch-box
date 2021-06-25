@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import exampleImg from '../static/img/pudelko.png'
 import trash from '../static/img/trash.svg'
 import write from '../static/img/write.svg'
 
 import {calculatePrice, deleteFromCart} from '../helpers/editCart'
 import { getSingleProduct } from "../helpers/productFunctions";
 import convertToURL from "../helpers/convertToURL";
-import {calculateCartSum} from "../admin/helpers/orderFunctions";
 import settings from "../admin/helpers/settings";
 
 const Cart = () => {
@@ -15,8 +13,6 @@ const Cart = () => {
     const [cartProducts, setCartProducts] = useState([]);
     const [update, setUpdate] = useState(false);
     const [cartSum, setCartSum] = useState(0);
-
-    let sum = 2;
 
     useEffect(() => {
         let newArr = [];
@@ -48,11 +44,28 @@ const Cart = () => {
     }
 
     const deleteCart = id => {
-        deleteFromCart(id);
-        setCart(JSON.parse(localStorage.getItem('sec-cart')));
+        /* First - animation */
+        // const allCartItems = document.querySelectorAll(".cart__item");
+        // allCartItems.forEach(item => {
+        //     console.log(id.id + id.size + id.option);
+        //     console.log(item.id);
+        //     if(item.id === "cart" + id.id + id.size + id.option) {
+        //         item.style.opacity = "0";
+        //         setTimeout(() => {
+        //             item.style.height = "0";
+        //         }, 500);
+        //         return 0;
+        //     }
+        // });
+
+        /* Second - delete from cart */
         setTimeout(() => {
-            setCartSum(calculateSum());
-        }, 100);
+            deleteFromCart(id);
+            setCart(JSON.parse(localStorage.getItem('sec-cart')));
+            setTimeout(() => {
+                setCartSum(calculateSum());
+            }, 100);
+        }, 1);
     }
 
     return <main className="cartContent">
@@ -62,7 +75,7 @@ const Cart = () => {
         <main className="cart">
             {cart?.length ? <>
                 {cart.map((item, index) => {
-                    return <section className="cart__item">
+                    return <section className="cart__item" id={"cart" + item.id + item.size + item.option}>
                         <section className="cart__item__imgWrapper">
                             <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>
                         </section>

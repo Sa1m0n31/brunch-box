@@ -70,6 +70,10 @@ ol {
     background: #fff;
 }
 
+.topMenu__list__item__link:hover .cartCounter {
+    transform: translateY(-5px);
+}
+
 .topMenu__logo {
     width: 152px;
     height: auto;
@@ -189,6 +193,7 @@ ol {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: .2s all ease-in;
 }
 
 /* Landing */
@@ -234,11 +239,16 @@ ol {
 }
 
 .button--landing {
-    width: 400px;
+    width: 450px;
     height: 75px;
     background: #000;
     color: #fff;
     border-radius: 4px;
+    transition: .4s all ease-in-out;
+}
+
+.button--landing:hover {
+    letter-spacing: 3px;
 }
 
 .button--landing__link {
@@ -302,6 +312,11 @@ ol {
     width: 360px;
     height: 60px;
     margin-top: 30px;
+    transition: .4s all;
+}
+
+.button--homePageSection:hover {
+    letter-spacing: 3px;
 }
 
 .button--homePageSection__link {
@@ -448,9 +463,11 @@ ol {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 30px;
 }
 
 .singleProduct__mainImage {
+    width: 100%;
     display: flex;
     background: transparent;
     justify-content: center;
@@ -562,6 +579,11 @@ ol {
     transition: .4s all ease-in-out;
 }
 
+.button--addToCart:hover .button--addToCart__img,
+.button--addToCart:active .button--addToCart__img {
+    transform: translateX(10px);
+}
+
 .button--addToCart:hover {
     color: #fff;
     background: #000;
@@ -667,6 +689,7 @@ ol {
     align-items: center;
     border-bottom: 1px solid rgba(0, 0, 0, .25);
     padding: 30px 0;
+    transition: .5s all ease-in-out;
 }
 
 .cart__item__imgWrapper {
@@ -752,9 +775,18 @@ ol {
     text-transform: uppercase;
     margin-top: 30px;
     width: 300px;
-    height: 40px;
+    height: 50px;
     font-size: 17px;
     font-weight: 700;
+    transition: .3s all ease-in-out;
+}
+
+.cart__summary__button:hover {
+    letter-spacing: 3px;
+}
+
+.cart__summary__button--shippingAndPayment {
+    width: 400px;
 }
 
 .cart__mobileColumn {
@@ -781,6 +813,42 @@ ol {
     justify-content: center;
     align-items: center;
 }
+
+/* React modal - animation */
+.smallModal {
+    transition: .4s all;
+}
+
+.smallModal .ReactModal__Overlay {
+    opacity: 0;
+    transform: translateX(-100vw);
+    transition: all 500ms ease-in-out;
+}
+
+.smallModal .ReactModal__Content {
+    transform: scale(0);
+    transition: all 500ms ease-in-out;
+    transition-delay: 500ms !important;
+}
+
+.smallModal .ReactModal__Overlay--after-open {
+    opacity: 1;
+    transform: translateX(0px);
+    transition: all 500ms ease-in-out;
+}
+
+.smallModal .ReactModal__Overlay--before-close {
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: all 500ms ease-in-out;
+}
+
+.smallModal .ReactModal__Content--after-open {
+    transform: scale(1);
+    transition: all 500ms ease-in-out;
+}
+
+/* End */
 
 .smallModal .ReactModal__Content {
     width: 500px;
@@ -817,6 +885,12 @@ ol {
     border: 1px solid #000;
     text-transform: uppercase;
     padding: 8px 15px;
+    transition: .4s all ease-in-out;
+}
+
+.modal__btn:hover {
+    background: #000;
+    color: #fff;
 }
 
 /* Shipping and payment */
@@ -824,6 +898,10 @@ ol {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+}
+
+.shippingAndPayment--error {
+    border: 2px solid red !important;
 }
 
 .shippingAndPayment__section {
@@ -875,6 +953,7 @@ ol {
     height: 50px;
     padding: 5px 10px;
     margin: 10px 0;
+    transition: .3s all ease-in-out;
 }
 
 .shippingAndPayment__textArea {
@@ -938,3 +1017,5 @@ ol {
     align-items: center;
     flex-direction: column;
 }
+
+/* Button animations */

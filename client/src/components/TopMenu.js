@@ -46,7 +46,7 @@ const TopMenu = () => {
         <menu className="topMenu__menu d-desktop">
             <ul className="topMenu__list">
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
+                    <a className="topMenu__list__item__link" href="/">
                         Strona główna
                     </a>
                 </li>

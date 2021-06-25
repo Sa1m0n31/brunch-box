@@ -257,6 +257,14 @@ ul {
     text-transform: uppercase;
 }
 
+.status--negative {
+    background: #FFBCBC;
+    border: 1px solid #941212;
+    color: #941212;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
 .panelContent__column__btn {
     background: transparent;
     border: none;
@@ -907,4 +915,41 @@ input[type=file] {
 
 .allergiesChecked {
     opacity: 1;
+}
+
+/* Start panel page */
+.panelContent__startContent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 100px;
+    height: 60vh;
+}
+
+.panelContent__start__item {
+    border: 2px solid #F1F1F1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 29%;
+    padding: 70px 30px;
+    margin-bottom: 30px;
+    opacity: .7;
+    transition: .3s all;
+}
+
+.panelContent__start__item:hover {
+    opacity: 1;
+}
+
+.panelContent__start__item__img {
+    width: 90px;
+    height: auto;
+}
+
+.panelContent__start__item__header {
+    margin-top: 25px;
 }

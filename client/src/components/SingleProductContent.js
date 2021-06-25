@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
 
-import productImg from '../static/img/product-image.png'
+import productImg from '../static/img/food.jpg'
 import cartImg from '../static/img/cartIcon.png'
 
 import { editCart } from "../helpers/editCart";
@@ -136,8 +136,15 @@ const SingleProductContent = () => {
 
         <section className="singleProduct__left">
             <button className="singleProduct__mainImage" onClick={() => setGalleryOpen(true)}>
-                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + product.file_path} alt="produkt" />
+                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + product?.file_path} alt="produkt" />
             </button>
+
+            <section className="singleProduct__images">
+                <img className="singleProduct__img" src={productImg} alt="produkt" onClick={() => setGalleryOpen(true)} />
+                <img className="singleProduct__img" src={productImg} alt="produkt" onClick={() => setGalleryOpen(true)} />
+                <img className="singleProduct__img" src={productImg} alt="produkt" onClick={() => setGalleryOpen(true)} />
+            </section>
+
         </section>
         <section className="singleProduct__right">
             <section className="singleProduct__right__header">

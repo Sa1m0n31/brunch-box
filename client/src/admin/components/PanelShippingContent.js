@@ -69,7 +69,9 @@ const PanelShippingContent = () => {
     return <main className="panelContent">
 
         <Modal
-            isOpen={modal}>
+            isOpen={modal}
+            portalClassName="panelModal"
+        >
 
             {!deleted ? <>
                 <h2 className="modalQuestion">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {calculateCartSum, getOrderDetails} from "../helpers/orderFunctions";
+import {deleteOrderById, getOrderDetails} from "../helpers/orderFunctions";
 
 import { useLocation } from "react-router";
 import x from '../static/img/close.png'
@@ -29,7 +29,8 @@ const OrderDetailsContent = () => {
         getOrderDetails(id)
             .then(res => {
                setCart(res.data.result);
-               setSum(calculateCartSum(res.data.result));
+               //setSum(calculateCartSum(res.data.result));
+                calculateCartSum();
             });
 
     }, []);
@@ -43,10 +44,10 @@ const OrderDetailsContent = () => {
     }
 
     const deleteProduct = () => {
-        deleteProductById(id)
+        deleteOrderById(id)
             .then(res => {
                 if(res.data.result === 1) {
-                    setDeleteMsg("Produkt został usunięty");
+                    setDeleteMsg("Zamówienie zostało usnięte");
                     setTimeout(() => {
                         window.location = "/panel";
                     }, 2000);
@@ -57,14 +58,34 @@ const OrderDetailsContent = () => {
             });
     }
 
+    const getCartItemPrice = (item) => {
+        const size = item.size;
+        const option = item.option;
+        if((size === "M")&&(option === "Mięsna")) return item.price_m_meat;
+        if((size === "L")&&(option === "Mięsna")) return item.price_l_meat;
+        if((size === "M")&&(option === "Wegetariańska")) return item.price_m_vege;
+        if((size === "L")&&(option === "Wegetariańska")) return item.price_l_vege;
+    }
+
+    const calculateCartSum = () => {
+        let sum = 0;
+        const cartPrices = document.querySelectorAll(".panelPrice");
+        cartPrices?.forEach(item => {
+           sum += parseInt(item.textContent.replace("PLN", ""));
+        });
+        setSum(sum);
+    }
+
     return <main className="panelContent">
 
         <Modal
-            isOpen={modal}>
+            isOpen={modal}
+            portalClassName="panelModal"
+        >
 
             {deleteMsg === "" ? <>
                 <h2 className="modalQuestion">
-                    Czy na pewno chcesz usunąć ten produkt?
+                    Czy na pewno chcesz usunąć to zamówienie?
                 </h2>
 
                 <section className="modalQuestion__buttons">
@@ -112,12 +133,13 @@ const OrderDetailsContent = () => {
                 </header>
                 <main className="panelContent__cart__content">
                     {cart.map((item, index) => {
+                        console.log(item);
                         return <section key={index} className="panelContent__cart__item">
                             <section className="panelContent__cart__column">
                                 <span>{item.name}</span>
                             </section>
-                            <section className="panelContent__cart__column">
-                                <span>{item.price_m} PLN</span>
+                            <section className="panelContent__cart__column panelPrice">
+                                <span>{getCartItemPrice(item)} PLN</span>
                             </section>
                             <section className="panelContent__cart__column">
                                 <span>{item.quantity} szt.</span>
@@ -133,7 +155,7 @@ const OrderDetailsContent = () => {
 
                     <section className="panelContent__cart__sum">
                         <h3>
-                            Suma koszyka: {sum} PLN
+                            Suma koszyka: {sum !== 0 ? sum : ""} PLN
                         </h3>
                     </section>
                 </main>
@@ -166,7 +188,7 @@ const OrderDetailsContent = () => {
                     <section className="panelContent__orderStatus">
                         <h2 className="panelContent__orderStatus__header">
                             Opłacone:
-                            <img className="panelContent__orderStatus__img" src={cart[0].payment_status === "Opłacone" ? tick : x} alt="oplacone" />
+                            <img className="panelContent__orderStatus__img" src={cart[0].payment_status?.toLowerCase() === "opłacone" ? tick : x} alt="oplacone" />
                         </h2>
                     </section>
                 </section>

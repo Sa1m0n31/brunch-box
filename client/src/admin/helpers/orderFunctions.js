@@ -21,4 +21,8 @@ const calculateCartSum = (cart) => {
     return sum;
 }
 
-export { getAllOrders, getOrderDetails, calculateCartSum };
+const deleteOrderById = (id) => {
+    return axios.post(`${API_URL}/order/delete`, { id });
+}
+
+export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById };
