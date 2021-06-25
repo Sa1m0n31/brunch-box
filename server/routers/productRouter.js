@@ -85,8 +85,8 @@ con.connect(err => {
                   const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)';
                   con.query(query, values, (err, res) => {
                      console.log(err);
-                     if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
-                     else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+                     if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
+                     else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
                   });
                });
             });
@@ -100,8 +100,8 @@ con.connect(err => {
             con.query(query, values, (err, res) => {
                let result = 0;
                if(res) result = 1;
-               if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
-               else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+               if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
+               else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
             });
          }
    });
@@ -138,8 +138,8 @@ con.connect(err => {
       con.query(query, values, (err, res) => {
          console.log(err);
          console.log(err);
-         if(res) response.redirect("http://localhost:3000/panel/dodaj-produkt?add=1");
-         else response.redirect("http://localhost:3000/panel/dodaj-produkt?add=0");
+         if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
+         else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
       });
 
       /* Get needed data if product exists - image and date */
@@ -185,6 +185,8 @@ con.connect(err => {
       'LEFT OUTER JOIN images i ON p.main_image = i.id ORDER BY p.date DESC';
 
       con.query(query, (err, res) => {
+         console.log(err);
+         console.log(res);
          if(res) {
             response.send({
                result: res

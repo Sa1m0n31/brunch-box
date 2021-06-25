@@ -183,7 +183,7 @@ const AddProductContent = () => {
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
                                onSubmit={(e) => { handleSubmit(e) }}
-                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
+                               action={update ? "http://brunchbox.skylo-test3.pl/product/update-product" : "http://brunchbox.skylo-test3.pl/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">

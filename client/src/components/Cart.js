@@ -131,7 +131,7 @@ const Cart = () => {
                             </h3>
                             <section className="cart__item__value cart__item__value--flex">
                                 <button className="cart__item__value cart__item__value--button">
-                                    <a href={"http://localhost:3000/produkt/" + convertToURL(cartProducts[index]?.name)}>
+                                    <a href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name)}>
                                         <img className="cart__item__icon" src={write} alt="wroc-do-produktu"/>
                                     </a>
                                 </button>

@@ -113,7 +113,7 @@ const PanelCategoriesContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form"
                                          method="POST"
-                                         action="http://localhost:5000/category/add"
+                                         action="http://brunchbox.skylo-test3.pl/category/add"
                                          onSubmit={(e) => { handleSubmit(e) }}
                                          encType="multipart/form-data"
                 >

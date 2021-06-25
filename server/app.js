@@ -10,6 +10,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+/* Serve static frontend */
+app.use(express.static(path.join(__dirname, '../client/build')));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
 /* Routers */
 const authRouter = require("./routers/authRouter");
 const userRouter = require("./routers/userRouter");
@@ -30,8 +36,6 @@ app.use("/product", productRouter);
 app.use("/order", orderRouter);
 app.use("/image", imageRouter);
 app.use("/payment", paymentRouter);
-
-app.use(express.static(path.join(__dirname, 'media/categories')));
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

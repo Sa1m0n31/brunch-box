@@ -60,7 +60,7 @@ const ShippingAndPayment = () => {
         if(formValidate) {
             setFormValidate(false);
             /* Add user */
-            axios.post("http://localhost:5000/auth/add-user", {
+            axios.post("http://brunchbox.skylo-test3.pl/auth/add-user", {
                 firstName: formik.values.firstName,
                 lastName: formik.values.lastName,
                 email: formik.values.email,
@@ -70,7 +70,7 @@ const ShippingAndPayment = () => {
                     let insertedUserId = res.data.result;
 
                     /* Add order */
-                    axios.post("http://localhost:5000/order/add", {
+                    axios.post("http://brunchbox.skylo-test3.pl/order/add", {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: formik.values.city,
@@ -89,7 +89,7 @@ const ShippingAndPayment = () => {
                             const cart = JSON.parse(localStorage.getItem('sec-cart'));
                             cart.forEach(item => {
                                 console.log(item);
-                                axios.post("http://localhost:5000/order/add-sell", {
+                                axios.post("http://brunchbox.skylo-test3.pl/order/add-sell", {
                                     orderId,
                                     productId: item.id,
                                     option: item.option,
@@ -99,7 +99,7 @@ const ShippingAndPayment = () => {
                                     .then(res => {
                                         let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
 
-                                        axios.post("http://localhost:5000/payment/payment", {
+                                        axios.post("http://brunchbox.skylo-test3.pl/payment/payment", {
                                             amount: parseInt(localStorage.getItem('sec-amount')),
                                             email: formik.values.email
                                         })

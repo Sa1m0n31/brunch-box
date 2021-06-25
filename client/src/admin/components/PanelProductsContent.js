@@ -102,7 +102,7 @@ const PanelProductsContent = () => {
                 </section>
             </header>
             <main className="panelContent__content">
-                {products.map((item, index) => (
+                {products?.map((item, index) => (
                     <section className="panelContent__item productItem">
                         <section className="panelContent__column">
                             {item.image ? <img className="panelContent__productImg" src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt" /> : ""}

@@ -19,7 +19,7 @@ con.connect((err) => {
         if(price === "") price = 0;
 
         if(name === "") {
-            response.redirect("http://localhost:3000/panel/wysylka?added=0");
+            response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=0");
             return 0;
         }
 
@@ -39,8 +39,8 @@ con.connect((err) => {
                     const query = 'INSERT INTO shipping_methods VALUES (NULL, ?, ?, ?, ?)';
 
                     con.query(query, values, (err, res) => {
-                        if(!err) response.redirect("http://localhost:3000/panel/wysylka?added=1");
-                        else response.redirect("http://localhost:3000/panel/wysylka?added=-1")
+                        if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=1");
+                        else response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=-1")
                     });
                 });
             });
@@ -51,8 +51,8 @@ con.connect((err) => {
             const values = [name, price, deliveryTime];
             const query = 'INSERT INTO shipping_methods VALUES (NULL, ?, ?, ?, NULL)';
             con.query(query, values, (err, res) => {
-                if(!err) response.redirect("http://localhost:3000/panel/wysylka?added=1");
-                else response.redirect("http://localhost:3000/panel/wysylka?added=-1");
+                if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=1");
+                else response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=-1");
             })
         }
     });

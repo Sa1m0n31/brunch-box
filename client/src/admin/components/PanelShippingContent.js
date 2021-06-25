@@ -108,7 +108,7 @@ const PanelShippingContent = () => {
 
                 {addedMsg === "" ?  <form className="panelContent__frame__form"
                                           method="POST"
-                                          action="http://localhost:5000/shipping/add"
+                                          action="http://brunchbox.skylo-test3.pl/shipping/add"
                                           encType="multipart/form-data"
                                           onSubmit={(e) => { handleSubmit(e) }}
                 >
