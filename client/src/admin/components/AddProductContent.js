@@ -183,7 +183,7 @@ const AddProductContent = () => {
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
                                onSubmit={(e) => { handleSubmit(e) }}
-                               action={update ? "http://brunchbox.skylo-test3.pl/product/update-product" : "http://brunchbox.skylo-test3.pl/product/add-product"}
+                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -277,6 +277,28 @@ const AddProductContent = () => {
                         onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
                         onChange={newContent => { setLongDescription(newContent) }}
                     />
+                </label>
+
+
+                <label className="fileInputLabel">
+                    <span>Galeria - 1</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="gallery1" />
+                </label>
+
+                <label className="fileInputLabel">
+                    <span>Galeria - 2</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="gallery2" />
+                </label>
+
+                <label className="fileInputLabel">
+                    <span>Galeria - 3</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="gallery3" />
                 </label>
 
             </section>

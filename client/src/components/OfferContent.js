@@ -61,8 +61,10 @@ const OfferContent = ({type}) => {
                             <h3 className="offerContent__item__header">
                                 {item.product_name} ({item.bracket_name})
                             </h3>
-                            <img className="offerContent__item__img"
-                                 src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt"/>
+                            <section className="offerContent__imgWrapper">
+                                <img className="offerContent__item__img"
+                                     src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt"/>
+                            </section>
                         </div>
                         <button className="offerContent__item__btn">
                             Więcej informacji

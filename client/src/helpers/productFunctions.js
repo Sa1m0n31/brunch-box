@@ -19,4 +19,8 @@ const getProductAllergens = (id) => {
     return axios.post(`${API_URL}/product/single-allergens`, { id });
 }
 
-export { getAllProducts, getSingleProduct, getProductByName, getProductAllergens };
+const getImageById = (id) => {
+    return axios.post(`${API_URL}/product/get-image`, { id });
+}
+
+export { getAllProducts, getSingleProduct, getProductByName, getProductAllergens, getImageById };

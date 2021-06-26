@@ -111,7 +111,7 @@ const TopMenu = () => {
 
             <ul className="mobileMenu__list" ref={mobileMenuList}>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
+                    <a className="topMenu__list__item__link" href="/">
                         Strona główna
                     </a>
                 </li>

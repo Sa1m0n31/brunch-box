@@ -14,7 +14,7 @@ con.connect(err => {
         if(parentId === "0") parentId = null;
 
         if(name === "") {
-            response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=0");
+            response.redirect("http://localhost:5000/panel/kategorie?added=0");
             return 0;
         }
 
@@ -32,8 +32,8 @@ con.connect(err => {
                     const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?)';
 
                     con.query(query, values, (err, res) => {
-                        if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=1");
-                        else response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
+                        if(!err) response.redirect("http://localhost:5000/panel/kategorie?added=1");
+                        else response.redirect("http://localhost:5000/panel/kategorie?added=-1")
                     });
                 });
             });
@@ -44,8 +44,8 @@ con.connect(err => {
             const query = 'INSERT INTO categories VALUES (NULL, ?, ?, NULL)';
 
             con.query(query, values, (err, res) => {
-                if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=1");
-                else response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=-1");
+                if(!err) response.redirect("http://localhost:5000/panel/kategorie?added=1");
+                else response.redirect("http://localhost:5000/panel/kategorie?added=-1");
             });
         }
     });

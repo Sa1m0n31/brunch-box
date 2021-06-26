@@ -13,7 +13,7 @@ import tickImg from '../static/img/tick-sign.svg'
 import arrowDown from '../static/img/caret_down.svg'
 
 import { useLocation } from "react-router";
-import {getProductAllergens, getProductByName, getSingleProduct} from "../helpers/productFunctions";
+import {getImageById, getProductAllergens, getProductByName, getSingleProduct} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
 import {allergensImg, allergensList} from "../helpers/allergens";
 
@@ -28,15 +28,20 @@ const SingleProductContent = () => {
     const [currentDesc, setCurrentDesc] = useState("");
     const [allergens, setAllergens] = useState([]);
 
+    const [mainImage, setMainImage] = useState(null);
+    const [gallery1, setGallery1] = useState(null);
+    const [gallery2, setGallery2] = useState(null);
+    const [gallery3, setGallery3] = useState(null);
+
     const [modal, setModal] = useState(false);
 
     const location = useLocation();
 
     const images = [
-        productImg,
-        productImg,
-        productImg,
-        productImg
+        settings.API_URL + "/image?url=/media/" + mainImage,
+        settings.API_URL + "/image?url=/media/" + gallery1,
+        settings.API_URL + "/image?url=/media/" + gallery2,
+        settings.API_URL + "/image?url=/media/" + gallery3
     ];
 
     const getProductIdByURL = (name) => {
@@ -47,12 +52,27 @@ const SingleProductContent = () => {
     useEffect(() => {
         let id;
         if(location.state) {
+            console.log("location");
             id = location.state.id;
             getSingleProduct(id)
                 .then(res => {
                     setProduct(res.data.result[0]);
+                    setMainImage(res.data.result[0].file_path);
                     setPrice(res.data.result[0].price_m_meat);
                     setCurrentDesc(res.data.result[0].meat_description);
+                    /* Get gallery */
+                    getImageById(res.data.result[0].gallery_1)
+                        .then(res => {
+                            setGallery1(res.data.result.file_path);
+                        });
+                    getImageById(res.data.result[0].gallery_2)
+                        .then(res => {
+                            setGallery2(res.data.result.file_path);
+                        });
+                    getImageById(res.data.result[0].gallery_3)
+                        .then(res => {
+                            setGallery3(res.data.result.file_path);
+                        });
                 });
             getProductAllergens(id)
                 .then(res => {
@@ -61,6 +81,7 @@ const SingleProductContent = () => {
                 });
         }
         else {
+            console.log("else");
             getProductIdByURL(window.location.pathname.split("/"))
                 .then(res => {
                     id = res.data.result[0].id
@@ -69,8 +90,15 @@ const SingleProductContent = () => {
                     getSingleProduct(id)
                         .then(res => {
                             setProduct(res.data.result[0]);
+                            setMainImage(res.data.result[0].file_path);
                             setPrice(res.data.result[0].price_m_meat);
                             setCurrentDesc(res.data.result[0].meat_description);
+                            /* Get gallery */
+                            getImageById(res.data.result[0].gallery_1)
+                                .then(res => {
+                                    console.log(res.data.result);
+                                    setGallery1(res.data.result.file_path);
+                                });
                         });
                     getProductAllergens(id)
                         .then(res => {
@@ -135,14 +163,14 @@ const SingleProductContent = () => {
 
 
         <section className="singleProduct__left">
-            <button className="singleProduct__mainImage" onClick={() => setGalleryOpen(true)}>
+            <button className="singleProduct__mainImage" onClick={() => { setPhotoIndex(0); setGalleryOpen(true); }}>
                 <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + product?.file_path} alt="produkt" />
             </button>
 
             <section className="singleProduct__images">
-                <img className="singleProduct__img" src={productImg} alt="produkt" onClick={() => setGalleryOpen(true)} />
-                <img className="singleProduct__img" src={productImg} alt="produkt" onClick={() => setGalleryOpen(true)} />
-                <img className="singleProduct__img" src={productImg} alt="produkt" onClick={() => setGalleryOpen(true)} />
+                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + gallery1} alt="produkt" onClick={() => { setPhotoIndex(1); setGalleryOpen(true); }} />
+                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + gallery2} alt="produkt" onClick={() => { setPhotoIndex(2); setGalleryOpen(true); }} />
+                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + gallery3} alt="produkt" onClick={() => { setPhotoIndex(3); setGalleryOpen(true); }} />
             </section>
 
         </section>

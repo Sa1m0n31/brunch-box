@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const con = require("../databaseConnection");
 const path = require("path");
+const crypto = require("crypto");
 const fs = require("fs");
 
 const upload = multer({ dest: 'uploads/' });
@@ -40,117 +41,217 @@ con.connect(err => {
       const values = [id];
       const query = 'DELETE FROM allergens WHERE product_id = ?';
       con.query(query, values, (err, res) => {
-         allergens.forEach(item => {
-            const values = [id, item];
-            const query = 'INSERT INTO allergens VALUES (NULL, ?, ?)';
-            con.query(query, values, (err, res) => {
+         if(allergens) {
+            allergens.forEach(item => {
+               const values = [id, item];
+               const query = 'INSERT INTO allergens VALUES (NULL, ?, ?)';
+               con.query(query, values, (err, res) => {
+               });
             });
-         });
+         }
          response.send({ result: 1 });
       });
    });
 
    /* ADD PRODUCT */
-   router.post("/add-product", upload.single("mainImage"), (request, response) => {
-      let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat } = request.body;
-      if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
-      else priceL_meat = null;
-      if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
-      else priceM_meat = null;
-      if(priceL_vege !== '') priceL_vege = parseFloat(priceL_vege);
-      else priceL_vege = null;
-      if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
-      else priceM_vege = null;
+   router.post("/add-product", (request, response) => {
+      let filenames = [];
+      let filesId = [];
 
-      m = m === 'true' || m == 1;
-      l = l === 'true' || l == 1;
-      vegan = vegan === 'true' || vegan == 1;
-      meat = meat === 'true' || meat == 1;
+      /* Add images */
+      const storage = multer.diskStorage({
+         destination: "media/products/",
+         filename: function(req, file, cb){
+            const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+            filenames.push(fName);
+            cb(null, fName);
+         }
+      });
 
-      categoryId = parseInt(categoryId);
+      const upload = multer({
+         storage: storage
+      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}]);
 
-         if(request.file) {
-            /* Add image to filesystem */
-            const tempPath = request.file.path;
-            const targetPath = path.join(__dirname, `./../media/products/${request.file.originalname}`);
+      upload(request, response, (err, res) => {
+         if (err) throw err;
 
-            fs.rename(tempPath, targetPath, err => {
-               /* Add image to database */
-               const values = [`products/${request.file.originalname}`];
+         filenames.sort().reverse(); // First image - main image
+         /* Add images to database */
+         if(!filenames.length) addProduct();
+         else {
+            filenames.forEach((item, index, array) => {
+               const values = ["products/" + item];
                const query = 'INSERT INTO images VALUES (NULL, ?)';
                con.query(query, values, (err, res) => {
-                  const values = [id, name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
-                     shortDescription, longDescription, meatDescription, vegeDescription,
-                     res.insertId, categoryId, bracketName, vegan, meat, m, l];
-                  const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)';
-                  con.query(query, values, (err, res) => {
-                     console.log(err);
-                     if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-                     else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
-                  });
+                  filesId.push(res.insertId);
+                  if(index === array.length-1) addProduct();
                });
             });
          }
-         else {
-            /* Add product without main image */
+      });
+
+      /* Add product */
+      const addProduct = () => {
+         /* Fill images array */
+         const len = filesId.length;
+         for(let i=len; i<4; i++) filesId.push(null);
+
+         /* Add product to database */
+         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat } = request.body;
+         if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
+         else priceL_meat = null;
+         if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
+         else priceM_meat = null;
+         if(priceL_vege !== '') priceL_vege = parseFloat(priceL_vege);
+         else priceL_vege = null;
+         if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
+         else priceM_vege = null;
+
+         m = m === 'true' || m == 1;
+         l = l === 'true' || l == 1;
+         vegan = vegan === 'true' || vegan == 1;
+         meat = meat === 'true' || meat == 1;
+
+         categoryId = parseInt(categoryId);
+         console.log(request.file);
+
+            /* Add image to database */
             const values = [id, name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
                shortDescription, longDescription, meatDescription, vegeDescription,
-               categoryId, bracketName, vegan, meat, m, l];
-            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)';
+               filesId[0], categoryId, bracketName, vegan, meat, m, l, filesId[1], filesId[2], filesId[3]];
+            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)';
             con.query(query, values, (err, res) => {
-               let result = 0;
-               if(res) result = 1;
-               if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-               else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
+               console.log("Error?");
+               console.log(err);
+               if(res) response.redirect("http://localhost:5000/panel/dodaj-produkt?add=1");
+               else response.redirect("http://localhost:5000/panel/dodaj-produkt?add=0");
             });
-         }
+      }
    });
 
    /* UPDATE PRODUCT */
-   router.post("/update-product", upload.single("mainImage"), (request, response) => {
-      let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat } = request.body;
-      if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
-      else priceL_meat = null;
-      if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
-      else priceM_meat = null;
-      if(priceL_vege !== '') priceL_vege = parseFloat(priceL_vege);
-      else priceL_vege = null;
-      if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
-      else priceM_vege = null;
+   router.post("/update-product", (request, response) => {
+      /* Add images */
+      let filenames = [];
+      let filesId = [];
 
-      console.log(request.body);
-
-      m = m === 'true' || m == 1;
-      l = l === 'true' || l == 1;
-      vegan = vegan === 'true' || vegan == 1;
-      meat = meat === 'true' || meat == 1;
-
-      categoryId = parseInt(categoryId);
-
-      /* Add product without main image */
-      const values = [name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
-         shortDescription, longDescription, meatDescription, vegeDescription,
-         categoryId, bracketName, vegan, meat, m, l, id];
-      const query = 'UPDATE products SET name = ?, price_m_meat = ?, price_l_meat = ?, price_m_vege = ?, price_l_vege = ?, ' +
-          'short_description = ?, long_description = ?, meat_description = ?, vege_description = ?, category_id = ?, bracket_name = ?, ' +
-          'vege = ?, meat = ?, m = ?, l = ? ' +
-          'WHERE id = ?';
-      con.query(query, values, (err, res) => {
-         console.log(err);
-         console.log(err);
-         if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-         else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
+      /* Add images */
+      const storage = multer.diskStorage({
+         destination: "media/products/",
+         filename: function(req, file, cb){
+            const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+            filenames.push(fName);
+            cb(null, fName);
+         }
       });
 
-      /* Get needed data if product exists - image and date */
-      // const values1 = [id];
-      // const query1 = 'SELECT main_image, date FROM products WHERE id = ?';
-      // con.query(query1, values1, (err, res) => {
-      //    if(res[0]) {
-      //       date = res[0].date;
-      //       imageId = res[0].main_image;
-      //    }
-      // });
+      const upload = multer({
+         storage: storage
+      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}]);
+
+      upload(request, response, (err, res) => {
+         if(err) throw err;
+
+         filenames.sort().reverse(); // First image - main image
+         /* Add images to database */
+         if(!filenames.length) updateProduct();
+         else {
+            filenames.forEach((item, index, array) => {
+               const values = ["products/" + item];
+               const query = 'INSERT INTO images VALUES (NULL, ?)';
+               con.query(query, values, (err, res) => {
+                  filesId.push(res.insertId);
+                  if(index === array.length-1) updateProduct();
+               });
+            });
+         }
+      });
+
+      const updateProduct = () => {
+         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat } = request.body;
+         if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
+         else priceL_meat = null;
+         if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
+         else priceM_meat = null;
+         if(priceL_vege !== '') priceL_vege = parseFloat(priceL_vege);
+         else priceL_vege = null;
+         if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
+         else priceM_vege = null;
+
+         m = m === 'true' || m == 1;
+         l = l === 'true' || l == 1;
+         vegan = vegan === 'true' || vegan == 1;
+         meat = meat === 'true' || meat == 1;
+
+         categoryId = parseInt(categoryId);
+
+         /* Add product without main image */
+         const values = [name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
+            shortDescription, longDescription, meatDescription, vegeDescription,
+            categoryId, bracketName, vegan, meat, m, l, id];
+         const query = 'UPDATE products SET name = ?, price_m_meat = ?, price_l_meat = ?, price_m_vege = ?, price_l_vege = ?, ' +
+             'short_description = ?, long_description = ?, meat_description = ?, vege_description = ?, category_id = ?, bracket_name = ?, ' +
+             'vege = ?, meat = ?, m = ?, l = ? ' +
+             'WHERE id = ?';
+         con.query(query, values, (err, res) => {
+            console.log(filenames);
+            /* Update images id in product row */
+            const mainImageIndex = filenames.findIndex((item) => {
+               if(item) {
+                  return item.search(/mainImage.*/g, "i") !== -1
+               }
+               else return false;
+            });
+            if(mainImageIndex !== -1) {
+               const values = [filesId[mainImageIndex], id];
+               const query = 'UPDATE products SET main_image = ? WHERE id = ?';
+               con.query(query, values);
+            }
+
+            const gallery1Index = filenames.findIndex((item) => {
+               if(item) {
+                  return item.search(/gallery1.*/g, "i") !== -1
+               }
+               else return false;
+            });
+            if(gallery1Index !== -1) {
+               const values = [filesId[gallery1Index], id];
+               const query = 'UPDATE products SET gallery_1 = ? WHERE id = ?';
+               con.query(query, values);
+            }
+
+            const gallery2Index = filenames.findIndex((item) => {
+               if(item) {
+                  return item.search(/gallery2.*/g, "i") !== -1
+               }
+               else return false;
+            });
+            if(gallery2Index !== -1) {
+               console.log("Gallery 2 idnex:");
+               console.log(gallery2Index);
+               const values = [filesId[gallery2Index], id];
+               const query = 'UPDATE products SET gallery_2 = ? WHERE id = ?';
+               con.query(query, values);
+            }
+
+            const gallery3Index = filenames.findIndex((item) => {
+               if(item) {
+                  return item.search(/gallery3.*/g, "i") !== -1
+               }
+               else return false;
+            });
+            if(gallery3Index !== -1) {
+               console.log("Gallery 3 idnex:");
+               console.log(gallery3Index);
+               const values = [filesId[gallery3Index], id];
+               const query = 'UPDATE products SET gallery_3 = ? WHERE id = ?';
+               con.query(query, values);
+            }
+
+            if(res) response.redirect("http://localhost:5000/panel/dodaj-produkt?add=1");
+            else response.redirect("http://localhost:5000/panel/dodaj-produkt?add=0");
+         });
+      }
    });
 
    /* REMOVE PRODUCT */
@@ -216,13 +317,33 @@ con.connect(err => {
       });
    });
 
+   /* GET IMAGE BY ID */
+   router.post("/get-image", (request, response) => {
+      const { id } = request.body;
+      const values = [id];
+      const query = 'SELECT file_path FROM images WHERE id = ?';
+      con.query(query, values, (err, res) => {
+         if(res[0]) {
+            response.send({
+               result: res[0]
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
+      });
+   })
+
    /* GET SINGLE PRODUCT DETAILS (CLIENT) */
    router.post("/single-product", (request, response) => {
       const { id } = request.body;
       console.log(request.body);
       const values = [id];
       const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
-          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, p.m, p.l, i.file_path as file_path ' +
+          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, ' +
+          'p.m, p.l, i.file_path as file_path, p.gallery_1, p.gallery_2, p.gallery_3 ' +
           'FROM products p JOIN images i ON i.id = p.main_image WHERE p.id = ?';
       con.query(query, values, (err, res) => {
          if(res) {
@@ -245,7 +366,7 @@ con.connect(err => {
    router.post("/single-allergens", (request, response) => {
       const { id } = request.body;
       const values = [id];
-      const query = 'SELECT a.allergen FROM products p JOIN allergens a ON p.id = a.product_id'
+      const query = 'SELECT a.allergen FROM products p JOIN allergens a ON p.id = a.product_id WHERE p.id = ?'
       con.query(query, values, (err, res) => {
          if(!err) {
             response.send({

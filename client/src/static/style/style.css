@@ -399,6 +399,13 @@ ol {
     position: relative;
 }
 
+.offerContent__imgWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+}
+
 .offerContent__item__img {
     width: 100%;
     height: auto;
@@ -864,6 +871,7 @@ ol {
 .modalHeader {
     font-size: 24px;
     margin: 60px 0 30px;
+    text-align: center;
 }
 
 .modalTick {
@@ -1030,7 +1038,3 @@ ol {
 }
 
 /* Button animations */
-
-h1 {
-    text-align: center;
-}
