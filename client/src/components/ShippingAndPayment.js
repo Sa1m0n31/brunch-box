@@ -2,15 +2,55 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
+import {getProductById} from "../helpers/productFunctions";
 
 const ShippingAndPayment = () => {
     const [msg, setMsg] = useState("");
+    const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
     const [amount, setAmount] = useState(parseInt(localStorage.getItem('sec-amount')));
     const [ribbon, setRibbon] = useState(false);
+    const [ribbons, setRibbons] = useState([{
+        ribbon: false,
+        text: "",
+        sell: 0
+    }]);
     const [formValidate, setFormValidate] = useState(false);
+    const [cartNames, setCartNames] = useState([]);
+
+    let k = -1;
+
+    const fillRibbonsArray = () => {
+        let arr = [];
+        cart.forEach((item, index, array) => {
+            for(let i=0; i<item.quantity; i++) {
+                arr.push({
+                    ribbon: false,
+                    text: "",
+                    sell: index
+                });
+            }
+            if(index === array.length-1) {
+                setRibbons(arr);
+            }
+        });
+    }
 
     useEffect(() => {
         if(!amount) window.location = "/";
+
+        /* Get cart products names */
+        cart.forEach((item, index, array) => {
+            getProductById(item.id)
+                .then(res => {
+                    if(res.data.result) {
+                        let arr = cartNames;
+                        cartNames.push(res.data.result);
+                        setCartNames(arr);
+                    }
+                });
+            if(index === cart.length-1) fillRibbonsArray();
+        });
+
     }, []);
 
     const validationSchema = Yup.object({
@@ -79,16 +119,17 @@ const ShippingAndPayment = () => {
                         flat: formik.values.flat,
                         postalCode: formik.values.postalCode,
                         user: insertedUserId,
-                        comment: formik.values.comment,
-                        ribbon: formik.values.ribbon
+                        comment: formik.values.comment
                     })
                         .then(res => {
                             const orderId = res.data.result;
 
-                            /* Add sells */
+                            console.log("START AFTER ADD ORDER");
+
+                            /* Add sells and ribbons */
                             const cart = JSON.parse(localStorage.getItem('sec-cart'));
-                            cart.forEach(item => {
-                                console.log(item);
+                            cart.forEach((item, cartIndex) => {
+                                /* Add sells */
                                 axios.post("http://localhost:5000/order/add-sell", {
                                     orderId,
                                     productId: item.id,
@@ -97,22 +138,37 @@ const ShippingAndPayment = () => {
                                     size: item.size
                                 })
                                     .then(res => {
-                                        let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+                                        /* Add ribbons */
+                                        const insertedId = res.data.result;
+                                        ribbons.forEach((item, index) => {
+                                            if((item.ribbon)&&(item.sell === cartIndex)) {
+                                                axios.post("http://localhost:5000/order/add-ribbon", {
+                                                    sellId: insertedId,
+                                                    caption: item.text
+                                                })
+                                                    .then((res) => {
 
-                                        axios.post("http://localhost:5000/payment/payment", {
-                                            amount: parseInt(localStorage.getItem('sec-amount')),
-                                            email: formik.values.email
-                                        })
-                                            .then(res => {
-                                                /* Remove cart from local storage */
-                                                localStorage.removeItem('sec-cart');
-                                                localStorage.removeItem('sec-amount');
-
-                                                const token = res.data.result;
-                                                window.location.href = `${paymentUri}${token}`;
-                                            });
+                                                    });
+                                            }
+                                        });
                                     });
                             });
+
+                            /* Payment */
+                            let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+
+                            axios.post("http://localhost:5000/payment/payment", {
+                                amount: parseInt(localStorage.getItem('sec-amount')),
+                                email: formik.values.email
+                            })
+                                .then(res => {
+                                    /* Remove cart from local storage */
+                                    localStorage.removeItem('sec-cart');
+                                    localStorage.removeItem('sec-amount');
+
+                                    const token = res.data.result;
+                                    window.location.href = `${paymentUri}${token}`;
+                                });
                         })
                 });
         }
@@ -121,13 +177,40 @@ const ShippingAndPayment = () => {
     const addRibbon = (e) => {
         e.preventDefault();
         if(ribbon) {
-            setAmount(amount-10);
             setRibbon(false);
         }
         else {
-            setAmount(amount+10);
             setRibbon(true);
         }
+    }
+
+    const changeRibbon = (e) => {
+        e.preventDefault();
+        const id = e.target.id;
+        let splittedId = id.split("-");
+        if((id.substr(0, 2) === "id")||(id.substr(0, 2) === "sp")) {
+            let n = parseInt(splittedId[0].substr(2));
+            let ribs = ribbons;
+            if(ribs[n].ribbon) setAmount(amount-10);
+            else setAmount(amount+10);
+            ribs[n] = {
+                ribbon: !ribs[n].ribbon,
+                text: ribs[n].text,
+                sell: ribs[n].sell
+            };
+            setRibbons([...ribs]);
+        }
+        else {
+            let n = parseInt(splittedId[0].substr(2));
+            let ribs = ribbons;
+            ribs[n] = {
+                ribbon: ribs[n].ribbon,
+                text: e.target.value,
+                sell: ribs[n].sell
+            }
+            setRibbons([...ribs]);
+        }
+        console.log(ribbons);
     }
 
     return <form className="cartContent" onSubmit={formik.handleSubmit}>
@@ -240,14 +323,29 @@ const ShippingAndPayment = () => {
                     Wstążka z dedykacją (10 PLN)
                 </label>
 
-                <label className={ribbon ? "ribbonDedication" : "o-none"}>
-                    <input className="shippingAndPayment__input"
-                           name="ribbon"
-                           type="text"
-                           value={formik.values.ribbon}
-                           onChange={formik.handleChange}
-                           placeholder="Dedykacja na wstążce" />
-                </label>
+                <section className={ribbon ? "ribbonDedication" : "o-none"}>
+                    {cart.map((item, i) => {
+                        let arr = [];
+                        for(let i=0; i<item.quantity; i++) {
+                            arr.push(0);
+                        }
+                        // setRibbons(ribs);
+                        return arr.map((itemInner, index) => {
+                            k++;
+                            return <label className="ribbonLabel" key={index}>
+                                <input className="shippingAndPayment__input"
+                                       id={"in" + k + "-" + i}
+                                       name="ribbon"
+                                       type="text"
+                                       onChange={(e) => { changeRibbon(e) }}
+                                       placeholder={"Dedykacja na wstążce do pudełka: " + cartNames[i] + "-" + item.size + "-" + item.option} />
+                                <button className="ribbonBtn" id={"id" + k + "-" + i} onClick={(e) => { changeRibbon(e) }}>
+                                    <span id={"sp" + k + "-" + i} className={ribbons[k]?.ribbon === true ? "ribbon" : "d-none"} onClick={() => { console.log("click!"); }}></span>
+                                </button>
+                            </label>
+                        })
+                    })}
+                </section>
             </section>
         </main>
 

@@ -27,23 +27,46 @@ con.connect(err => {
        const values = [orderId, productId, quantity, option, size];
        const query = 'INSERT INTO sells VALUES (NULL, ?, ?, ?, ?, ?)';
        con.query(query, values, (err, res) => {
-          console.log(err);
-          let result = 0;
-          if(res) result = 1;
-          response.send({
-              result
-          });
+          if(res) {
+              response.send({
+                  result: res.insertId
+              });
+          }
+          else {
+              response.send({
+                  result: null
+              });
+          }
+       });
+    });
+
+    /* ADD RIBBON */
+    router.post("/add-ribbon", (request, response) => {
+       let { sellId, caption } = request.body;
+       const values = [sellId, caption];
+       const query = 'INSERT INTO ribbons VALUES (NULL, ?, ?)';
+       con.query(query, values, (err, res) => {
+           console.log(err);
+          if(res) {
+              response.send({
+                  result: 1
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
        });
     });
 
    /* ADD ORDER */
    router.post("/add", (request, response) => {
-       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, ribbon } = request.body;
-       if(ribbon === "") ribbon = null;
+       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment } = request.body;
        if(flat === "") flat = null;
        building = parseInt(building) || 0;
-       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, ribbon];
-       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "opłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?)';
+       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment];
+       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "opłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?)';
        con.query(query, values, (err, res) => {
           let result = 0;
           console.log("Welcome in /order/add");
@@ -118,6 +141,25 @@ con.connect(err => {
                   result: null
               });
           }
+       });
+    });
+
+    /* GET ORDER RIBBONS */
+    router.post("/get-ribbons", (request, response) => {
+       const { id } = request.body;
+       const values = [id];
+       const query = 'SELECT r.caption, p.name, s.option, s.size FROM ribbons r JOIN sells s ON r.sell_id = s.id JOIN products p ON p.id = s.product_id WHERE s.order_id = ?';
+       con.query(query, values, (err, res) => {
+            if(res) {
+                response.send({
+                    result: res
+                });
+            }
+            else {
+                response.send({
+                    result: 0
+                });
+            }
        });
     });
 });

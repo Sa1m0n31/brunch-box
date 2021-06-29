@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './static/style/style.css'
 import './static/style/admin.css'
 import './static/style/mobile.css'
@@ -20,8 +20,23 @@ import PanelSettings from "./admin/pages/PanelSettings";
 import AddProductPage from "./admin/pages/AddProductPage";
 import OrderDetails from "./admin/pages/OrderDetails";
 import TYPage from "./pages/TYPage";
+import {getAllCategories} from "./helpers/categoryFunctions";
+import convertToURL from "./helpers/convertToURL";
+import PanelBlog from "./admin/pages/PanelBlog";
+import AddPostContent from "./admin/components/AddPostContent";
+import AddPostPage from "./admin/pages/AddPostPage";
 
 function App() {
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+       getAllCategories()
+           .then(res => {
+               console.log(res.data.result);
+               setCategories(res.data.result);
+           });
+    }, []);
+
   return (
     <div className="App">
         <Router>
@@ -30,18 +45,19 @@ function App() {
                 <Route exact path="/">
                     <HomePage />
                 </Route>
-                <Route path="/oferta-indywidualna">
-                    <Offer type="indywidualna" />
-                </Route>
-                <Route path="/dla-grup">
-                    <Offer type="grupowa" />
-                </Route>
-                <Route path="/menu-bankietowe">
-                    <Offer type="bankietowa" />
-                </Route>
                 <Route path="/dziekujemy">
                     <TYPage />
                 </Route>
+                <Route path="/oferta">
+                    <Offer type="oferta" />
+                </Route>
+
+                {/* CATEGORIES */}
+                {categories.map((item, index) => {
+                    return <Route key={index} path={"/" + convertToURL(item.name)}>
+                        <Offer type={item.name} />
+                    </Route>
+                })}
 
                 {/* Page for all products */}
                 <Route path="/produkt">
@@ -83,9 +99,15 @@ function App() {
                 <Route path="/panel/ustawienia">
                     <PanelSettings />
                 </Route>
+                <Route path="/panel/blog">
+                    <PanelBlog />
+                </Route>
 
                 <Route path="/panel/dodaj-produkt">
                     <AddProductPage />
+                </Route>
+                <Route path="/panel/dodaj-wpis">
+                    <AddPostPage />
                 </Route>
 
                 {/* Order details */}

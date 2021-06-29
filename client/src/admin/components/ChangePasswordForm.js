@@ -55,7 +55,7 @@ const ChangePasswordForm = () => {
         }
     }, [formMsg]);
 
-    return <form className="panelContent__frame__form" onSubmit={formik.handleSubmit}>
+    return <form className="panelContent__frame__form settingsForm" onSubmit={formik.handleSubmit}>
         {formMsg === "" ? <>
             <label className="addProduct__label--frame addProduct__label--frame--margin">
                 <input className="addProduct__input"

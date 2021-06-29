@@ -118,6 +118,7 @@ ul {
 
 .panelMenu {
     width: 20%;
+    min-width: 200px;
     height: 100vh;
     position: fixed;
     top: 0;
@@ -286,15 +287,22 @@ ul {
 
 .panelContent__filters {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     margin: 50px 0 40px;
+}
+
+.categoryList {
+    margin-top: 50px;
 }
 
 .panelContent__filters__item {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0 10px;
+    margin-bottom: 30px;
 }
 
 .panelContent__filters__label {
@@ -503,11 +511,10 @@ ul {
 
 .addProduct__allergies {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
-    width: 50%;
-    min-width: 400px;
+    width: 100%;
     margin: 10px auto 50px;
 }
 
@@ -538,6 +545,11 @@ input[type=file] {
 
 .invisibleInput {
     visibility: hidden;
+    height: 0;
+}
+
+.addProduct__form--addProduct > .addProduct__form__section > label:first-of-type {
+    margin-top: 0;
 }
 
 .addProduct__form__subsection {
@@ -951,4 +963,34 @@ input[type=file] {
 
 .panelContent__start__item__header {
     margin-top: 25px;
+}
+
+.settingsForm {
+    width: 48%;
+    max-width: 500px;
+}
+
+.panelContent__frame__main {
+    margin-top: 30px;
+}
+
+.panelContent__ribbons__item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+    border: 1px solid black;
+}
+
+.panelContent__ribbons__column {
+    font-weight: 400;
+    font-size: 15px;
+    margin-right: 30px;
+    padding: 10px 0;
+}
+
+.panelContent__ribbons__column--caption {
+    border-left: 1px solid #000;
+    padding-left: 10px;
 }

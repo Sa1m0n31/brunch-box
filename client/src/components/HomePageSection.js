@@ -1,48 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import productImg from '../static/img/pudelko.png'
+import {getAllCategories} from "../helpers/categoryFunctions";
+import settings from "../admin/helpers/settings";
+import convertToURL from "../helpers/convertToURL";
 
 const HomePageSection = () => {
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        getAllCategories()
+            .then((res) => {
+                setCategories(res.data.result);
+            });
+    }, []);
+
     return <section className="homePageSection">
         <span id="zestawy"></span>
         <h2 className="homePageSection__header">
-            Zestawy podstawowe
+            Oferta
         </h2>
         <div className="homePageSection__menu">
-            <div className="homePageSection__item">
-                <img className="homePageSection__img" src={productImg} alt="produkt" />
-                <h3 className="homePageSection__item__header">
-                    Oferta indywidualna
-                </h3>
-                <button className="button button--landing button--homePageSection">
-                    <a className="button--landing__link button--homePageSection__link" href="/oferta-indywidualna">
-                        Więcej informacji
-                    </a>
-                </button>
-            </div>
-
-            <div className="homePageSection__item">
-                <img className="homePageSection__img" src={productImg} alt="produkt" />
-                <h3 className="homePageSection__item__header">
-                    Oferta dla grup
-                </h3>
-                <button className="button button--landing button--homePageSection">
-                    <a className="button--landing__link button--homePageSection__link" href="/dla-grup">
-                        Więcej informacji
-                    </a>
-                </button>
-            </div>
-
-            <div className="homePageSection__item">
-                <img className="homePageSection__img" src={productImg} alt="produkt" />
-                <h3 className="homePageSection__item__header">
-                    Menu bankietowe
-                </h3>
-                <button className="button button--landing button--homePageSection">
-                    <a className="button--landing__link button--homePageSection__link" href="/menu-bankietowe">
-                        Więcej informacji
-                    </a>
-                </button>
-            </div>
+            {categories.map((item, index) => (
+                <section key={index} className="homePageSection__item">
+                    <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="produkt" />
+                    <h3 className="homePageSection__item__header">
+                        {item.name}
+                    </h3>
+                    <button className="button button--landing button--homePageSection">
+                        <a className="button--landing__link button--homePageSection__link" href={convertToURL(item.name)}>
+                            Więcej informacji
+                        </a>
+                    </button>
+                </section>
+            ))}
         </div>
     </section>
 }

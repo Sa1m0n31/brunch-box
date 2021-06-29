@@ -106,7 +106,7 @@ const PanelShippingContent = () => {
                     Dodawanie metody wysyłki
                 </h1>
 
-                {addedMsg === "" ?  <form className="panelContent__frame__form"
+                {addedMsg === "" ?  <form className="panelContent__frame__form categoriesForm"
                                           method="POST"
                                           action="http://localhost:5000/shipping/add"
                                           encType="multipart/form-data"
@@ -147,7 +147,7 @@ const PanelShippingContent = () => {
                 </section>}
             </section>
 
-            <section className="panelContent__frame__section">
+            <section className="panelContent__frame__section categoryList">
                 <h1 className="panelContent__frame__header">
                     Lista metod wysyłki
                 </h1>

@@ -94,7 +94,7 @@ const PanelSettingsContent = () => {
                     <AddAdminForm />
                 </section>
             </section>
-            <section className="panelContent__frame__section">
+            <section className="panelContent__frame__section categoryList">
                 <h1 className="panelContent__frame__header">
                     Lista administratorów
                 </h1>
@@ -124,13 +124,13 @@ const PanelSettingsContent = () => {
                                     Działania
                                 </h4>
                                 <div className="panelContent__column__value">
-                                    <div className="panelContent__column__value panelContent__column__value--buttons">
+                                    {item.username !== localStorage.getItem('sec-username') ? <div className="panelContent__column__value panelContent__column__value--buttons">
                                         <button className="panelContent__column__btn" onClick={() => { openModal(item.id) }}>
                                             <a className="panelContent__column__link" href="#">
                                                 <img className="panelContent__column__icon" src={trash} alt="usuń"/>
                                             </a>
                                         </button>
-                                    </div>
+                                    </div> : ""}
                                 </div>
                             </section>
                         </section>

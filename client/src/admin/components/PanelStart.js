@@ -9,8 +9,6 @@ import home from '../static/img/home_alt_fill.svg'
 import layers from '../static/img/layers_alt.svg'
 import list from '../static/img/list_ul.svg'
 import settingsImg from '../static/img/settings_filled.svg'
-import powerOff from '../static/img/power-off.png'
-import addImg from '../static/img/add.png'
 
 const PanelStart = () => {
     return <main className="panelContent">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {deleteOrderById, getOrderDetails} from "../helpers/orderFunctions";
+import {deleteOrderById, getOrderDetails, getRibbons} from "../helpers/orderFunctions";
 
 import { useLocation } from "react-router";
 import x from '../static/img/close.png'
@@ -9,6 +9,7 @@ import {getDate, getTime} from "../helpers/formatFunctions";
 import Modal from 'react-modal'
 import closeImg from "../static/img/close.png";
 import {deleteProductById} from "../helpers/productFunctions";
+import { calculateCartSum } from "../helpers/orderFunctions";
 
 const OrderDetailsContent = () => {
     const location = useLocation();
@@ -18,6 +19,7 @@ const OrderDetailsContent = () => {
     const [sum, setSum] = useState(0);
     const [modal, setModal] = useState(false);
     const [deleteMsg, setDeleteMsg] = useState("");
+    const [ribbons, setRibbons] = useState([]);
 
     useEffect(() => {
         /* Get order id from url string */
@@ -26,11 +28,19 @@ const OrderDetailsContent = () => {
         if(!id) window.location = "/panel";
         setId(id);
 
+        /* Get order info */
         getOrderDetails(id)
             .then(res => {
+                console.log(res.data.result);
                setCart(res.data.result);
                //setSum(calculateCartSum(res.data.result));
-                calculateCartSum();
+               calculateCartSum();
+            });
+
+        /* Get ribbons info */
+        getRibbons(id)
+            .then(res => {
+                if(res.data.result.length) setRibbons(res.data.result);
             });
 
     }, []);
@@ -68,12 +78,14 @@ const OrderDetailsContent = () => {
     }
 
     const calculateCartSum = () => {
-        let sum = 0;
+        let sum = 0, qt;
         const cartPrices = document.querySelectorAll(".panelPrice");
-        cartPrices?.forEach(item => {
-           sum += parseInt(item.textContent.replace("PLN", ""));
+        const cartQuantities = document.querySelectorAll(".panelQuantity");
+        cartPrices?.forEach((item, index, array) => {
+           qt = parseInt(cartQuantities[index].textContent.split(" ")[0]);
+           sum += parseInt(item.textContent.replace("PLN", "")) * qt;
+           if(index === array.length - 1) setSum(sum);
         });
-        setSum(sum);
     }
 
     return <main className="panelContent">
@@ -133,7 +145,6 @@ const OrderDetailsContent = () => {
                 </header>
                 <main className="panelContent__cart__content">
                     {cart.map((item, index) => {
-                        console.log(item);
                         return <section key={index} className="panelContent__cart__item">
                             <section className="panelContent__cart__column">
                                 <span>{item.name}</span>
@@ -141,7 +152,7 @@ const OrderDetailsContent = () => {
                             <section className="panelContent__cart__column panelPrice">
                                 <span>{getCartItemPrice(item)} PLN</span>
                             </section>
-                            <section className="panelContent__cart__column">
+                            <section className="panelContent__cart__column panelQuantity">
                                 <span>{item.quantity} szt.</span>
                             </section>
                             <section className="panelContent__cart__column">
@@ -153,11 +164,11 @@ const OrderDetailsContent = () => {
                         </section>
                     })}
 
-                    <section className="panelContent__cart__sum">
+                    <div className="panelContent__cart__sum">
                         <h3>
                             Suma koszyka: {sum !== 0 ? sum : ""} PLN
                         </h3>
-                    </section>
+                    </div>
                 </main>
 
             </section>
@@ -218,6 +229,24 @@ const OrderDetailsContent = () => {
                         </p> : ""}
                     </main>
                 </section>
+            </section>
+
+            <section className="marginTop30">
+                <h2 className="panelContent__header--smaller">
+                    Wstążki z dedykacją
+                </h2>
+                <main className="panelContent__frame__main">
+                    {ribbons.map((item, index) => (
+                        <section key={index} className="panelContent__ribbons__item">
+                            <h3 className="panelContent__ribbons__column">
+                                {item.name} - {item.option} - {item.size}
+                            </h3>
+                            <h3 className="panelContent__ribbons__column panelContent__ribbons__column--caption">
+                                <b>Napis:</b> {item.caption}
+                            </h3>
+                        </section>
+                    ))}
+                </main>
             </section>
 
         </section>

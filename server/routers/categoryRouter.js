@@ -2,50 +2,65 @@ const express = require("express");
 const router = express.Router();
 const con = require("../databaseConnection");
 const multer = require("multer");
-const fs = require("fs");
 const path = require("path");
-
-const upload = multer({ dest: 'uploads/' });
 
 con.connect(err => {
     /* ADD CATEGORY */
-    router.post("/add", upload.single('categoryImage'), (request, response) => {
-        let { name, parentId } = request.body;
-        if(parentId === "0") parentId = null;
+    router.post("/add", (request, response) => {
+        /* Add images */
+        let fileId = null;
+        let filename = null;
+        const storage = multer.diskStorage({
+            destination: "media/categories/",
+            filename: function(req, file, cb){
+                const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+                filename = fName;
+                cb(null, fName);
+            }
+        });
 
-        if(name === "") {
-            response.redirect("http://localhost:5000/panel/kategorie?added=0");
-            return 0;
-        }
+        const upload = multer({
+            storage: storage
+        }).fields([{name: "categoryImage"}]);
 
-        if(request.file) {
-            /* Add image to filesystem */
-            const tempPath = request.file.path;
-            const targetPath = path.join(__dirname, `./../media/categories/${request.file.originalname}`);
+        upload(request, response, (err, res) => {
+            if (err) throw err;
 
-            fs.rename(tempPath, targetPath, err => {
-                /* Add image to database */
-                const values = [`categories/${request.file.originalname}`];
-                const query = 'INSERT INTO images VALUES (NULL, ?, NULL)';
+            /* Add images to database */
+            if(!filename) addCategory();
+            else {
+                const values = ["categories/" + filename];
+                const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    const values = [name, parentId, res.insertId];
-                    const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?)';
-
-                    con.query(query, values, (err, res) => {
-                        if(!err) response.redirect("http://localhost:5000/panel/kategorie?added=1");
-                        else response.redirect("http://localhost:5000/panel/kategorie?added=-1")
-                    });
+                    console.log(err);
+                    console.log("images error end");
+                    fileId = res.insertId;
+                    addCategory();
                 });
-            });
-        }
-        else {
-            /* Add only category, without image */
-            const values = [name, parentId];
-            const query = 'INSERT INTO categories VALUES (NULL, ?, ?, NULL)';
+            }
+        });
 
+        const addCategory = () => {
+            let { name, parentId, header, subheader } = request.body;
+            console.log(request.body);
+            if(parentId === "0") parentId = null;
+
+            if(name === "") {
+                response.redirect("http://localhost:3000/panel/kategorie?added=0");
+                return 0;
+            }
+
+            const values = [`categories/${filename}`];
+            const query = 'INSERT INTO images VALUES (NULL, ?)';
             con.query(query, values, (err, res) => {
-                if(!err) response.redirect("http://localhost:5000/panel/kategorie?added=1");
-                else response.redirect("http://localhost:5000/panel/kategorie?added=-1");
+                const values = [name, parentId, fileId, header, subheader];
+                const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?, ?, ?)';
+
+                con.query(query, values, (err, res) => {
+                    console.log(err);
+                    if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=1");
+                    else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
+                });
             });
         }
     });
@@ -70,46 +85,121 @@ con.connect(err => {
 
     /* GET ALL CATEGORIES */
     router.get("/get-all", (request, response) => {
-        con.query('SELECT c1.id as id, c1.name as name, c2.name as parent_name, i.file_path as img_path FROM categories c2 RIGHT OUTER JOIN categories c1 ON c1.parent_id = c2.id LEFT OUTER JOIN images i ON c1.image_id = i.id', (err, res) => {
+        con.query('SELECT c1.id as id, c1.name as name, c1.header as header, c1.subheader as subheader, c2.name as parent_name, i.file_path as img_path FROM categories c2 RIGHT OUTER JOIN categories c1 ON c1.parent_id = c2.id LEFT OUTER JOIN images i ON c1.image_id = i.id', (err, res) => {
            response.send({
                result: res
            });
         });
     });
 
+    /* GET CATEGORY BY NAME */
+    router.post("/get-category-by-name", (request, response) => {
+       const { name } = request.body;
+       const values = [name];
+       const query = 'SELECT * FROM categories WHERE name = ?';
+       con.query(query, values, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
+
+    /* GET CATEGORY DETAILS */
+    router.post("/category-details", (request, response) => {
+       const { id } = request.body;
+       const query = 'SELECT * FROM categories WHERE id = ?';
+       const values = [id];
+       con.query(query, values, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res[0]
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
+
     /* UPDATE CATEGORY */
     router.post("/update", (request, response) => {
-        const { id, name, parentId, imagePath } = request.body;
+        /* Add images */
+        let fileId = null;
+        let filename = null;
+        const storage = multer.diskStorage({
+            destination: "media/categories/",
+            filename: function(req, file, cb){
+                const fName = file.fieldname + Date.now() + path.extname(file.originalname);
+                filename = fName;
+                cb(null, fName);
+            }
+        });
 
-        if(imagePath) {
-            const values = [imagePath];
-            const query = 'INSERT INTO images VALUES (NULL, NULL, ?)';
-            con.query(query, values, (err, res) => {
-                const values = [name, parentId, res.insertId, id];
-                const query = 'UPDATE categories SET name = ?, parent_id = ?, image_id = ? WHERE id = ?';
+        const upload = multer({
+            storage: storage
+        }).fields([{name: "categoryImage"}]);
 
+        upload(request, response, (err, res) => {
+            if (err) throw err;
+
+            /* Add images to database */
+            if(!filename) updateCategory();
+            else {
+                const values = ["categories/" + filename];
+                const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    let result = 0;
-                    if(res) result = 1;
-                    response.send({
-                        result
+                    console.log(err);
+                    console.log("images error end");
+                    fileId = res.insertId;
+                    updateCategory();
+                });
+            }
+        });
+
+        const updateCategory = () => {
+            let { id, name, header, subheader, parentId } = request.body;
+            id = parseInt(id);
+            parentId = parseInt(parentId);
+            if(!parentId) parentId = null;
+            if(filename) {
+                const values = [filename];
+                const query = 'INSERT INTO images VALUES (NULL, ?)';
+                con.query(query, values, (err, res) => {
+                    const values = [name, parentId, res.insertId, header, subheader, id];
+                    const query = 'UPDATE categories SET name = ?, parent_id = ?, image_id = ?, header = ?, subheader = ? WHERE id = ?';
+
+                    con.query(query, values, (err, res) => {
+                        console.log(err);
+                        let result = 0;
+                        if(res) result = 1;
+                        if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=2");
+                        else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
                     });
                 });
-            });
-        }
-        else {
-            const values = [name, parentId, id];
-            const query = 'UPDATE categories SET name = ?, parent_id = ? WHERE id = ?';
+            }
+            else {
+                const values = [name, parentId, header, subheader, id];
+                const query = 'UPDATE categories SET name = ?, parent_id = ?, header = ?, subheader = ? WHERE id = ?';
 
-            con.query(query, values, (err, res) => {
-                let result = 0;
-                if(res) result = 1;
-                response.send({
-                    result
+                con.query(query, values, (err, res) => {
+                    console.log(err);
+                    let result = 0;
+                    if(res) result = 1;
+                    if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=2");
+                    else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
                 });
-            });
+            }
         }
-    })
+    });
 });
 
 module.exports = router;

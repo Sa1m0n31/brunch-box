@@ -25,4 +25,8 @@ const deleteOrderById = (id) => {
     return axios.post(`${API_URL}/order/delete`, { id });
 }
 
-export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById };
+const getRibbons = (id) => {
+    return axios.post(`${API_URL}/order/get-ribbons`, { id });
+}
+
+export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById, getRibbons };

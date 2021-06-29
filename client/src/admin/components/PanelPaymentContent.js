@@ -42,7 +42,7 @@ const PanelPaymentContent = () => {
         }
     });
 
-    return <main className="panelContent">
+    return <main className="panelContent paymentContent">
         <header className="panelContent__header">
             <h1 className="panelContent__header__h">
                 Płatności

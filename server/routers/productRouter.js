@@ -302,6 +302,25 @@ con.connect(err => {
       });
    });
 
+   /* GET SINGLE PRODUCT BY ID */
+   router.post("/get-product-by-id", (request, response) => {
+      const { id } = request.body;
+      const values = [id];
+      const query = 'SELECT name FROM products WHERE id = ?';
+      con.query(query, values, (err, res) => {
+         if(res[0]) {
+            response.send({
+               result: res[0].name
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
+      })
+   });
+
    /* GET SINGLE PRODUCT BY NAME */
    router.post("/get-product-by-name", (request, response) => {
       const { name } = request.body;

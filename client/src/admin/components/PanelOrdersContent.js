@@ -146,7 +146,7 @@ const PanelOrdersContent = () => {
                         return <section className="panelContent__item orderItem">
                             <section className="panelContent__column">
                                 <h4 className="panelContent__column__label">
-                                    Id zamówienia
+                                    Id
                                 </h4>
                                 <h3 className="panelContent__column__value">
                                     {item.id}

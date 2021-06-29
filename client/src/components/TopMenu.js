@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import logoImg from '../static/img/brunch-box-logo.png'
 import poland from '../static/img/poland.png'
 import uk from '../static/img/united-kingdom.png'
@@ -8,9 +8,40 @@ import cart from '../static/img/cartIcon.png'
 
 const TopMenu = () => {
     const mobileMenu = useRef(null);
+    const topBar = useRef(null);
+    const topBarChild1 = useRef(null);
+    const topBarChild2 = useRef(null);
     const mobileMenuCloseBtn = useRef(null);
     const mobileMenuLogo = useRef(null);
     const mobileMenuList = useRef(null);
+
+    useEffect(() => {
+        let lastScrollTop = 0;
+
+        window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+            let st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+            if((topBar)&&(topBarChild1)&&(topBarChild2)) {
+                if (st > lastScrollTop) {
+                    // scroll down
+                    if(window.pageYOffset > 100) {
+                        topBarChild1.current.style.opacity = "0";
+                        topBarChild2.current.style.opacity = "0";
+                        setTimeout(() => {
+                            topBar.current.style.transform = "scaleY(0)";
+                        }, 200);
+                    }
+                } else {
+                    // scroll up
+                    topBar.current.style.transform = "scaleY(1)";
+                    setTimeout(() => {
+                        topBarChild1.current.style.opacity = "1";
+                        topBarChild2.current.style.opacity = "1";
+                    }, 200);
+                }
+                lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+            }
+        }, false);
+    },[]);
 
     const openMobileMenu = () => {
         mobileMenu.current.style.transform = "scaleX(1)";
@@ -38,13 +69,13 @@ const TopMenu = () => {
         }, 600);
     }
 
-    return <header className="topMenu">
-        <a className="topMenu__homepage" href="/">
+    return <header className="topMenu" ref={topBar}>
+        <a className="topMenu__homepage" href="/" ref={topBarChild1}>
             <img className="topMenu__logo" src={logoImg} alt="brunch-box-logo" />
         </a>
 
         {/* DESKTOP */}
-        <menu className="topMenu__menu d-desktop">
+        <menu className="topMenu__menu d-desktop" ref={topBarChild2}>
             <ul className="topMenu__list">
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/">
@@ -57,13 +88,8 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
-                        Dostawa
-                    </a>
-                </li>
-                <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
-                        Płatności
+                    <a className="topMenu__list__item__link" href="/oferta">
+                        Oferta
                     </a>
                 </li>
                 <li className="topMenu__list__item">
@@ -122,12 +148,7 @@ const TopMenu = () => {
                 </li>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="#">
-                        Dostawa
-                    </a>
-                </li>
-                <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
-                        Płatności
+                        Oferta
                     </a>
                 </li>
                 <li className="topMenu__list__item">

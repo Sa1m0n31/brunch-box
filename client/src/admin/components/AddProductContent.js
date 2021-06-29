@@ -35,7 +35,6 @@ const AddProductContent = () => {
     const [id, setId] = useState(0);
     const [categoryId, setCategoryId] = useState(0);
     const [product, setProduct] = useState([]);
-    const [allergens, setAllergens] = useState([]);
     const [categories, setCategories] = useState([]);
     const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 

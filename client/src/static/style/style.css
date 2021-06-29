@@ -66,8 +66,10 @@ ol {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 5px 3px #0000000D;
-    padding: 0 clamp(5%, calc((100vw - 1600px) / 2), 5%);
+    padding: 0 clamp(10%, calc((100vw - 1400px) / 2), 10%);
     background: #fff;
+    transform-origin: top;
+    transition: .2s all ease-in-out;
 }
 
 .topMenu__list__item__link:hover .cartCounter {
@@ -75,8 +77,13 @@ ol {
 }
 
 .topMenu__logo {
-    width: 152px;
+    width: 102px;
     height: auto;
+    transition: .2s all ease-in-out;
+}
+
+.topMenu__logo:hover {
+    transform: scale(1.2);
 }
 
 .topMenu__menu {
@@ -92,7 +99,8 @@ ol {
 }
 
 .topMenu__list__item {
-    padding: 0 30px;
+    margin: 0 30px;
+    transition: .2s all ease-in-out;
 }
 
 .topMenu__languages {
@@ -104,9 +112,18 @@ ol {
 
 .topMenu__list__item__link {
     font-weight: 700;
-    font-size: 18px;
+    font-size: 15px;
     position: relative;
     text-transform: uppercase;
+    transition: .2s all ease-in-out;
+}
+
+.topMenu__list__item:hover {
+    color: #D6B04A;
+}
+
+.topMenu__list__item__link:hover {
+    color: #D6B04A;
 }
 
 .topMenu__languages__btn {
@@ -228,28 +245,59 @@ ol {
 }
 
 .landing__logo {
-    width: 400px;
+    width: 300px;
     height: auto;
 }
 
 .landing__header {
     font-family: 'Merriweather', serif;
     font-weight: 400;
-    font-size: 52px;
+    font-size: 42px;
     margin: 60px 0;
 }
 
 .button--landing {
-    width: 450px;
-    height: 75px;
-    background: #000;
-    color: #fff;
+    width: 400px;
+    height: 65px;
+    background: #DAA520;
+    color: #000;
     border-radius: 4px;
+    border: 3px solid #000 !important;
     transition: .4s all ease-in-out;
 }
 
-.button--landing:hover {
-    letter-spacing: 3px;
+.button--landing {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.button--landing::after {
+    content: "";
+    position: absolute;
+    top: -110%;
+    left: -210%;
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    transform: rotate(45deg);
+    background: rgba(255, 255, 255, 0.13);
+    background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.13) 0%,
+            rgba(255, 255, 255, 0.13) 77%,
+            rgba(255, 255, 255, 0.5) 92%,
+            rgba(255, 255, 255, 0.0) 100%
+    );
+}
+
+.button--landing:hover::after {
+    opacity: 1;
+    top: -10%;
+    left: 50%;
+    transition-property: left, top, opacity;
+    transition-duration: 1.4s, 1.4s, 1s;
+    transition-timing-function: ease;
 }
 
 .button--landing__link {
@@ -259,9 +307,11 @@ ol {
     justify-content: center;
     align-items: center;
     background: transparent;
-    font-size: 22px;
+    font-size: 18px;
     text-transform: uppercase;
     font-weight: 700;
+    position: relative;
+    z-index: 5;
 }
 
 /* Home page section */
@@ -272,7 +322,7 @@ ol {
 
 #zestawy {
     position: absolute;
-    top: -200px;
+    top: -50px;
     left: 0;
 }
 
@@ -285,10 +335,11 @@ ol {
 
 .homePageSection__menu {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    width: clamp(800px, 90%, 1500px);
-    margin: 30px auto;
+    width: clamp(800px, 90%, 1300px);
+    margin: 30px auto 0;
 }
 
 .homePageSection__item {
@@ -296,6 +347,7 @@ ol {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 30%;
 }
 
 .homePageSection__img {
@@ -304,7 +356,7 @@ ol {
 }
 
 .homePageSection__item__header {
-    font-size: 26px;
+    font-size: 22px;
     font-family: 'Merriweather', serif;
     margin-top: 25px;
 }
@@ -314,14 +366,11 @@ ol {
     height: 60px;
     margin-top: 30px;
     transition: .4s all;
-}
-
-.button--homePageSection:hover {
-    letter-spacing: 3px;
+    background: #E4E4E4;
 }
 
 .button--homePageSection__link {
-    font-size: 18px;
+    font-size: 15px;
 }
 
 /* Footer */
@@ -334,12 +383,12 @@ ol {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0 clamp(5%, calc((100vw - 1600px) / 2), 5%);
+    padding: 0 clamp(5%, calc((100vw - 1400px) / 2), 10%);
 }
 
 .footer__menu {
     position: absolute;
-    right: clamp(5%, calc((100vw - 1600px) / 2), 5%);
+    right: clamp(5%, calc((100vw - 1400px) / 2), 10%);
     top: 50%;
     transform: translateY(-50%);
 }
@@ -364,7 +413,7 @@ ol {
 /* Offer page */
 .offerContent {
     margin-top: 240px;
-    padding: 0 clamp(5%, calc((100vw - 1600px) / 2), 5%);
+    padding: 0 clamp(5%, calc((100vw - 1400px) / 2), 10%);
 }
 
 .offerContent__header {
@@ -394,7 +443,6 @@ ol {
 }
 
 .offerContent__item__border {
-    border: 3px solid #000;
     padding: 20px;
     position: relative;
 }
@@ -414,6 +462,7 @@ ol {
 .offerContent__item__header {
     background: #000;
     color: #fff;
+    text-align: center;
     font-size: 16px;
     padding: 10px 20px;
     position: absolute;
@@ -422,6 +471,13 @@ ol {
     transform: translate(-50%, -50%);
     white-space: nowrap;
     font-family: 'Merriweather', serif;
+}
+
+.offerContent__item__header--cursive {
+    display: block;
+    text-align: center;
+    font-style: italic;
+    font-weight: 400;
 }
 
 .offerContent__item__btn {
@@ -476,6 +532,8 @@ ol {
 
 .singleProduct__mainImage {
     width: 100%;
+    height: 350px;
+    overflow: hidden;
     display: flex;
     background: transparent;
     justify-content: center;
@@ -483,7 +541,7 @@ ol {
 }
 
 .singleProduct__img {
-    width: 100%;
+    height: 100%;
     cursor: pointer;
     filter: brightness(0.7);
     transition: .3s all ease-in-out;
@@ -508,6 +566,12 @@ ol {
 .singleProduct__title {
     font-size: 24px;
     padding-bottom: 8px;
+}
+
+.singleProduct__title--cursive {
+    font-style: italic;
+    display: block;
+    text-align: center;
 }
 
 .singleProduct__price {
@@ -653,8 +717,12 @@ ol {
 .cartContent {
     min-height: 75vh;
     margin-top: 150px;
-    padding: 40px clamp(5%, calc((100vw - 1600px) / 2), 5%);
+    padding: 40px clamp(5%, calc((100vw - 1400px) / 2), 10%);
     background: #f9f9f9;
+}
+
+.cart__header {
+    font-size: 26px;
 }
 
 .emptyCart {
@@ -1007,6 +1075,7 @@ ol {
     height: 10px;
     background: #000;
     position: absolute;
+    z-index: 9;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -1021,6 +1090,17 @@ ol {
 .o-none {
     transition: .4s all;
     opacity: 0;
+    height: 0;
+}
+
+.ribbonLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ribbonLabel .ribbonBtn {
+    margin-left: 30px;
 }
 
 /* TY page */
@@ -1038,3 +1118,6 @@ ol {
 }
 
 /* Button animations */
+.marginLeft15 {
+    margin-left: 15px;
+}

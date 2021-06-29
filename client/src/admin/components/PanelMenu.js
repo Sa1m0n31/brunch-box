@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import axios from "axios";
 import box from '../static/img/box.svg'
 import checkboxSquare from '../static/img/checkbox_square.svg'
@@ -9,12 +9,16 @@ import list from '../static/img/list_ul.svg'
 import settingsImg from '../static/img/settings_filled.svg'
 import powerOff from '../static/img/power-off.png'
 import addImg from '../static/img/add.png'
+import hamburger from '../../static/img/hamburger.png'
+import close from '../static/img/close.png'
+import write from '../static/img/write.svg'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
 
 const PanelMenu = ({active, submenu}) => {
     const [render, setRender] = useState(false);
+    const menu = useRef(null);
 
     useEffect(() => {
         auth(localStorage.getItem('sec-sessionKey'))
@@ -41,8 +45,16 @@ const PanelMenu = ({active, submenu}) => {
             })
     }
 
+    const showMenu = () => {
+        menu.current.style.display = "flex";
+    }
+
+    const closeMenu = () => {
+        menu.current.style.display = "none";
+    }
+
     return render ? <menu className="panelMenu">
-            <section className="panelMenu__top">
+            <section className="panelMenu__top d-desktop">
                 <figure className="panelMenu__top__logoWrapper">
                     <img className="panelMenu__top__logo" src={settings.logo} alt="logo" />
                 </figure>
@@ -56,7 +68,25 @@ const PanelMenu = ({active, submenu}) => {
                 </header>
             </section>
 
-            <nav className="panelMenu__menu">
+            <header className="panelMenu__menuMobile d-mobile">
+                <header className="panelMenu__top__info">
+                    <h3 className="panelMenu__top__header">
+                        Zalogowany jako:
+                    </h3>
+                    <h4 className="panelMenu__top__subheader">
+                        {localStorage.getItem('sec-username')}
+                    </h4>
+                </header>
+                <button className="panelMenu__menuMobile__hamburgerWrapper" onClick={() => { showMenu(); }}>
+                    <img className="panelMenu__menuMobile__hamburgerImg" src={hamburger} alt="menu" />
+                </button>
+            </header>
+
+            <nav className="panelMenu__menu d-desktop" ref={menu}>
+                <button className="panelMenu__menuMobile__closeBtn d-mobile" onClick={() => { closeMenu(); }}>
+                    <img className="panelMenu__menuMobile__closeBtn__img" src={close} alt="zamknij" />
+                </button>
+
                 <ul className="panelMenu__list">
                     <li className="panelMenu__list__item">
                         <a className="panelMenu__list__item__link" id={active === 0 ? "menuItem--active" : ""} href="/panel">
@@ -103,6 +133,16 @@ const PanelMenu = ({active, submenu}) => {
                             <img className="panelMenu__list__item__img" src={settingsImg} alt="ustawienia" />
                             Ustawienia
                         </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 7 ? "menuItem--active" : ""} href="/panel/blog">
+                            <img className="panelMenu__list__item__img" src={write} alt="blog" />
+                            Blog
+                        </a>
+                        { active === 7 ? <a className="panelMenu__list__subitem" id={submenu ? "menuItem--active" : ""} href="/panel/dodaj-wpis">
+                            <img className="panelMenu__list__subitem__img" src={addImg} alt="dodaj-wpis" />
+                            Dodaj wpis
+                        </a> : "" }
                     </li>
                     <li className="panelMenu__list__item">
                         <button className="panelMenu__list__item__link" onClick={() => logout()}>

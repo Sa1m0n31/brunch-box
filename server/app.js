@@ -15,6 +15,7 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 app.get("/oferta-indywidualna", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+/* TODO */
 app.get("/dla-grup", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
@@ -57,6 +58,7 @@ const productRouter = require("./routers/productRouter");
 const orderRouter = require("./routers/orderRouter");
 const imageRouter = require("./routers/imageRouter");
 const paymentRouter = require("./routers/paymentRouter");
+const blogRouter = require("./routers/blogRouter");
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -67,6 +69,7 @@ app.use("/product", productRouter);
 app.use("/order", orderRouter);
 app.use("/image", imageRouter);
 app.use("/payment", paymentRouter);
+app.use("/blog", blogRouter);
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

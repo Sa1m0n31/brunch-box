@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {addCategory, deleteCategory, getAllCategories} from "../helpers/categoriesFunctions";
+import {deleteCategory, getAllCategories, getCategory} from "../helpers/categoriesFunctions";
 import exit from "../static/img/exit.svg";
 import trash from "../static/img/trash.svg";
 
@@ -12,13 +12,38 @@ import {useLocation} from "react-router";
 const PanelCategoriesContent = () => {
     const [categories, setCategories] = useState([]);
     const [name, setName] = useState("");
+    const [header, setHeader] = useState("");
+    const [subheader, setSubheader] = useState("");
     const [modal, setModal] = useState(false);
     const [deleted, setDeleted] = useState(false);
     const [candidate, setCandidate] = useState(-1);
     const [deleteMsg, setDeleteMsg] = useState("");
     const [addedMsg, setAddedMsg] = useState("");
+    const [update, setUpdate] = useState(false);
+    const [id, setId] = useState(0);
+    const [parentId, setParentId] = useState(0);
 
     const location = useLocation();
+
+    useEffect(() => {
+        /* Check if update mode */
+        const param = parseInt(new URLSearchParams(location.search).get("id"));
+        if(param) {
+            getCategory(param)
+                .then(res => {
+                    const result = res.data.result;
+                    if(result) {
+                        setId(param);
+                        setUpdate(true);
+                        setName(result.name);
+                        setHeader(result.header);
+                        setSubheader(result.subheader);
+                        setParentId(result.parent_id);
+                        console.log(result.parent_id);
+                    }
+                });
+        }
+    }, []);
 
     useEffect(() => {
         getAllCategories()
@@ -33,6 +58,7 @@ const PanelCategoriesContent = () => {
             if(added === "1") setAddedMsg("Kategoria została dodana");
             else if(added === "0") setAddedMsg("Kategoria nie może być pusta");
             else if(added === "-1") setAddedMsg("Kategoria o podanej nazwie już istnieje");
+            else if(added === "2") setAddedMsg("Kategoria została zaktualizowana");
         }
     }, [modal]);
 
@@ -111,12 +137,16 @@ const PanelCategoriesContent = () => {
                     Dodawanie kategorii
                 </h1>
 
-                {addedMsg === "" ? <form className="panelContent__frame__form"
+                {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action="http://localhost:5000/category/add"
+                                         action={update ? "http://localhost:5000/category/update" : "http://localhost:5000/category/add"}
                                          onSubmit={(e) => { handleSubmit(e) }}
                                          encType="multipart/form-data"
                 >
+                    <input className="invisibleInput"
+                           name="id"
+                           value={id} />
+
                     <label className="addProduct__label addProduct__label--frame">
                         <input className="addProduct__input"
                                name="name"
@@ -125,8 +155,27 @@ const PanelCategoriesContent = () => {
                                type="text"
                                placeholder="Nazwa kategorii" />
                     </label>
+                    <label className="addProduct__label addProduct__label--frame">
+                        <input className="addProduct__input"
+                               name="header"
+                               value={header}
+                               onChange={(e) => { setHeader(e.target.value) }}
+                               type="text"
+                               placeholder="Nagłówek kategorii" />
+                    </label>
+                    <label className="addProduct__label addProduct__label--frame">
+                        <input className="addProduct__input"
+                               name="subheader"
+                               value={subheader}
+                               onChange={(e) => { setSubheader(e.target.value) }}
+                               type="text"
+                               placeholder="Czas dostawy" />
+                    </label>
+
                     <select className="addProduct__categorySelect"
                             name="parentId"
+                            value={parentId}
+                            onChange={(e) => { setParentId(e.target.value); }}
                     >
                         <option value={0}>Brak rodzica</option>
                         {categories.map((item, index) => (
@@ -150,7 +199,7 @@ const PanelCategoriesContent = () => {
                 </section>}
             </section>
 
-            <section className="panelContent__frame__section">
+            <section className="panelContent__frame__section categoryList">
                 <h1 className="panelContent__frame__header">
                     Lista kategorii
                 </h1>
@@ -187,14 +236,12 @@ const PanelCategoriesContent = () => {
                                 <div className="panelContent__column__value">
                                     <div className="panelContent__column__value panelContent__column__value--buttons">
                                         <button className="panelContent__column__btn">
-                                            <a className="panelContent__column__link" href="#">
+                                            <a className="panelContent__column__link" href={`?id=${item.id}`}>
                                                 <img className="panelContent__column__icon" src={exit} alt="przejdz" />
                                             </a>
                                         </button>
                                         <button className="panelContent__column__btn" onClick={() => { openModal(item.id) }}>
-                                            <a className="panelContent__column__link" href="#">
                                                 <img className="panelContent__column__icon" src={trash} alt="usuń" />
-                                            </a>
                                         </button>
                                     </div>
                                 </div>

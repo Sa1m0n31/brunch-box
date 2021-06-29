@@ -16,6 +16,7 @@ import { useLocation } from "react-router";
 import {getImageById, getProductAllergens, getProductByName, getSingleProduct} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
 import {allergensImg, allergensList} from "../helpers/allergens";
+import ReactTooltip from 'react-tooltip'
 
 const SingleProductContent = () => {
     const [size, setSize] = useState("M");
@@ -32,6 +33,11 @@ const SingleProductContent = () => {
     const [gallery1, setGallery1] = useState(null);
     const [gallery2, setGallery2] = useState(null);
     const [gallery3, setGallery3] = useState(null);
+
+    const [indexAtMain, setIndexAtMain] = useState(0);
+    const [indexAt1, setIndexAt1] = useState(1);
+    const [indexAt2, setIndexAt2] = useState(2);
+    const [indexAt3, setIndexAt3] = useState(3);
 
     const [modal, setModal] = useState(false);
 
@@ -52,7 +58,6 @@ const SingleProductContent = () => {
     useEffect(() => {
         let id;
         if(location.state) {
-            console.log("location");
             id = location.state.id;
             getSingleProduct(id)
                 .then(res => {
@@ -81,7 +86,6 @@ const SingleProductContent = () => {
                 });
         }
         else {
-            console.log("else");
             getProductIdByURL(window.location.pathname.split("/"))
                 .then(res => {
                     id = res.data.result[0].id
@@ -96,22 +100,15 @@ const SingleProductContent = () => {
                             /* Get gallery */
                             getImageById(res.data.result[0].gallery_1)
                                 .then(res => {
-                                    console.log(res.data.result);
                                     setGallery1(res.data.result.file_path);
                                 });
                         });
                     getProductAllergens(id)
                         .then(res => {
-                            console.log(res.data.result);
                             setAllergens(res.data.result);
                         });
                 });
         }
-        setTimeout(() => {
-            console.log(allergens);
-        }, 1000);
-
-
     }, []);
 
     useEffect(() => {
@@ -131,6 +128,27 @@ const SingleProductContent = () => {
 
     const toggleDescription = () => {
         setLongDesc(!longDesc);
+    }
+
+    const changeMainImage = (index, n) => {
+        const indexAtMainBefore = indexAtMain;
+        setIndexAtMain(index);
+        switch(n) {
+            case 1:
+                setIndexAt1(indexAtMainBefore);
+                break;
+            case 2:
+                setIndexAt2(indexAtMainBefore);
+                break;
+            case 3:
+                setIndexAt3(indexAtMainBefore);
+                break;
+            default:
+                break;
+        }
+        setTimeout(() => {
+            console.log(indexAtMain + " " + indexAt1 + " " + indexAt2 + " " + indexAt3);
+        }, 1000);
     }
 
     return <>
@@ -158,26 +176,28 @@ const SingleProductContent = () => {
                     Przejdź do kasy
                 </button>
             </section>
-
         </Modal>
 
 
         <section className="singleProduct__left">
-            <button className="singleProduct__mainImage" onClick={() => { setPhotoIndex(0); setGalleryOpen(true); }}>
-                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + product?.file_path} alt="produkt" />
+            <button className="singleProduct__mainImage" onClick={() => { setPhotoIndex(indexAtMain); setGalleryOpen(true); }}>
+                <img className="singleProduct__img" src={images[indexAtMain]} alt="produkt" />
             </button>
 
             <section className="singleProduct__images">
-                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + gallery1} alt="produkt" onClick={() => { setPhotoIndex(1); setGalleryOpen(true); }} />
-                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + gallery2} alt="produkt" onClick={() => { setPhotoIndex(2); setGalleryOpen(true); }} />
-                <img className="singleProduct__img" src={settings.API_URL + "/image?url=/media/" + gallery3} alt="produkt" onClick={() => { setPhotoIndex(3); setGalleryOpen(true); }} />
+                <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { changeMainImage(indexAt1, 1); }} />
+                <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { changeMainImage(indexAt2, 2); }} />
+                <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { changeMainImage(indexAt3, 3); }} />
             </section>
 
         </section>
         <section className="singleProduct__right">
             <section className="singleProduct__right__header">
                 <h1 className="singleProduct__title">
-                    {product.name} <span className="thin">({product.bracket_name})</span>
+                    {product.name}
+                    <span className="thin singleProduct__title--cursive">
+                        {product.bracket_name}
+                    </span>
                 </h1>
                 <h2 className="singleProduct__price">
                     {price} PLN
@@ -224,11 +244,22 @@ const SingleProductContent = () => {
                 <h3 className="singleProduct__options__header marginRight15">
                     Alergeny:
                 </h3>
-                {allergens.map(item => {
+                {allergens.map((item, index) => {
                 const allergen = allergensList.findIndex(itemOnTheList => {
                 return itemOnTheList === item.allergen;
             });
-                if((allergen)||(allergen === 0)) return <img className="allergensImg allergensImg--client" src={allergensImg[allergen]} alt="alergen" />
+                if((allergen)||(allergen === 0)) {
+                    return <>
+                        <img className="allergensImg allergensImg--client"
+                             src={allergensImg[allergen]}
+                             data-tip
+                             data-for={`id${index}`}
+                             alt="alergen" />
+                        <ReactTooltip id={`id${index}`} type='dark' effect='float'>
+                            {item.allergen}
+                        </ReactTooltip>
+                        </>
+                }
             })}
             </div> : ""}
 
