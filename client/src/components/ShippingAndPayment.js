@@ -338,7 +338,7 @@ const ShippingAndPayment = () => {
                                        name="ribbon"
                                        type="text"
                                        onChange={(e) => { changeRibbon(e) }}
-                                       placeholder={"Dedykacja na wstążce do pudełka: " + cartNames[i] + "-" + item.size + "-" + item.option} />
+                                       placeholder={"Dedykacja: " + cartNames[i] + "-" + item.size + "-" + item.option} />
                                 <button className="ribbonBtn" id={"id" + k + "-" + i} onClick={(e) => { changeRibbon(e) }}>
                                     <span id={"sp" + k + "-" + i} className={ribbons[k]?.ribbon === true ? "ribbon" : "d-none"} onClick={() => { console.log("click!"); }}></span>
                                 </button>

@@ -47,7 +47,7 @@ con.connect(err => {
             if(parentId === "0") parentId = null;
 
             if(name === "") {
-                response.redirect("http://localhost:3000/panel/kategorie?added=0");
+                response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=0");
                 return 0;
             }
 
@@ -59,8 +59,8 @@ con.connect(err => {
 
                 con.query(query, values, (err, res) => {
                     console.log(err);
-                    if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=1");
-                    else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
+                    if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=1");
+                    else response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
                 });
             });
         }
@@ -183,8 +183,8 @@ con.connect(err => {
                         console.log(err);
                         let result = 0;
                         if(res) result = 1;
-                        if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=2");
-                        else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
+                        if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=2");
+                        else response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
                     });
                 });
             }
@@ -196,8 +196,8 @@ con.connect(err => {
                     console.log(err);
                     let result = 0;
                     if(res) result = 1;
-                    if(!err) response.redirect("http://localhost:3000/panel/kategorie?added=2");
-                    else response.redirect("http://localhost:3000/panel/kategorie?added=-1")
+                    if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=2");
+                    else response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
                 });
             }
         }

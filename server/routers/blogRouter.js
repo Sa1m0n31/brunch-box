@@ -45,8 +45,8 @@ con.connect(err => {
             const query = 'INSERT INTO posts VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
             con.query(query, values, (err, res) => {
                console.log(err);
-               if(res) response.redirect("http://localhost:3000/panel/dodaj-wpis?add=1");
-               else response.redirect("http://localhost:3000/panel/dodaj-wpis?add=0");
+               if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=1");
+               else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=0");
             });
         }
     });
@@ -91,8 +91,8 @@ con.connect(err => {
             const query = 'UPDATE posts SET title = ?, content = ?, image = ?, title_en = ?, content_en = ? WHERE id = ?';
             con.query(query, values, (err, res) => {
                 console.log(err);
-                if(res) response.redirect("http://localhost:3000/panel/dodaj-wpis?add=2");
-                else response.redirect("http://localhost:3000/panel/dodaj-wpis?add=0");
+                if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=2");
+                else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=0");
             });
         }
     });

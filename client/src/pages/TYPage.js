@@ -13,7 +13,7 @@ const TYPage = () => {
                 Wkrótce dostarczymy je pod Twoje drzwi!
             </h2>
 
-            <button className="button button--landing marginTop30">
+            <button className="button button--landing button--ty marginTop30">
                 <a className="button--landing__link" href="/">
                     Wróć na stronę główną
                 </a>
