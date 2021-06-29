@@ -17,6 +17,7 @@ import {getImageById, getProductAllergens, getProductByName, getSingleProduct} f
 import settings from "../admin/helpers/settings";
 import {allergensImg, allergensList} from "../helpers/allergens";
 import ReactTooltip from 'react-tooltip'
+import Loader from "react-loader-spinner";
 
 const SingleProductContent = () => {
     const [size, setSize] = useState("M");
@@ -39,6 +40,7 @@ const SingleProductContent = () => {
     const [indexAt2, setIndexAt2] = useState(2);
     const [indexAt3, setIndexAt3] = useState(3);
 
+    const [loaded, setLoaded] = useState(false);
     const [modal, setModal] = useState(false);
 
     const location = useLocation();
@@ -78,6 +80,7 @@ const SingleProductContent = () => {
                         .then(res => {
                             setGallery3(res.data.result.file_path);
                         });
+                    setLoaded(true);
                 });
             getProductAllergens(id)
                 .then(res => {
@@ -101,6 +104,7 @@ const SingleProductContent = () => {
                             getImageById(res.data.result[0].gallery_1)
                                 .then(res => {
                                     setGallery1(res.data.result.file_path);
+                                    setLoaded(true);
                                 });
                         });
                     getProductAllergens(id)
@@ -146,9 +150,6 @@ const SingleProductContent = () => {
             default:
                 break;
         }
-        setTimeout(() => {
-            console.log(indexAtMain + " " + indexAt1 + " " + indexAt2 + " " + indexAt3);
-        }, 1000);
     }
 
     return <>
@@ -179,103 +180,110 @@ const SingleProductContent = () => {
         </Modal>
 
 
-        <section className="singleProduct__left">
-            <button className="singleProduct__mainImage" onClick={() => { setPhotoIndex(indexAtMain); setGalleryOpen(true); }}>
-                <img className="singleProduct__img" src={images[indexAtMain]} alt="produkt" />
-            </button>
+            {loaded ? <><section className="singleProduct__left">
+                    <button className="singleProduct__mainImage" onClick={() => { setPhotoIndex(indexAtMain); setGalleryOpen(true); }}>
+                        <img className="singleProduct__img" src={images[indexAtMain]} alt="produkt" />
+                    </button>
 
-            <section className="singleProduct__images">
-                <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { changeMainImage(indexAt1, 1); }} />
-                <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { changeMainImage(indexAt2, 2); }} />
-                <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { changeMainImage(indexAt3, 3); }} />
-            </section>
+                    <section className="singleProduct__images">
+                        <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { changeMainImage(indexAt1, 1); }} />
+                        <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { changeMainImage(indexAt2, 2); }} />
+                        <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { changeMainImage(indexAt3, 3); }} />
+                    </section>
 
-        </section>
-        <section className="singleProduct__right">
-            <section className="singleProduct__right__header">
-                <h1 className="singleProduct__title">
-                    {product.name}
-                    <span className="thin singleProduct__title--cursive">
+                </section>
+                <section className="singleProduct__right">
+                    <section className="singleProduct__right__header">
+                        <h1 className="singleProduct__title">
+                            {product.name}
+                            <span className="thin singleProduct__title--cursive">
                         {product.bracket_name}
                     </span>
-                </h1>
-                <h2 className="singleProduct__price">
-                    {price} PLN
-                </h2>
-            </section>
+                        </h1>
+                        <h2 className="singleProduct__price">
+                            {price} PLN
+                        </h2>
+                    </section>
 
-            <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.replace(/&nbsp;/g, " ")}}>
-            </div>
+                    <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.replace(/&nbsp;/g, " ")}}>
+                    </div>
 
-            {product.l ? <div className="singleProduct__options">
-                <h3 className="singleProduct__options__header">
-                    Dostępne rozmiary:
-                </h3>
-                <div className="singleProduct__options__buttons">
-                    <button className={size === "M" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setSize("M")}>
-                        M
-                    </button>
-                    <button className={size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setSize("L")}>
-                        L
-                    </button>
-                </div>
-            </div> : ""}
-            {product.vege ? <div className="singleProduct__options">
-                <h3 className="singleProduct__options__header">
-                    Dostępne opcje:
-                </h3>
-                <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
-                    <button className={option === "Mięsna" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setOption("Mięsna")}
-                    >
-                        Mięsna
-                    </button>
-                    <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                            onClick={() => setOption("Wegetariańska")}
-                    >
-                        Wegetariańska
-                    </button>
-                </section>
-            </div> : ""}
+                    {product.l ? <div className="singleProduct__options">
+                        <h3 className="singleProduct__options__header">
+                            Dostępne rozmiary:
+                        </h3>
+                        <div className="singleProduct__options__buttons">
+                            <button className={size === "M" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setSize("M")}>
+                                M
+                            </button>
+                            <button className={size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setSize("L")}>
+                                L
+                            </button>
+                        </div>
+                    </div> : ""}
+                    {product.vege ? <div className="singleProduct__options">
+                        <h3 className="singleProduct__options__header">
+                            Dostępne opcje:
+                        </h3>
+                        <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
+                            <button className={option === "Mięsna" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setOption("Mięsna")}
+                            >
+                                Mięsna
+                            </button>
+                            <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setOption("Wegetariańska")}
+                            >
+                                Wegetariańska
+                            </button>
+                        </section>
+                    </div> : ""}
 
-            {allergens ? <div className="singleProduct__options singleProduct__options--allergens">
-                <h3 className="singleProduct__options__header marginRight15">
-                    Alergeny:
-                </h3>
-                {allergens.map((item, index) => {
-                const allergen = allergensList.findIndex(itemOnTheList => {
-                return itemOnTheList === item.allergen;
-            });
-                if((allergen)||(allergen === 0)) {
-                    return <>
-                        <img className="allergensImg allergensImg--client"
-                             src={allergensImg[allergen]}
-                             data-tip
-                             data-for={`id${index}`}
-                             alt="alergen" />
-                        <ReactTooltip id={`id${index}`} type='dark' effect='float'>
-                            {item.allergen}
-                        </ReactTooltip>
-                        </>
-                }
-            })}
-            </div> : ""}
+                    {allergens ? <div className="singleProduct__options singleProduct__options--allergens">
+                        <h3 className="singleProduct__options__header marginRight15">
+                            Alergeny:
+                        </h3>
+                        {allergens.map((item, index) => {
+                            const allergen = allergensList.findIndex(itemOnTheList => {
+                                return itemOnTheList === item.allergen;
+                            });
+                            if((allergen)||(allergen === 0)) {
+                                return <>
+                                    <img className="allergensImg allergensImg--client"
+                                         src={allergensImg[allergen]}
+                                         data-tip
+                                         data-for={`id${index}`}
+                                         alt="alergen" />
+                                    <ReactTooltip id={`id${index}`} type='dark' effect='float'>
+                                        {item.allergen}
+                                    </ReactTooltip>
+                                </>
+                            }
+                        })}
+                    </div> : ""}
 
 
 
-            <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc}}>
+                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc}}>
 
-            </div>
+                    </div>
 
-            <section className="singleProduct__options">
-                <button className="button button--addToCart" onClick={() => { addToCart(product.id, option, size) }}>
-                    Dodaj do koszyka
-                    <img className="button--addToCart__img" src={cartImg} alt="koszyk" />
-                </button>
-            </section>
-        </section>
+                    <section className="singleProduct__options">
+                        <button className="button button--addToCart" onClick={() => { addToCart(product.id, option, size) }}>
+                            Dodaj do koszyka
+                            <img className="button--addToCart__img" src={cartImg} alt="koszyk" />
+                        </button>
+                    </section>
+                </section></> : <main className="loading">
+                <Loader
+                type="puff"
+                color="#000"
+                width={100}
+                height={100}
+                />
+                </main>}
 
         {/* GALLERY */}
         {galleryOpen ? <Lightbox

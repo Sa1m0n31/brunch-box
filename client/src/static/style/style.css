@@ -259,7 +259,7 @@ ol {
 .button--landing {
     width: 400px;
     height: 65px;
-    background: #DAA520;
+    background: #D6B04A;
     color: #000;
     border-radius: 4px;
     border: 3px solid #000 !important;
@@ -367,6 +367,10 @@ ol {
     margin-top: 30px;
     transition: .4s all;
     background: #E4E4E4;
+}
+
+.button--homePageSection:hover {
+    letter-spacing: 2px;
 }
 
 .button--homePageSection__link {
@@ -848,15 +852,16 @@ ol {
 }
 
 .cart__summary__button {
-    background: #000;
-    color: #fff;
+    background: #e4e4e4;
+    color: #000;
     text-transform: uppercase;
     margin-top: 30px;
     width: 300px;
     height: 50px;
-    font-size: 17px;
+    font-size: 15px !important;
     font-weight: 700;
     transition: .3s all ease-in-out;
+    border: 3px solid #000;
 }
 
 .cart__summary__button:hover {
@@ -1122,4 +1127,13 @@ ol {
 /* Button animations */
 .marginLeft15 {
     margin-left: 15px;
+}
+
+.loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px;
 }

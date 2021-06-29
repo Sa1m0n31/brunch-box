@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './static/style/style.css'
 import './static/style/admin.css'
 import './static/style/mobile.css'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import HomePage from "./pages/HomePage";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -23,7 +24,6 @@ import TYPage from "./pages/TYPage";
 import {getAllCategories} from "./helpers/categoryFunctions";
 import convertToURL from "./helpers/convertToURL";
 import PanelBlog from "./admin/pages/PanelBlog";
-import AddPostContent from "./admin/components/AddPostContent";
 import AddPostPage from "./admin/pages/AddPostPage";
 
 function App() {
@@ -32,7 +32,6 @@ function App() {
     useEffect(() => {
        getAllCategories()
            .then(res => {
-               console.log(res.data.result);
                setCategories(res.data.result);
            });
     }, []);
@@ -103,6 +102,7 @@ function App() {
                     <PanelBlog />
                 </Route>
 
+                {/* Add content pages */}
                 <Route path="/panel/dodaj-produkt">
                     <AddProductPage />
                 </Route>

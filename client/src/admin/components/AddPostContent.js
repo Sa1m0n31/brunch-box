@@ -64,13 +64,13 @@ const AddPostContent = () => {
             {addMsg === "" ? <form className="addProduct__form addProduct__form--addPost"
                                    encType="multipart/form-data"
                                    onSubmit={(e) => { handleSubmit(e) }}
-                                   action={update ? "http://localhost:5000/blog/update" : "http://localhost:5000/blog/add"}
+                                   action={update ? "http://brunchbox.skylo-test3.pl/blog/update" : "http://brunchbox.skylo-test3.pl/blog/add"}
                                    method="POST"
             >
                 <input className="invisibleInput"
                        value={id}
                        name="id" />
-                
+
                 <label className="addProduct__label--addPost">
                     <input className="addProduct__input"
                            name="title"

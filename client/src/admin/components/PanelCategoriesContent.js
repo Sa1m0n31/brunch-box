@@ -140,7 +140,7 @@ const PanelCategoriesContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action={update ? "http://localhost:5000/category/update" : "http://localhost:5000/category/add"}
+                                         action={update ? "http://brunchbox.skylo-test3.pl/category/update" : "http://brunchbox.skylo-test3.pl/category/add"}
                                          onSubmit={(e) => { handleSubmit(e) }}
                                          encType="multipart/form-data"
                 >

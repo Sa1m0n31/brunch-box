@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import productImg from '../static/img/product-image.png'
 import {getAllProducts} from "../helpers/productFunctions";
 import convertToURL from "../helpers/convertToURL";
 import settings from "../admin/helpers/settings";
 
-import { useLocation } from "react-router-dom";
 import {getCategoryByName} from "../helpers/categoryFunctions";
+
+import Loader from "react-loader-spinner";
 
 const OfferContent = ({type}) => {
     const [title, setTitle] = useState("");
@@ -16,6 +16,7 @@ const OfferContent = ({type}) => {
     const [category, setCategory] = useState("");
     const [header, setHeader] = useState("");
     const [subheader, setSubheader] = useState("");
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         getCategoryByName(type)
@@ -34,6 +35,7 @@ const OfferContent = ({type}) => {
         getAllProducts()
             .then(res => {
                 setProducts(res.data.result);
+                setLoaded(true);
             });
 
         if(type !== "oferta") setCategory(type);
@@ -47,10 +49,10 @@ const OfferContent = ({type}) => {
             Nasza oferta
         </h1>}
 
-        <div className="offerContent__grid">
+        {loaded ? <div className="offerContent__grid">
             {products.map((item, index) => {
                 if(category !== "") {
-                    if(item.category_name === category) {
+                    if((item.category_name === category)&&(!item.hidden)) {
                         return <Link className="offerContent__item"
                                      key={index}
                                      to={{
@@ -81,7 +83,7 @@ const OfferContent = ({type}) => {
                     }
                     else return "";
                 }
-                else {
+                else if(!item.hidden) {
                     return <Link className="offerContent__item"
                                  key={index}
                                  to={{
@@ -111,7 +113,14 @@ const OfferContent = ({type}) => {
                     </Link>
                 }
             })}
-        </div>
+        </div> : <main className="loading">
+            <Loader
+                type="puff"
+                color="#000"
+                width={100}
+                height={100}
+            />
+        </main>}
     </main>
 }
 

@@ -24,18 +24,18 @@ const TopMenu = () => {
                 if (st > lastScrollTop) {
                     // scroll down
                     if(window.pageYOffset > 100) {
-                        topBarChild1.current.style.opacity = "0";
-                        topBarChild2.current.style.opacity = "0";
+                        if(topBarChild1.current) topBarChild1.current.style.opacity = "0";
+                        if(topBarChild2.current) topBarChild2.current.style.opacity = "0";
                         setTimeout(() => {
-                            topBar.current.style.transform = "scaleY(0)";
+                            if(topBar.current) topBar.current.style.transform = "scaleY(0)";
                         }, 200);
                     }
                 } else {
                     // scroll up
-                    topBar.current.style.transform = "scaleY(1)";
+                    if(topBar.current) topBar.current.style.transform = "scaleY(1)";
                     setTimeout(() => {
-                        topBarChild1.current.style.opacity = "1";
-                        topBarChild2.current.style.opacity = "1";
+                        if(topBarChild1.current) topBarChild1.current.style.opacity = "1";
+                        if(topBarChild2.current) topBarChild2.current.style.opacity = "1";
                     }, 200);
                 }
                 lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling

@@ -37,6 +37,7 @@ const AddProductContent = () => {
     const [product, setProduct] = useState([]);
     const [categories, setCategories] = useState([]);
     const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    const [hidden, setHidden] = useState(false);
 
     /* Prices */
     const [priceMMeat, setPriceMMeat] = useState("");
@@ -139,6 +140,7 @@ const AddProductContent = () => {
         setPriceLWege(productData.price_l_vege);
 
         setCategoryId(productData.category_id);
+        setHidden(productData.hidden);
 
         setShortDescription(productData.short_description);
         setLongDescription(productData.long_description);
@@ -176,7 +178,7 @@ const AddProductContent = () => {
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
                                onSubmit={(e) => { handleSubmit(e) }}
-                               action={update ? "http://localhost:5000/product/update-product" : "http://localhost:5000/product/add-product"}
+                               action={update ? "http://brunchbox.skylo-test3.pl/product/update-product" : "http://brunchbox.skylo-test3.pl/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">
@@ -388,11 +390,22 @@ const AddProductContent = () => {
                         onChange={newContent => { setVegeDescription(newContent) }}
                     />
                 </label>
+
+                <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                    <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>
+                        <span className={hidden ? "panelContent__filters__btn--active" : "d-none"} />
+                    </button>
+                    Ukryj produkt
+                </label>
+
+                <input className="invisibleInput"
+                       value={hidden ? "hidden" : ""}
+                       name="hidden" />
             </section>
 
             <section className="addProduct__btnWrapper">
                 <button className="addProduct__btn" type="submit">
-                    Dodaj produkt
+                    {update ? "Zaktualizuj produkt" : "Dodaj produkt"}
                 </button>
             </section>
         </form> : <h2 className="addMsg">
