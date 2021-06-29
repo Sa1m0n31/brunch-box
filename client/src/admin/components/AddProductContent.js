@@ -147,12 +147,6 @@ const AddProductContent = () => {
     }
 
     const handleSubmit = (e) => {
-        console.log(update);
-        /* Sending normal form */
-
-        /* Add description */
-
-
         /* Add allergens to local storage */
         const allergensToAdd = allergensList.filter((item, index) => {
             return allergies[index];

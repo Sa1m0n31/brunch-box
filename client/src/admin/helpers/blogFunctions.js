@@ -3,10 +3,16 @@ import settings from "./settings";
 
 const { API_URL } = settings;
 
-const addPosts = ({title, content, featuredImage}) => {
-    return axios.post(`${API_URL}/blog/add`, {
-        title, content, featuredImage
-    });
+const getAllPosts = () => {
+    return axios.get(`${API_URL}/blog/get-all`);
 }
 
-export { addPosts }
+const deletePost = (id) => {
+    return axios.post(`${API_URL}/blog/delete`, { id });
+}
+
+const getSinglePost = (id) => {
+    return axios.post(`${API_URL}/blog/get-post-by-id`, { id });
+}
+
+export { getAllPosts, deletePost, getSinglePost }

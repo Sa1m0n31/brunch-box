@@ -49,7 +49,6 @@ const sortByDate = (asc) => {
 
 const productSearch = (str) => {
     const allProducts = JSON.parse(sessionStorage.getItem('skylo-e-commerce-products'));
-    const re = new RegExp(`.*${str}.*`, 'g');
 
     let filteredProducts;
     if(allProducts) {
@@ -72,4 +71,21 @@ const productSearch = (str) => {
     return filteredProducts;
 }
 
-export { orderSearch, sortByDate, productSearch };
+const postSearch = (str) => {
+    const allPosts = JSON.parse(sessionStorage.getItem('sec-posts'));
+
+    let filteredPosts;
+    if(allPosts) {
+        filteredPosts = allPosts.filter((item, index) => {
+            const re = new RegExp(`.*${str}.*`, 'gi');
+
+            /* Search by title */
+            return item.title.search(re) !== -1;
+
+        });
+    }
+
+    return filteredPosts;
+}
+
+export { orderSearch, sortByDate, productSearch, postSearch };

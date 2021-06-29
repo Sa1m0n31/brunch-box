@@ -994,3 +994,35 @@ input[type=file] {
     border-left: 1px solid #000;
     padding-left: 10px;
 }
+
+.panelContent__filters__label__label--category {
+    margin-bottom: 40px;
+}
+
+/* Blog */
+.addProduct__form--addPost {
+    flex-direction: column;
+}
+
+.addProduct__form--addPost, .panelContent__addPost,
+.panelContent__addPost .jodit--label
+{
+    width: 100%;
+}
+
+.panelContent__addPost .jodit-workplace {
+    min-height: 500px !important;
+}
+
+.addProduct__label--addPost {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.en-division {
+    display: block;
+    margin: 40px 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 0, 0, .25);
+}

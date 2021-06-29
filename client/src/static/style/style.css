@@ -734,10 +734,12 @@ ol {
     height: 50px;
     margin-bottom: 20px;
     margin-top: 0;
+    background: #000;
 }
 
 .button--emptyCart__link {
     font-size: 15px;
+    color: #fff;
 }
 
 .button--emptyCart

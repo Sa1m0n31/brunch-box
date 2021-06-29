@@ -1,18 +1,49 @@
 import React, { useState, useEffect } from 'react'
 import Modal from "react-modal";
 import closeImg from "../static/img/close.png";
+import {deletePost, getAllPosts} from "../helpers/blogFunctions";
+import settings from "../helpers/settings";
+import exit from "../static/img/exit.svg";
+import trash from "../static/img/trash.svg";
+import {getDate, getTime} from "../helpers/formatFunctions";
+import searchImg from "../static/img/search.svg";
+import {postSearch, sortByDate} from "../helpers/search";
 
 const PanelBlogContent = () => {
     const [modal, setModal] = useState(false);
     const [deleteMsg, setDeleteMsg] = useState("");
     const [candidate, setCandidate] = useState(0);
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        getAllPosts()
+            .then(res => {
+                if(res.data.result) {
+                    setPosts(res.data.result);
+                    sessionStorage.setItem('sec-posts', JSON.stringify(res.data.result));
+                }
+            });
+    }, [deleteMsg]);
 
     const deletePostById = () => {
+        deletePost(candidate)
+            .then(res => {
+                if(res.data.result) setDeleteMsg("Wpis został usunięty");
+                else setDeleteMsg("Coś poszło nie tak... Prosimy spróbować później");
+            });
+    }
 
+    const openModal = (id) => {
+        setCandidate(id);
+        setModal(true);
     }
 
     const closeModal = () => {
         setModal(false);
+    }
+
+    const search = (e) => {
+        setPosts(postSearch(e.target.value));
     }
 
     return <main className="panelContent">
@@ -49,8 +80,72 @@ const PanelBlogContent = () => {
                 Wpisy
             </h1>
         </header>
-        <main className="panelContent__contentWrapper">
+        <section className="panelContent__filters">
+            <section className="panelContent__filters__item">
+                    <span className="panelContent__filters__label">
+                        Wyszukiwanie:
+                    </span>
+                <label className="panelContent__input__label">
+                    <input className="panelContent__input"
+                           placeholder="Szukaj..."
+                           onChange={(e) => { search(e); }}
+                           name="search" />
 
+                    <span className="panelContent__input__span">
+                            <img className="panelContent__input__icon" src={searchImg} alt="szukaj" />
+                        </span>
+                </label>
+            </section>
+        </section>
+        <main className="panelContent__contentWrapper">
+            {posts.map((item, index) => {
+                return <section key={index} className="panelContent__item">
+                    <section className="panelContent__column">
+                        {item.img_path ? <img className="panelContent__productImg" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="zdjecie-kategorii" /> : ""}
+                    </section>
+
+                    <section className="panelContent__column">
+                        <h4 className="panelContent__column__label">
+                            Tytuł
+                        </h4>
+                        <h3 className="panelContent__column__value">
+                            {item.title}
+                        </h3>
+                    </section>
+
+                    <section className="panelContent__column">
+                        <h4 className="panelContent__column__label">
+                            Data dodania
+                        </h4>
+                        <h3 className="panelContent__column__value">
+                             <span className="dateTime">
+                                    { getDate(item.date) }
+                                </span>
+                            <span className="dateTime">
+                                    { getTime(item.date) }
+                                </span>
+                        </h3>
+                    </section>
+
+                    <section className="panelContent__column">
+                        <h4 className="panelContent__column__label">
+                            Działania
+                        </h4>
+                        <div className="panelContent__column__value">
+                            <div className="panelContent__column__value panelContent__column__value--buttons">
+                                <button className="panelContent__column__btn">
+                                    <a className="panelContent__column__link" href={`/panel/dodaj-wpis?id=${item.id}`}>
+                                        <img className="panelContent__column__icon" src={exit} alt="przejdz" />
+                                    </a>
+                                </button>
+                                <button className="panelContent__column__btn" onClick={() => { openModal(item.id) }}>
+                                    <img className="panelContent__column__icon" src={trash} alt="usuń" />
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            })}
         </main>
     </main>
 }

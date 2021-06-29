@@ -22,6 +22,7 @@ const PanelCategoriesContent = () => {
     const [update, setUpdate] = useState(false);
     const [id, setId] = useState(0);
     const [parentId, setParentId] = useState(0);
+    const [hidden, setHidden] = useState(false);
 
     const location = useLocation();
 
@@ -39,7 +40,7 @@ const PanelCategoriesContent = () => {
                         setHeader(result.header);
                         setSubheader(result.subheader);
                         setParentId(result.parent_id);
-                        console.log(result.parent_id);
+                        setHidden(result.hidden);
                     }
                 });
         }
@@ -147,6 +148,10 @@ const PanelCategoriesContent = () => {
                            name="id"
                            value={id} />
 
+                    <input className="invisibleInput"
+                           name="hidden"
+                           value={hidden ? "hidden" : ""} />
+
                     <label className="addProduct__label addProduct__label--frame">
                         <input className="addProduct__input"
                                name="name"
@@ -187,6 +192,13 @@ const PanelCategoriesContent = () => {
                         Zdjęcie kategorii
                         <input type="file"
                                name="categoryImage" />
+                    </label>
+
+                    <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                        <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>
+                            <span className={hidden ? "panelContent__filters__btn--active" : "d-none"} />
+                        </button>
+                        Ukryj kategorię
                     </label>
 
                     <button className="addProduct__btn" type="submit">
