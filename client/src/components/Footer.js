@@ -4,7 +4,7 @@ import cart from '../static/img/cartIcon.png'
 const Footer = () => {
     return <footer className="footer">
         <h5 className="footer__header">
-            &copy; { new Date().getFullYear() } BrunchBox.pl. Wszelkie prawa zastrzeżone.
+            &copy; { new Date().getFullYear() } <b>BrunchBox.pl</b>. Wszelkie prawa zastrzeżone.
         </h5>
 
         <menu className="footer__menu">

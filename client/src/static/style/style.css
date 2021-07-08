@@ -1,6 +1,7 @@
 /* Global */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
 
 * {
     box-sizing: border-box;
@@ -61,7 +62,7 @@ ol {
     left: 0;
     z-index: 10;
     width: 100%;
-    height: 150px;
+    height: 120px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -77,13 +78,13 @@ ol {
 }
 
 .topMenu__logo {
-    width: 102px;
+    width: 122px;
     height: auto;
     transition: .2s all ease-in-out;
 }
 
 .topMenu__logo:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
 }
 
 .topMenu__menu {
@@ -113,6 +114,7 @@ ol {
 .topMenu__list__item__link {
     font-weight: 700;
     font-size: 15px;
+    font-style: italic;
     position: relative;
     text-transform: uppercase;
     transition: .2s all ease-in-out;
@@ -202,6 +204,7 @@ ol {
     position: absolute;
     top: -25px;
     right: -15px;
+    font-style: normal;
     background: #000;
     color: #fff;
     width: 20px;
@@ -216,15 +219,17 @@ ol {
 
 /* Landing */
 .landing {
+    position: relative;
     width: 100%;
-    height: calc(100vh - 150px);
+    height: calc(100vh - 120px);
     display: flex;
     justify-content: center;
     align-items: center;
     background: url("./../img/landing.png");
     background-attachment: fixed;
+    background-position-x: center;
     background-size: cover;
-    margin-top: 150px;
+    margin-top: 120px;
 }
 
 .landing__img {
@@ -240,30 +245,35 @@ ol {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 2;
+    min-width: 300px;
 }
 
 .landing__logo {
-    width: 300px;
+    width: 380px;
     height: auto;
 }
 
 .landing__header {
-    font-family: 'Merriweather', serif;
+    font-family: 'Courgette', cursive;
     font-weight: 400;
-    font-size: 42px;
+    font-size: 52px;
     margin: 60px 0;
+    text-align: center;
 }
 
 .button--landing {
     width: 400px;
     height: 65px;
-    background: #D6B04A;
-    color: #000;
+    background: #000;
+    color: #fff;
     border-radius: 4px;
-    border: 3px solid #000 !important;
     transition: .4s all ease-in-out;
+    font-style: italic;
 }
 
 .button--landing {
@@ -379,10 +389,10 @@ ol {
 
 /* Footer */
 .footer {
-    margin-top: 160px;
     background: #000;
+    color: #fff;
     width: 100%;
-    height: 150px;
+    height: 120px;
     position: relative;
     display: flex;
     justify-content: flex-start;
@@ -410,8 +420,18 @@ ol {
 
 .footer__menu__item {
     margin: 0 20px;
-    color: #fff;
     font-size: 14px;
+    color: #fff;
+    opacity: .85;
+    transition: .2s all;
+}
+
+.footer__header, .footer__menu__item {
+    font-style: italic;
+}
+
+.footer__menu__item:hover {
+    opacity: 1;
 }
 
 /* Offer page */
@@ -496,12 +516,39 @@ ol {
 
 /* Single product */
 .singleProduct {
-    margin: 240px auto 70px;
-    padding: 0 clamp(5%, calc((100vw - 1200px) / 2), 20%);
+    margin: 0 auto 70px;
+    padding: 240px clamp(5%, calc((100vw - 1200px) / 2), 20%) 10px;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
     flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+}
+
+.singleProduct--img {
+    position: absolute;
+    z-index: -1;
+}
+
+.singleProduct--img--1 {
+    right: -120px;
+    top: 190px;
+}
+
+.singleProduct--img--3 {
+    right: -200px;
+    top: 620px;
+}
+
+.singleProduct--img--2 {
+    top: 700px;
+    left: -20px;
+}
+
+.singleProduct--img--4 {
+    top: 80px;
+    left: -20px;
 }
 
 .singleProduct__left {
@@ -542,6 +589,7 @@ ol {
     background: transparent;
     justify-content: center;
     align-items: flex-start;
+    border: 3px solid #E2E2E2;
 }
 
 .singleProduct__img {
@@ -568,12 +616,13 @@ ol {
 }
 
 .singleProduct__title {
+    font-family: 'Courgette', cursive;
     font-size: 24px;
     padding-bottom: 8px;
 }
 
 .singleProduct__title--cursive {
-    font-style: italic;
+    font-family: 'Courgette', cursive;
     display: block;
     text-align: center;
 }
@@ -623,6 +672,7 @@ ol {
 .singleProduct__description {
     margin: 50px 0 30px;
     font-size: 18px;
+    font-style: italic;
 }
 
 .singleProduct__list {
@@ -630,11 +680,14 @@ ol {
     margin-left: 0;
     padding-left: 20px;
     font-size: 18px;
+    font-style: italic;
 }
 
 .button--addToCart {
     background: #000;
     color: #fff;
+    font-size: 18px;
+    font-style: italic;
     border: 2px solid #000;
     border-radius: 4px;
     width: 340px;
@@ -670,40 +723,46 @@ ol {
 }
 
 .singleProduct__parts {
+    font-style: italic;
     margin: 30px 0 20px 20px;
 }
 
 .singleProduct__bottom {
     padding: 0 clamp(5%, calc((100vw - 1200px) / 2), 20%);
     margin: 50px auto;
+    overflow: hidden;
 }
 
 .singleProduct__bottom__btn {
     width: 100%;
     height: 70px;
-    background: #E4E4E4;
-    border: 3px solid #000000;
+    background: #000;
     font-size: 20px;
     font-weight: 700;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #fff;
+    text-transform: uppercase;
+    font-style: italic;
 }
 
 .singleProduct__longDesc {
     background: #F9F9F9;
     border: 2px solid #000;
-    padding: 20px;
+    padding: 30px;
     margin: 20px 0;
     font-size: 17px;
     width: 100%;
     transition: .4s all;
+    font-style: italic;
 }
 
 .arrowDown {
     margin-left: 20px;
     width: 20px;
     height: auto;
+    filter: brightness(0) invert(1);
     transition: .4s all;
 }
 
@@ -1146,5 +1205,5 @@ ol {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 80px;
+    padding: 80px 0 150px;
 }

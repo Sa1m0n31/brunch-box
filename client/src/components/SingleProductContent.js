@@ -19,6 +19,11 @@ import {allergensImg, allergensList} from "../helpers/allergens";
 import ReactTooltip from 'react-tooltip'
 import Loader from "react-loader-spinner";
 
+import bb1 from '../static/img/brunchbox-1.png';
+import bb2 from '../static/img/brunchbox-2.png';
+import bb3 from '../static/img/brunchbox-3.png';
+import bb4 from '../static/img/brunchbox-4.png';
+
 const SingleProductContent = () => {
     const [size, setSize] = useState("M");
     const [product, setProduct] = useState({});
@@ -155,6 +160,11 @@ const SingleProductContent = () => {
     return <>
         <main className="singleProduct">
 
+        <img className="singleProduct--img singleProduct--img--1" src={bb1} alt="brunch-box" />
+        <img className="singleProduct--img singleProduct--img--2" src={bb2} alt="brunch-box" />
+        <img className="singleProduct--img singleProduct--img--3" src={bb3} alt="brunch-box" />
+        <img className="singleProduct--img singleProduct--img--4" src={bb4} alt="brunch-box" />
+
         <Modal
             isOpen={modal}
             portalClassName="smallModal"
@@ -206,6 +216,10 @@ const SingleProductContent = () => {
                     </section>
 
                     <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.replace(/&nbsp;/g, " ")}}>
+                    </div>
+
+                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc}}>
+
                     </div>
 
                     {product.l ? <div className="singleProduct__options">
@@ -263,12 +277,6 @@ const SingleProductContent = () => {
                             }
                         })}
                     </div> : ""}
-
-
-
-                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc}}>
-
-                    </div>
 
                     <section className="singleProduct__options">
                         <button className="button button--addToCart" onClick={() => { addToCart(product.id, option, size) }}>

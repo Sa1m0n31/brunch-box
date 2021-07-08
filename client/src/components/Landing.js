@@ -6,10 +6,10 @@ const Landing = () => {
         <div className="landing__content">
             <img className="landing__logo" src={logo} alt="brunch-box-logo" />
             <h1 className="landing__header">
-                Przekąski na <b>każdą okazję</b>
+                Przekąski na każdą okazję
             </h1>
             <button className="button button--landing">
-                <a className="button--landing__link" href="#zestawy">
+                <a className="button--landing__link" href="/oferta">
                     Zobacz dostępne zestawy
                 </a>
             </button>
