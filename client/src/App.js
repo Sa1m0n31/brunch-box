@@ -25,6 +25,8 @@ import {getAllCategories} from "./helpers/categoryFunctions";
 import convertToURL from "./helpers/convertToURL";
 import PanelBlog from "./admin/pages/PanelBlog";
 import AddPostPage from "./admin/pages/AddPostPage";
+import BlogPage from "./pages/BlogPage";
+import SinglePostPage from "./pages/SinglePostPage";
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -49,6 +51,12 @@ function App() {
                 </Route>
                 <Route path="/oferta">
                     <Offer type="oferta" />
+                </Route>
+                <Route path="/blog">
+                    <BlogPage />
+                </Route>
+                <Route path="/wpis">
+                    <SinglePostPage />
                 </Route>
 
                 {/* CATEGORIES */}

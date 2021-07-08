@@ -44,6 +44,7 @@ const SingleProductContent = () => {
     const [indexAt1, setIndexAt1] = useState(1);
     const [indexAt2, setIndexAt2] = useState(2);
     const [indexAt3, setIndexAt3] = useState(3);
+    const [indexToChange, setIndexToChange] = useState(-1);
 
     const [loaded, setLoaded] = useState(false);
     const [modal, setModal] = useState(false);
@@ -56,6 +57,13 @@ const SingleProductContent = () => {
         settings.API_URL + "/image?url=/media/" + gallery2,
         settings.API_URL + "/image?url=/media/" + gallery3
     ];
+
+    const imagesConst = {
+        meatM: settings.API_URL + "/image?url=/media/" + mainImage,
+        meatL: settings.API_URL + "/image?url=/media/" + gallery1,
+        vegeM: settings.API_URL + "/image?url=/media/" + gallery2,
+        vegeL: settings.API_URL + "/image?url=/media/" + gallery3,
+    }
 
     const getProductIdByURL = (name) => {
         const newName = name[name.length-1].replace(/-/g, " ");
@@ -120,14 +128,36 @@ const SingleProductContent = () => {
         }
     }, []);
 
+    const detectCurrentIndex = (str) => {
+        return images.findIndex((item) => {
+           return item === str;
+        });
+    }
+
     useEffect(() => {
         if(option === "Mięsna") setCurrentDesc(product.meat_description);
         else setCurrentDesc(product.vege_description);
 
-        if((size === "M")&&(option === "Mięsna")) setPrice(product.price_m_meat);
-        else if((size === "L")&&(option === "Mięsna")) setPrice(product.price_l_meat);
-        else if((size === "M")&&(option === "Wegetariańska")) setPrice(product.price_m_vege);
-        else if((size === "L")&&(option === "Wegetariańska")) setPrice(product.price_l_vege);
+        if((size === "M")&&(option === "Mięsna")) {
+            setPrice(product.price_m_meat);
+            switchMainImage(0);
+        }
+        else if((size === "L")&&(option === "Mięsna")) {
+            setPrice(product.price_l_meat);
+            switchMainImage(1);
+        }
+        else if((size === "M")&&(option === "Wegetariańska")) {
+            setPrice(product.price_m_vege);
+            switchMainImage(2);
+        }
+        else if((size === "L")&&(option === "Wegetariańska")) {
+            setPrice(product.price_l_vege);
+            switchMainImage(3);
+        }
+
+        /* Change image */
+
+
     }, [size, option])
 
     const addToCart = (id, option, size) => {
@@ -139,22 +169,19 @@ const SingleProductContent = () => {
         setLongDesc(!longDesc);
     }
 
-    const changeMainImage = (index, n) => {
-        const indexAtMainBefore = indexAtMain;
+    const randomImages = (except) => {
+        const arr = [0, 1, 2, 3].filter(item => {
+            return item !== except;
+        });
+
+        setIndexAt1(arr[0]);
+        setIndexAt2(arr[1]);
+        setIndexAt3(arr[2]);
+    }
+
+    const switchMainImage = (index) => {
         setIndexAtMain(index);
-        switch(n) {
-            case 1:
-                setIndexAt1(indexAtMainBefore);
-                break;
-            case 2:
-                setIndexAt2(indexAtMainBefore);
-                break;
-            case 3:
-                setIndexAt3(indexAtMainBefore);
-                break;
-            default:
-                break;
-        }
+        randomImages(index);
     }
 
     return <>
@@ -196,9 +223,10 @@ const SingleProductContent = () => {
                     </button>
 
                     <section className="singleProduct__images">
-                        <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { changeMainImage(indexAt1, 1); }} />
-                        <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { changeMainImage(indexAt2, 2); }} />
-                        <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { changeMainImage(indexAt3, 3); }} />
+                        <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />
+                        <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />
+                        <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />
+
                     </section>
 
                 </section>
@@ -279,9 +307,9 @@ const SingleProductContent = () => {
                     </div> : ""}
 
                     <section className="singleProduct__options">
-                        <button className="button button--addToCart" onClick={() => { addToCart(product.id, option, size) }}>
+                        <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id, option, size) }}>
                             Dodaj do koszyka
-                            <img className="button--addToCart__img" src={cartImg} alt="koszyk" />
+                            {/*<img className="button--addToCart__img" src={cartImg} alt="koszyk" />*/}
                         </button>
                     </section>
                 </section></> : <main className="loading">
@@ -310,7 +338,7 @@ const SingleProductContent = () => {
         /> : ""}
     </main>
         <section className="singleProduct__bottom">
-            <button className="singleProduct__bottom__btn" onClick={() => { toggleDescription() }}>
+            <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>
                 {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu
                 <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />
             </button>

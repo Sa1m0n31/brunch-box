@@ -93,6 +93,11 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
+                    <a className="topMenu__list__item__link" href="/blog">
+                        Blog
+                    </a>
+                </li>
+                <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="#">
                         Kontakt
                     </a>
@@ -149,6 +154,11 @@ const TopMenu = () => {
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/oferta">
                         Oferta
+                    </a>
+                </li>
+                <li className="topMenu__list__item">
+                    <a className="topMenu__list__item__link" href="/blog">
+                        Blog
                     </a>
                 </li>
                 <li className="topMenu__list__item">

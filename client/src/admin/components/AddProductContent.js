@@ -276,21 +276,27 @@ const AddProductContent = () => {
 
 
                 <label className="fileInputLabel">
-                    <span>Galeria - 1</span>
+                    <span>Zdjęcie produktu (opcja mięsna M)</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="mainImage" />
+                </label>
+                <label className="fileInputLabel">
+                    <span>Galeria - 1 (opcja mięsna L)</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery1" />
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Galeria - 2</span>
+                    <span>Galeria - 2 (opcja wege M)</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery2" />
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Galeria - 3</span>
+                    <span>Galeria - 3 (opcja wege L)</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery3" />
@@ -299,13 +305,6 @@ const AddProductContent = () => {
             </section>
 
             <section className="addProduct__form__section">
-
-               <label className="fileInputLabel">
-                   <span>Zdjęcie produktu</span>
-                   <input type="file"
-                          className="product__fileInput"
-                          name="mainImage" />
-               </label>
 
                 <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft">
                     <h4 className="addProduct__form__subsection__header">

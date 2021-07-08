@@ -118,8 +118,11 @@ con.connect(err => {
 
     /* GET ALL POSTS */
     router.get("/get-all", (request, response) => {
-       const query = 'SELECT p.id as id, p.title, p.date, i.file_path as img_path FROM posts p JOIN images i ON p.image = i.id ORDER BY p.date DESC';
+       const query = 'SELECT p.id as id, p.title, p.date, i.file_path as img_path, p.content FROM posts p LEFT OUTER JOIN images i ON p.image = i.id ORDER BY p.date DESC';
        con.query(query, (err, res) => {
+           console.log("HELLO FROM get-all!");
+
+           console.log(err);
            if(res) {
                response.send({
                    result: res
@@ -137,7 +140,7 @@ con.connect(err => {
     router.post("/get-post-by-id", (request, response) => {
        const { id } = request.body;
        const values = [id];
-       const query = 'SELECT p.id, p.title, p.content, p.title_en, p.content_en, i.file_path as img_path FROM posts p JOIN images i ON p.image = i.id WHERE p.id = ?';
+       const query = 'SELECT p.id, p.title, p.content, p.title_en, p.content_en, i.file_path as img_path FROM posts p LEFT OUTER JOIN images i ON p.image = i.id WHERE p.id = ?';
        con.query(query, values, (err, res) => {
           if(res) {
               response.send({

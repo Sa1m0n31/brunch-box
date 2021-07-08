@@ -16,6 +16,18 @@ app.get("/oferta-indywidualna", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 /* TODO */
+app.get("/oferta", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/blog", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+// app.get("/blog/*", (req, res) => {
+//     res.sendFile(path.join(__dirname, '../client/build/index.html'));
+// });
+app.get("/wpis/*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 app.get("/dla-grup", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
