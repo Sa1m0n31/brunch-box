@@ -216,6 +216,27 @@
     .blogContent__item {
         width: 45%;
     }
+
+    /* About us */
+    .aboutUs__section {
+        padding: 70px 0;
+    }
+
+    .aboutUs__img {
+        width: 45%;
+    }
+
+    .aboutUs__content {
+        width: 50%;
+    }
+
+    .aboutUs__header {
+        font-size: 20px;
+    }
+
+    .aboutUs__p {
+        font-size: 14px;
+    }
 }
 
 @media(max-width: 992px) {
@@ -508,6 +529,35 @@
 
     .panelContent__ribbons__column {
         font-size: 13px;
+    }
+
+    /* About us */
+    .aboutUs__section {
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 0;
+    }
+
+    .aboutUs__img, .aboutUs__content {
+        width: 100%;
+    }
+
+    .aboutUs__img {
+        max-width: 600px;
+        order: 1 !important;
+    }
+
+    .aboutUs__content {
+        order: 2 !important;
+        margin-top: 40px;
+    }
+
+    .aboutUs__header {
+        text-align: center !important;
+    }
+
+    .aboutUs__p {
+        text-align: left !important;
     }
 }
 
@@ -969,5 +1019,10 @@
     .panelModal .ReactModal__Content {
         width: 100% !important;
         height: 100vh !important;
+    }
+
+    /* About us */
+    .aboutUs__header {
+        font-size: 18px;
     }
 }

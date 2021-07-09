@@ -83,7 +83,7 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
+                    <a className="topMenu__list__item__link" href="/o-nas">
                         O nas
                     </a>
                 </li>
@@ -98,7 +98,7 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
+                    <a className="topMenu__list__item__link" href="/kontakt">
                         Kontakt
                     </a>
                 </li>
@@ -147,7 +147,7 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
+                    <a className="topMenu__list__item__link" href="/o-nas">
                         O nas
                     </a>
                 </li>
@@ -162,7 +162,7 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="#">
+                    <a className="topMenu__list__item__link" href="/kontakt">
                         Kontakt
                     </a>
                 </li>

@@ -517,7 +517,7 @@ ol {
 /* Single product */
 .singleProduct {
     margin: 0 auto 70px;
-    padding: 240px clamp(5%, calc((100vw - 1200px) / 2), 20%) 10px;
+    padding: 220px clamp(5%, calc((100vw - 1200px) / 2), 20%) 10px;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
@@ -671,8 +671,8 @@ ol {
 }
 
 .singleProduct__description {
-    margin: 50px 0 30px;
-    font-size: 18px;
+    margin: 20px 0 30px;
+    font-size: 16px;
     font-style: italic;
 }
 
@@ -1261,4 +1261,50 @@ ol {
     margin-top: 40px;
     text-align: justify;
     font-size: 14px;
+}
+
+/* About us */
+.aboutUs__section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 100px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .25);
+}
+
+.aboutUs__section:first-of-type {
+    padding-top: 0;
+}
+
+.aboutUs__img {
+    width: 35%;
+    height: auto;
+}
+
+.aboutUs__content {
+    width: 60%;
+}
+
+.aboutUs__header {
+    font-family: 'Merriweather', Serif;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+.aboutUs__p {
+    font-size: 15px;
+    font-style: italic;
+    margin: 12px 0;
+}
+
+.order-1 {
+    order: 1;
+}
+
+.order-2 {
+    order: 2;
+}
+
+.textAlignRight * {
+    text-align: right;
 }

@@ -27,6 +27,7 @@ import PanelBlog from "./admin/pages/PanelBlog";
 import AddPostPage from "./admin/pages/AddPostPage";
 import BlogPage from "./pages/BlogPage";
 import SinglePostPage from "./pages/SinglePostPage";
+import AboutUsPage from "./pages/AboutUsPage";
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -57,6 +58,9 @@ function App() {
                 </Route>
                 <Route path="/wpis">
                     <SinglePostPage />
+                </Route>
+                <Route path="/o-nas">
+                    <AboutUsPage />
                 </Route>
 
                 {/* CATEGORIES */}
