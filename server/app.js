@@ -22,6 +22,12 @@ app.get("/oferta", (req, res) => {
 app.get("/blog", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/o-nas", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/kontakt", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 // app.get("/blog/*", (req, res) => {
 //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 // });
