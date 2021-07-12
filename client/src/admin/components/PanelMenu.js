@@ -12,6 +12,7 @@ import addImg from '../static/img/add.png'
 import hamburger from '../../static/img/hamburger.png'
 import close from '../static/img/close.png'
 import write from '../static/img/write.svg'
+import aboutUs from '../static/img/about-us.png'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -143,6 +144,12 @@ const PanelMenu = ({active, submenu}) => {
                             <img className="panelMenu__list__subitem__img" src={addImg} alt="dodaj-wpis" />
                             Dodaj wpis
                         </a> : "" }
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 8 ? "menuItem--active" : ""} href="/panel/o-nas">
+                            <img className="panelMenu__list__item__img" src={aboutUs} alt="o-nas" />
+                            O nas
+                        </a>
                     </li>
                     <li className="panelMenu__list__item">
                         <button className="panelMenu__list__item__link" onClick={() => logout()}>

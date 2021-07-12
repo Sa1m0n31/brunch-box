@@ -389,15 +389,16 @@ ol {
 
 /* Footer */
 .footer {
-    background: #000;
-    color: #fff;
+    background: url("../img/footer-background.png");
+    color: #000;
     width: 100%;
-    height: 120px;
+    height: 100px;
     position: relative;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     padding: 0 clamp(5%, calc((100vw - 1400px) / 2), 10%);
+    border-top: 3px solid #000;
 }
 
 .footer__menu {
@@ -408,9 +409,9 @@ ol {
 }
 
 .footer__header {
-    color: #fff;
+    color: #000;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 700;
 }
 
 .footer__list {
@@ -419,7 +420,7 @@ ol {
 }
 
 .footer__menu__item {
-    margin: 0 20px;
+    margin: 0 15px;
     font-size: 14px;
     color: #fff;
     opacity: .85;
@@ -432,6 +433,18 @@ ol {
 
 .footer__menu__item:hover {
     opacity: 1;
+}
+
+.footer__headerWrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.footer__header--label {
+    text-transform: uppercase;
+    margin-right: 15px;
+    color: #D5D5D5;
 }
 
 /* Offer page */

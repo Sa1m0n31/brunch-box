@@ -29,10 +29,19 @@ import BlogPage from "./pages/BlogPage";
 import SinglePostPage from "./pages/SinglePostPage";
 import AboutUsPage from "./pages/AboutUsPage";
 
+import "aos/dist/aos.css";
+import AOS from 'aos';
+import PanelAboutUs from "./admin/pages/PanelAboutUs";
+
 function App() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
+       AOS.init({
+           delay: 200,
+           duration: 500
+       });
+
        getAllCategories()
            .then(res => {
                setCategories(res.data.result);
@@ -112,6 +121,9 @@ function App() {
                 </Route>
                 <Route path="/panel/blog">
                     <PanelBlog />
+                </Route>
+                <Route path="/panel/o-nas">
+                    <PanelAboutUs />
                 </Route>
 
                 {/* Add content pages */}

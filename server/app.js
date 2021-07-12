@@ -77,6 +77,7 @@ const orderRouter = require("./routers/orderRouter");
 const imageRouter = require("./routers/imageRouter");
 const paymentRouter = require("./routers/paymentRouter");
 const blogRouter = require("./routers/blogRouter");
+const aboutUsRouter = require("./routers/abousUsRouter");
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -88,6 +89,7 @@ app.use("/order", orderRouter);
 app.use("/image", imageRouter);
 app.use("/payment", paymentRouter);
 app.use("/blog", blogRouter);
+app.use("/about-us", aboutUsRouter);
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

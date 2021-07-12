@@ -49,11 +49,12 @@ const OfferContent = ({type}) => {
             Nasza oferta
         </h1>}
 
-        {loaded ? <div className="offerContent__grid">
+        {loaded ? <section className="offerContent__grid">
             {products.map((item, index) => {
                 if(category !== "") {
                     if((item.category_name === category)&&(!item.hidden)) {
                         return <Link className="offerContent__item"
+                                     data-aos="zoom-in"
                                      key={index}
                                      to={{
                                          pathname: `/produkt/${convertToURL(item.product_name)}`,
@@ -113,7 +114,7 @@ const OfferContent = ({type}) => {
                     </Link>
                 }
             })}
-        </div> : <main className="loading">
+        </section> : <main className="loading">
             <Loader
                 type="puff"
                 color="#000"
