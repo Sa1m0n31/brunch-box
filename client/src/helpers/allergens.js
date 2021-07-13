@@ -15,7 +15,12 @@ import siarka from '../static/img/allergens/siarka.png'
 import skorupiaki from '../static/img/allergens/skorupiaki.png'
 import soja from '../static/img/allergens/soja.png'
 
-const allergensList = ["gluten", "grzyby", "jajka", "kukurydza", "łubin", "mięczaki", "mleko", "musztarda", "orzechy", "orzechy ziemne", "ryba", "seler", "sezam", "siarka", "skorupiaki", "soja"];
+const allergensList = ["gluten/gluten", "grzyby/mushrooms", "jajka/eggs",
+    "kukurydza/corn", "łubin/lupin", "mięczaki/mollusca",
+    "mleko/milk", "musztarda/mustard", "orzechy/nuts",
+    "orzechy ziemne/peanut", "ryba/fish",
+    "seler/celery", "sezam/sesame", "siarka/sulphur",
+    "skorupiaki/shellfish", "soja/soya"];
 const allergensImg = [gluten, grzyby, jajka, kukurydza, lubin, mieczaki, mleko, musztarda, orzechy, orzechyZiemne, ryba, seler,
     sezam, siarka, skorupiaki, soja];
 

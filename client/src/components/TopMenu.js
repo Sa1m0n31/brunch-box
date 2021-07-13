@@ -7,6 +7,7 @@ import closeImg from '../static/img/close.png'
 import cart from '../static/img/cartIcon.png'
 import fb from "../static/img/facebook.svg";
 import insta from "../static/img/instagram.svg";
+import settings from "../helpers/settings";
 
 const TopMenu = () => {
     const mobileMenu = useRef(null);
@@ -146,12 +147,12 @@ const TopMenu = () => {
             </ul>
 
             <div className="topMenu__languages">
-                <button className="topMenu__languages__btn">
+                <a className="topMenu__languages__btn" href={settings.API_URL}>
                     <img className="topMenu__languages__img" src={poland} alt="polski" />
-                </button>
-                <button className="topMenu__languages__btn">
+                </a>
+                <a className="topMenu__languages__btn" href={`en.${settings.API_URL}`}>
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
-                </button>
+                </a>
             </div>
         </menu>
 

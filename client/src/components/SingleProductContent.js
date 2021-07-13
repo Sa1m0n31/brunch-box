@@ -295,7 +295,7 @@ const SingleProductContent = () => {
                         </h3>
                         {allergens.map((item, index) => {
                             const allergen = allergensList.findIndex(itemOnTheList => {
-                                return itemOnTheList === item.allergen;
+                                return itemOnTheList.split("/")[0] === item.allergen;
                             });
                             if((allergen)||(allergen === 0)) {
                                 return <>
