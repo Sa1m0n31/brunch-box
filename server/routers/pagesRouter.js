@@ -13,8 +13,8 @@ con.connect((err) => {
        const query = 'UPDATE pages SET terms_of_service = ?, terms_of_service_en = ?, privacy_policy = ?, privacy_policy_en = ?, contact = ?, contact_en = ? WHERE id = 1';
 
        con.query(query, values, (err, res) => {
-              if(res) response.redirect("http://localhost:5000/panel/pozostale?add=1");
-              else response.redirect("http://localhost:5000/panel/pozostale?add=0");
+              if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/pozostale?add=1");
+              else response.redirect("http://brunchbox.skylo-test3.pl/panel/pozostale?add=0");
        });
 
     });

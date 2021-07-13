@@ -41,7 +41,6 @@ const SingleProductContent = () => {
     const [indexAt1, setIndexAt1] = useState(1);
     const [indexAt2, setIndexAt2] = useState(2);
     const [indexAt3, setIndexAt3] = useState(3);
-    const [indexToChange, setIndexToChange] = useState(-1);
 
     const [loaded, setLoaded] = useState(false);
     const [modal, setModal] = useState(false);
@@ -70,6 +69,7 @@ const SingleProductContent = () => {
     useEffect(() => {
         let id;
         if(location.state) {
+            /* Get there by website */
             id = location.state.id;
             getSingleProduct(id)
                 .then(res => {
@@ -99,6 +99,7 @@ const SingleProductContent = () => {
                 });
         }
         else {
+            /* Get there by link */
             getProductIdByURL(window.location.pathname.split("/"))
                 .then(res => {
                     id = res.data.result[0].id
@@ -114,8 +115,16 @@ const SingleProductContent = () => {
                             getImageById(res.data.result[0].gallery_1)
                                 .then(res => {
                                     setGallery1(res.data.result.file_path);
-                                    setLoaded(true);
                                 });
+                            getImageById(res.data.result[0].gallery_2)
+                                .then(res => {
+                                    setGallery2(res.data.result.file_path);
+                                });
+                            getImageById(res.data.result[0].gallery_3)
+                                .then(res => {
+                                    setGallery3(res.data.result.file_path);
+                                });
+                            setLoaded(true);
                         });
                     getProductAllergens(id)
                         .then(res => {
