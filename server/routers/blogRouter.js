@@ -154,6 +154,30 @@ con.connect(err => {
           }
        });
     });
+
+    /* GET POST BY TITLE */
+    router.post("/get-post-by-title", (request, response) => {
+       const { title } = request.body;
+       const values = [title];
+
+       console.log(title);
+
+       const query = 'SELECT * FROM posts WHERE LOWER(title) = ?';
+       con.query(query, values, (err, res) => {
+           console.log(err);
+           console.log(res);
+           if(res) {
+               response.send({
+                   result: res[0]
+               });
+           }
+           else {
+               response.send({
+                   result: 0
+               })
+           }
+       })
+    });
 });
 
 module.exports = router;

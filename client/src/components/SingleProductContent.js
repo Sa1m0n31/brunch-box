@@ -1,10 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
 
 import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
-
-import productImg from '../static/img/food.jpg'
-import cartImg from '../static/img/cartIcon.png'
+import 'react-image-lightbox/style.css';
 
 import { editCart } from "../helpers/editCart";
 import Modal from 'react-modal'

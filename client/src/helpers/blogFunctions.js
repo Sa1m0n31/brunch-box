@@ -7,4 +7,8 @@ const getAllPosts = () => {
     return axios.get(`${API_URL}/blog/get-all`);
 }
 
-export { getAllPosts }
+const getPostByTitle = (title) => {
+    return axios.post(`${API_URL}/blog/get-post-by-title`, { title });
+}
+
+export { getAllPosts, getPostByTitle }

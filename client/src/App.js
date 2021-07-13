@@ -32,6 +32,9 @@ import AboutUsPage from "./pages/AboutUsPage";
 import "aos/dist/aos.css";
 import AOS from 'aos';
 import PanelAboutUs from "./admin/pages/PanelAboutUs";
+import ContactPage from "./pages/ContactPage";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -70,6 +73,15 @@ function App() {
                 </Route>
                 <Route path="/o-nas">
                     <AboutUsPage />
+                </Route>
+                <Route path="/kontakt">
+                    <ContactPage />
+                </Route>
+                <Route path="/regulamin">
+                    <TermsOfService />
+                </Route>
+                <Route path="/polityka-prywatnosci">
+                    <PrivacyPolicy />
                 </Route>
 
                 {/* CATEGORIES */}

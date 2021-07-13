@@ -3,4 +3,10 @@ const convertToURL = (str) => {
     else return "";
 }
 
+const convertToString = (url) => {
+    if(url) return url.replace(/-/g, " ");
+    else return "";
+}
+
 export default convertToURL;
+export { convertToString }

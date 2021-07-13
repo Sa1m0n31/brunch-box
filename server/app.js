@@ -28,6 +28,12 @@ app.get("/o-nas", (req, res) => {
 app.get("/kontakt", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/regulamin", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/polityka-prywatnosci", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 // app.get("/blog/*", (req, res) => {
 //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 // });

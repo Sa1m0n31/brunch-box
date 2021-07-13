@@ -237,6 +237,12 @@
     .aboutUs__p {
         font-size: 14px;
     }
+
+    /* Contact */
+    .contactContent__frame__header,
+    .contactContent__frame__text {
+        font-size: 13px;
+    }
 }
 
 @media(max-width: 992px) {
@@ -309,7 +315,7 @@
 
     /* Offer */
     .offerContent {
-        margin-top: 120px;
+        margin-top: 150px;
     }
 
     .offerContent__header {
@@ -324,7 +330,7 @@
 
     /* Single product */
     .singleProduct {
-        padding-top: 120px;
+        padding-top: 150px;
     }
 
     .singleProduct__title {
@@ -341,7 +347,7 @@
 
     /* Cart */
     .cartContent {
-        margin-top: 70px;
+        margin-top: 130px;
     }
 
     .cart__item__label {
@@ -423,11 +429,19 @@
         top: -5px;
     }
 
-    .footer__menu {
+    .footer__menu--footer {
         position: relative;
         top: 40px;
         right: 0;
         transform: none;
+    }
+
+    .topBar {
+        padding: 0 5vw;
+    }
+
+    .footer__menu--topBar {
+        right: 5vw;
     }
 
     /* Admin */
@@ -558,6 +572,53 @@
 
     .aboutUs__p {
         text-align: left !important;
+    }
+
+    /* Single post */
+    .singlePost__title {
+        font-size: 18px;
+    }
+
+    .singlePost__article {
+        width: 100%;
+    }
+
+    .singlePost__aside {
+        display: none;
+    }
+
+    .singlePost__article p {
+        font-size: 14px;
+    }
+
+    #header0, #header1, #header2, #header3, #header4,
+    #header5, #header6, #header7, #header8, #header9 {
+        font-size: 18px !important;
+    }
+
+    /* Contact */
+    .contactContent {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contactContent__section {
+        width: 100% !important;
+        max-width: 500px;
+    }
+
+    .contactContent__section:first-of-type {
+        margin-bottom: 40px;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .contactContent__frame {
+        width: 100%;
+    }
+
+    .footer {
+        height: 120px;
     }
 }
 
@@ -828,6 +889,10 @@
 
     .footer__header, .footer__menu__item__link {
         font-size: 12px;
+    }
+
+    .footer__menu--footer .footer__menu__item:last-of-type {
+        margin-right: 8px;
     }
 
     /* Blog */

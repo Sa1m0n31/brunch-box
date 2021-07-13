@@ -58,7 +58,7 @@ ol {
 /* Top menu */
 .topMenu {
     position: fixed;
-    top: 0;
+    top: 50px;
     left: 0;
     z-index: 10;
     width: 100%;
@@ -388,9 +388,29 @@ ol {
 }
 
 /* Footer */
+.topBar {
+    background-color: #fff;
+    background-image: url("../img/footer-background.png");
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    color: #fff;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    opacity: 1;
+    transform-origin: top;
+    transition: .4s all ease-in-out;
+    padding: 0 clamp(10%, calc((100vw - 1400px) / 2), 10%);
+    border-bottom: 1px solid rgba(0, 0, 0, .15);
+}
+
 .footer {
-    background: url("../img/footer-background.png");
-    color: #000;
+    background: #000;
+    color: #fff;
     width: 100%;
     height: 100px;
     position: relative;
@@ -403,9 +423,13 @@ ol {
 
 .footer__menu {
     position: absolute;
-    right: clamp(5%, calc((100vw - 1400px) / 2), 10%);
+    right: clamp(10%, calc((100vw - 1400px) / 2), 10%);
     top: 50%;
     transform: translateY(-50%);
+}
+
+.footer__menu__item:last-of-type {
+    margin-right: 0;
 }
 
 .footer__header {
@@ -445,6 +469,22 @@ ol {
     text-transform: uppercase;
     margin-right: 15px;
     color: #D5D5D5;
+}
+
+.footer__header__link {
+    text-align: center;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.topBar .footer__header {
+    transition: .2s all ease-in-out;
+}
+
+.topBar .footer__header:hover {
+    transform: translateX(10px);
 }
 
 /* Offer page */
@@ -1320,4 +1360,103 @@ ol {
 
 .textAlignRight * {
     text-align: right;
+}
+
+/* Single post */
+.singlePost__title {
+    font-family: 'Merriweather', Serif;
+    text-align: left;
+    width: 100%;
+    margin: 40px 0;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, .25);
+}
+
+.singlePost__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.singlePost__article {
+    width: 70%;
+}
+
+.singlePost__aside {
+    width: 20%;
+}
+
+.singleProduct--post {
+    padding: 200px clamp(10%, calc((100vw - 1400px) / 2), 10%) 50px;
+    position: relative;
+}
+
+.singlePost__aside__header {
+    text-align: right;
+    padding-bottom: 15px;
+    border-bottom: 3px solid rgba(0, 0, 0, .25);
+}
+
+.singlePost__aside__list__item {
+    text-align: right;
+    margin: 15px 0;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .25);
+    transition: .2s all ease-in-out;
+}
+
+.singlePost__aside__list__item:hover {
+    transform: translateX(-10px);
+}
+
+/* Contact */
+.contactContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 50px auto 100px;
+}
+
+.contactContent__section:first-of-type {
+    width: 35%;
+}
+
+.contactContent__section:last-of-type {
+    width: 60%;
+}
+
+.contactContent__img {
+    width: 100%;
+    height: auto;
+}
+
+.contactContent__section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.contactContent__frame__header,
+.contactContent__frame__text {
+    font-size: 15px;
+}
+
+.contactContent__frame {
+    width: 48%;
+    margin-bottom: 50px;
+}
+
+.link--animated {
+    display: block;
+    transition: .4s all;
+}
+
+.link--animated:hover {
+    transform: translateX(10px);
+}
+
+/* Pages */
+.pageContent {
+    margin-top: 50px;
 }
