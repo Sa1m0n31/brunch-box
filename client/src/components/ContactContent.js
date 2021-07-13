@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import contactImg from '../static/img/contact.jpg'
+import logo from '../static/img/brunch-box-logo.png'
 import {getPagesContent} from "../helpers/pagesFunctions";
 
 const ContactContent = () => {
@@ -19,14 +19,10 @@ const ContactContent = () => {
     }, []);
 
     return <main className="offerContent">
-        <h1 className="offerContent__header">
-            Kontakt
-        </h1>
+        <section className="offerContent__header">
+            <img className="offerContent__logo" src={logo} alt="logo" />
+        </section>
         <main className="contactContent">
-            <section className="contactContent__section" data-aos="fade-right">
-                <img className="contactContent__img" src={contactImg} alt="kontakt" />
-            </section>
-
             <section className="contactContent__section" data-aos="fade-left">
                 {contactSections ? contactSections.map((item, index) => (
                     <section className="contactContent__frame"

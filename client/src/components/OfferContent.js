@@ -42,12 +42,12 @@ const OfferContent = ({type}) => {
     }, []);
 
     return <main className="offerContent">
-        {category ? <h1 className="offerContent__header">
-            {header}
-            <span className="thin marginLeft15">({subheader})</span>
-        </h1> : <h1 className="offerContent__header">
-            Nasza oferta
-        </h1>}
+        {/*{category ? <h1 className="offerContent__header">*/}
+        {/*    {header}*/}
+        {/*    <span className="thin marginLeft15">({subheader})</span>*/}
+        {/*</h1> : <h1 className="offerContent__header">*/}
+        {/*    Nasza oferta*/}
+        {/*</h1>}*/}
 
         {loaded ? <section className="offerContent__grid">
             {products.map((item, index) => {
@@ -67,9 +67,9 @@ const OfferContent = ({type}) => {
                         >
                             <div className="offerContent__item__border">
                                 <h3 className="offerContent__item__header">
-                                    {item.product_name}
+                                    {item.product_name.split("/")[0]}
                                     <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name}
+                                    {item.bracket_name.split("/")[0]}
                                 </span>
                                 </h3>
                                 <section className="offerContent__imgWrapper">
@@ -98,9 +98,9 @@ const OfferContent = ({type}) => {
                     >
                         <div className="offerContent__item__border">
                             <h3 className="offerContent__item__header">
-                                {item.product_name}
+                                {item.product_name.split("/")[0]}
                                 <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name}
+                                    {item.bracket_name.split("/")[0]}
                                 </span>
                             </h3>
                             <section className="offerContent__imgWrapper">

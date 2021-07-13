@@ -239,9 +239,9 @@ const SingleProductContent = () => {
                 <section className="singleProduct__right">
                     <section className="singleProduct__right__header">
                         <h1 className="singleProduct__title">
-                            {product.name}
+                            {product.name.split("/")[0]}
                             <span className="thin singleProduct__title--cursive">
-                        {product.bracket_name}
+                        {product.bracket_name.split("/")[0]}
                     </span>
                         </h1>
                         <h2 className="singleProduct__price">
@@ -249,10 +249,10 @@ const SingleProductContent = () => {
                         </h2>
                     </section>
 
-                    <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.replace(/&nbsp;/g, " ")}}>
+                    <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>
                     </div>
 
-                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc}}>
+                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc.split("---")[0]}}>
 
                     </div>
 
@@ -349,7 +349,7 @@ const SingleProductContent = () => {
                 <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />
             </button>
 
-            <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.replace(/&nbsp;/g, " ")}}>
+            <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>
 
             </main>
         </section>
