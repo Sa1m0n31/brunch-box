@@ -35,6 +35,7 @@ import PanelAboutUs from "./admin/pages/PanelAboutUs";
 import ContactPage from "./pages/ContactPage";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import PanelOthers from "./admin/pages/PanelOthers";
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -136,6 +137,9 @@ function App() {
                 </Route>
                 <Route path="/panel/o-nas">
                     <PanelAboutUs />
+                </Route>
+                <Route path="/panel/pozostale">
+                    <PanelOthers />
                 </Route>
 
                 {/* Add content pages */}

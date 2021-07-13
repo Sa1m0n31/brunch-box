@@ -44,7 +44,6 @@ con.connect(err => {
             const values = [title, content, fileId, titleEn, contentEn];
             const query = 'INSERT INTO posts VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
             con.query(query, values, (err, res) => {
-               console.log(err);
                if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=1");
                else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=0");
             });

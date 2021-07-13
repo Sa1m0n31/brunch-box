@@ -13,6 +13,7 @@ import hamburger from '../../static/img/hamburger.png'
 import close from '../static/img/close.png'
 import write from '../static/img/write.svg'
 import aboutUs from '../static/img/about-us.png'
+import others from '../static/img/file.png'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -149,6 +150,12 @@ const PanelMenu = ({active, submenu}) => {
                         <a className="panelMenu__list__item__link" id={active === 8 ? "menuItem--active" : ""} href="/panel/o-nas">
                             <img className="panelMenu__list__item__img" src={aboutUs} alt="o-nas" />
                             O nas
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/pozostale">
+                            <img className="panelMenu__list__item__img" src={others} alt="pozostale" />
+                            Pozostałe
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
