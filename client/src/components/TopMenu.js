@@ -18,6 +18,7 @@ const TopMenu = () => {
     const mobileMenuCloseBtn = useRef(null);
     const mobileMenuLogo = useRef(null);
     const mobileMenuList = useRef(null);
+    const mobileMenuLanguages = useRef(null);
 
     useEffect(() => {
         let lastScrollTop = 0;
@@ -59,6 +60,7 @@ const TopMenu = () => {
         }, 400);
         setTimeout(() => {
             mobileMenuList.current.style.opacity = "1";
+            mobileMenuLanguages.current.style.opacity = "1";
         }, 600);
     }
 
@@ -69,6 +71,7 @@ const TopMenu = () => {
         }, 200);
         setTimeout(() => {
             mobileMenuList.current.style.opacity = "0";
+            mobileMenuLanguages.current.style.opacity = "0";
         }, 400);
         setTimeout(() => {
             mobileMenu.current.style.transform = "scaleX(0)";
@@ -150,7 +153,7 @@ const TopMenu = () => {
                 <a className="topMenu__languages__btn" href={settings.API_URL}>
                     <img className="topMenu__languages__img" src={poland} alt="polski" />
                 </a>
-                <a className="topMenu__languages__btn" href={`en.${settings.API_URL}`}>
+                <a className="topMenu__languages__btn" href="http://en.brunchbox.skylo-test3.pl">
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
                 </a>
             </div>
@@ -201,6 +204,15 @@ const TopMenu = () => {
                     </a>
                 </li>
             </ul>
+
+            <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
+                <a className="topMenu__languages__btn" href={settings.API_URL}>
+                    <img className="topMenu__languages__img" src={poland} alt="polski" />
+                </a>
+                <a className="topMenu__languages__btn" href="http://en.brunchbox.skylo-test3.pl">
+                    <img className="topMenu__languages__img" src={uk} alt="angielski" />
+                </a>
+            </div>
         </menu>
     </header>
         </>

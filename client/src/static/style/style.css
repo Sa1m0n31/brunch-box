@@ -111,6 +111,14 @@ ol {
     align-items: center;
 }
 
+.topMenu__languages--mobile {
+    margin-left: 0 !important;
+}
+
+.topMenu__languages--mobile * {
+    margin: 15px !important;
+}
+
 .topMenu__list__item__link {
     font-weight: 700;
     font-size: 15px;
@@ -489,6 +497,7 @@ ol {
 
 /* Offer page */
 .offerContent {
+    overflow-x: hidden;
     margin-top: 280px;
     padding: 0 clamp(5%, calc((100vw - 1400px) / 2), 10%);
 }
