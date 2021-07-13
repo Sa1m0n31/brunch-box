@@ -1451,7 +1451,7 @@ ol {
 .contactContent__frame strong {
     font-family: 'Courgette', cursive !important;
     color: #D6B04A !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 6px !important;
     display: block !important;
     font-size: 17px !important;
 }
@@ -1462,7 +1462,7 @@ ol {
 
 .contactContent__frame {
     width: 48%;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
 
 .link--animated {
@@ -1472,6 +1472,10 @@ ol {
 
 .link--animated:hover {
     transform: translateX(10px);
+}
+
+.offerContent--contact {
+    margin-top: 200px;
 }
 
 /* Pages */

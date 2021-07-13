@@ -92,7 +92,7 @@ const Cart = () => {
                                 Nazwa produktu
                             </h3>
                             <h2 className="cart__item__value">
-                                {cartProducts[index]?.name} ({cartProducts[index]?.bracket_name})
+                                {cartProducts[index]?.name?.split("/")[0]} ({cartProducts[index]?.bracket_name?.split("/")[0]})
                             </h2>
                         </section>
 

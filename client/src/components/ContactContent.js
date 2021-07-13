@@ -18,7 +18,7 @@ const ContactContent = () => {
             })
     }, []);
 
-    return <main className="offerContent">
+    return <main className="offerContent offerContent--contact">
         <section className="offerContent__header">
             <img className="offerContent__logo" src={logo} alt="logo" />
         </section>
