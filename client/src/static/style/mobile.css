@@ -907,6 +907,12 @@
     .blogContent__item__title {
         font-size: 18px;
     }
+
+    /* Admin */
+    .panelContent__othersSection {
+        width: 100%;
+        margin-top: 20px;
+    }
 }
 
 @media(max-width: 576px) {
