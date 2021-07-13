@@ -295,7 +295,7 @@ const SingleProductContent = () => {
                         </h3>
                         {allergens.map((item, index) => {
                             const allergen = allergensList.findIndex(itemOnTheList => {
-                                return itemOnTheList.split("/")[0] === item.allergen;
+                                return itemOnTheList === item.allergen;
                             });
                             if((allergen)||(allergen === 0)) {
                                 return <>
@@ -305,7 +305,7 @@ const SingleProductContent = () => {
                                          data-for={`id${index}`}
                                          alt="alergen" />
                                     <ReactTooltip id={`id${index}`} type='dark' effect='float'>
-                                        {item.allergen}
+                                        {item.allergen.split("/")[0]}
                                     </ReactTooltip>
                                 </>
                             }
