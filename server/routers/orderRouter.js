@@ -5,13 +5,12 @@ const con = require("../databaseConnection");
 con.connect(err => {
    /* GET ALL ORDERS */
    router.get("/get-orders", (request, response) => {
-      const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, sm.name as shipping_method, o2.payment_status, o2.order_status, o2.date ' +
+      const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, o2.payment_status, o2.order_status, o2.date ' +
           'FROM (SELECT o.id, SUM(s.quantity * p.price_m_meat) price FROM orders o ' +
           'JOIN sells s ON o.id = s.order_id ' +
           'JOIN products p ON p.id = s.product_id GROUP BY o.id) o1 ' +
           'JOIN orders o2 USING(id) JOIN users u ON u.id = o2.user ' +
-          'LEFT OUTER JOIN payment_methods pm ON o2.payment_method = pm.id ' +
-          'LEFT OUTER JOIN shipping_methods sm ON o2.shipping_method = sm.id';
+          'LEFT OUTER JOIN payment_methods pm ON o2.payment_method = pm.id';
       con.query(query, (err, res) => {
           console.log(res);
           console.log(err);
@@ -42,8 +41,8 @@ con.connect(err => {
 
     /* ADD RIBBON */
     router.post("/add-ribbon", (request, response) => {
-       let { sellId, caption } = request.body;
-       const values = [sellId, caption];
+       let { orderId, caption } = request.body;
+       const values = [orderId, caption];
        const query = 'INSERT INTO ribbons VALUES (NULL, ?, ?)';
        con.query(query, values, (err, res) => {
            console.log(err);
@@ -148,8 +147,9 @@ con.connect(err => {
     router.post("/get-ribbons", (request, response) => {
        const { id } = request.body;
        const values = [id];
-       const query = 'SELECT r.caption, p.name, s.option, s.size FROM ribbons r JOIN sells s ON r.sell_id = s.id JOIN products p ON p.id = s.product_id WHERE s.order_id = ?';
+       const query = 'SELECT r.caption FROM ribbons r JOIN orders o ON r.order_id = o.id WHERE o.id = ?';
        con.query(query, values, (err, res) => {
+           console.log(err);
             if(res) {
                 response.send({
                     result: res

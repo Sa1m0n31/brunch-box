@@ -36,11 +36,14 @@ import ContactPage from "./pages/ContactPage";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import PanelOthers from "./admin/pages/PanelOthers";
+import PanelCoupons from "./admin/pages/PanelCoupons";
 
 function App() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
+        document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, initial-scale='+(1/window.devicePixelRatio));
+
        AOS.init({
            delay: 200,
            duration: 500
@@ -137,6 +140,9 @@ function App() {
                 </Route>
                 <Route path="/panel/o-nas">
                     <PanelAboutUs />
+                </Route>
+                <Route path="/panel/kupony">
+                    <PanelCoupons />
                 </Route>
                 <Route path="/panel/pozostale">
                     <PanelOthers />

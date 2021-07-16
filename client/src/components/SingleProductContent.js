@@ -62,7 +62,7 @@ const SingleProductContent = () => {
     }
 
     const getProductIdByURL = (name) => {
-        const newName = name[name.length-1].replace(/-/g, " ");
+        const newName = name[name.length-2].replace(/-/g, " ");
         return getProductByName(newName);
     }
 
@@ -102,7 +102,7 @@ const SingleProductContent = () => {
             /* Get there by link */
             getProductIdByURL(window.location.pathname.split("/"))
                 .then(res => {
-                    id = res.data.result[0].id
+                    id = res.data.result[0]?.id
                 })
                 .then(() => {
                     getSingleProduct(id)

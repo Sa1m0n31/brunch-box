@@ -508,8 +508,8 @@ ol {
 
 .offerContent__header {
     text-align: center;
-    margin: 40px 0;
-    font-family: 'Merriweather', serif;
+    margin: 20px 0;
+    font-family: 'Courgette', cursive;
     font-size: 36px;
 }
 
@@ -578,6 +578,8 @@ ol {
     border: 2px solid #000000;
     margin-top: 15px;
     font-weight: 700;
+    border-radius: 4px;
+    font-style: italic;
 }
 
 /* Single product */
@@ -697,6 +699,7 @@ ol {
     margin-left: 50px;
     white-space: nowrap;
     font-size: 30px;
+    font-style: italic;
 }
 
 .singleProduct__options {
@@ -724,6 +727,7 @@ ol {
     border: 3px solid #000;
     font-weight: 700;
     font-style: italic;
+    border-radius: 4px;
     transition: .4s all;
 }
 
@@ -803,6 +807,7 @@ ol {
 .singleProduct__bottom__btn {
     width: 100% !important;
     height: 70px;
+    border-radius: 4px;
     background: #000;
     font-size: 20px;
     font-weight: 700;
@@ -843,6 +848,11 @@ ol {
     transition: .4s all;
 }
 
+.__react_component_tooltip {
+    font-style: italic;
+    font-family: 'Open-sans', sans-serif;
+}
+
 /* Cart */
 .cartContent {
     min-height: 75vh;
@@ -852,7 +862,9 @@ ol {
 }
 
 .cart__header {
+    font-family: 'Courgette', cursive;
     font-size: 26px;
+    margin-top: 20px;
 }
 
 .emptyCart {
@@ -931,6 +943,7 @@ ol {
 .cart__item__label {
     color: #757575;
     font-size: 14px;
+    font-style: italic;
     font-weight: 400;
     margin-bottom: 15px;
     text-align: center;
@@ -939,6 +952,7 @@ ol {
 
 .cart__item__value {
     font-size: 15px;
+    font-style: italic;
     font-weight: 500;
     text-align: center;
 }
@@ -971,15 +985,18 @@ ol {
 .cart__summary__header__label {
     font-size: 18px;
     margin-right: 20px;
+    font-style: italic;
 }
 
 .cart__summary__header__value {
     font-size: 32px;
+    font-style: italic;
 }
 
 .cart__summary__button {
     background: #e4e4e4;
     color: #000;
+    border-radius: 4px;
     text-transform: uppercase;
     margin-top: 30px;
     width: 300px;
@@ -1096,6 +1113,7 @@ ol {
 
 .modal__btn {
     margin: 20px;
+    border-radius: 4px;
     background: #E4E4E4;
     border: 1px solid #000;
     text-transform: uppercase;
@@ -1113,6 +1131,39 @@ ol {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+}
+
+.couponSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.couponSection .ribbonLabel {
+    width: 100%;
+    flex-basis: 60%;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.button--coupon {
+    width: 30%;
+    height: 50px;
+    background: #000;
+    color: #fff;
+    border-radius: 4px;
+    transition: .4s all;
+}
+
+.button--coupon:hover {
+    letter-spacing: 2px;
+}
+
+.address, .couponUsed {
+    font-style: italic;
+    margin-left: 40px;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .shippingAndPayment--error {
@@ -1171,6 +1222,11 @@ ol {
     transition: .3s all ease-in-out;
 }
 
+.shippingAndPayment__input[disabled] {
+    opacity: .5;
+    border: 1px solid #000 !important;
+}
+
 .shippingAndPayment__textArea {
     width: 100%;
     height: 200px;
@@ -1185,6 +1241,7 @@ ol {
     display: flex;
     align-items: center;
     cursor: pointer;
+    font-style: italic;
 }
 
 .ribbonBtn {
@@ -1235,6 +1292,27 @@ ol {
 
 .ribbonLabel .ribbonBtn {
     margin-left: 30px;
+}
+
+.cart__summary--shippingAndPayment {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cart__summary__button--back {
+    background: #000;
+    color: #fff;
+}
+
+.cart__summary__button--back a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: transparent;
 }
 
 /* TY page */
@@ -1352,7 +1430,7 @@ ol {
 }
 
 .aboutUs__header {
-    font-family: 'Merriweather', Serif;
+    font-family: 'Courgette', cursive;
     font-size: 26px;
     margin-bottom: 20px;
 }
@@ -1481,4 +1559,11 @@ ol {
 /* Pages */
 .pageContent {
     margin: 50px 0 80px;
+}
+
+/* Windows scaling */
+@media (-webkit-device-pixel-ratio: 1.25) {
+    * {
+        zoom: .98;
+    }
 }

@@ -8,8 +8,6 @@ import {getDate, getTime} from "../helpers/formatFunctions";
 
 import Modal from 'react-modal'
 import closeImg from "../static/img/close.png";
-import {deleteProductById} from "../helpers/productFunctions";
-import { calculateCartSum } from "../helpers/orderFunctions";
 
 const OrderDetailsContent = () => {
     const location = useLocation();
@@ -40,6 +38,7 @@ const OrderDetailsContent = () => {
         /* Get ribbons info */
         getRibbons(id)
             .then(res => {
+                console.log(res.data.result);
                 if(res.data.result.length) setRibbons(res.data.result);
             });
 
@@ -147,7 +146,7 @@ const OrderDetailsContent = () => {
                     {cart.map((item, index) => {
                         return <section key={index} className="panelContent__cart__item">
                             <section className="panelContent__cart__column">
-                                <span>{item.name}</span>
+                                <span>{item.name?.split("/")[0]}</span>
                             </section>
                             <section className="panelContent__cart__column panelPrice">
                                 <span>{getCartItemPrice(item)} PLN</span>
@@ -164,11 +163,11 @@ const OrderDetailsContent = () => {
                         </section>
                     })}
 
-                    <div className="panelContent__cart__sum">
-                        <h3>
-                            Suma koszyka: {sum !== 0 ? sum : ""} PLN
-                        </h3>
-                    </div>
+                    {/*<div className="panelContent__cart__sum">*/}
+                    {/*    <h3>*/}
+                    {/*        Suma koszyka: {sum !== 0 ? sum : ""} PLN*/}
+                    {/*    </h3>*/}
+                    {/*</div>*/}
                 </main>
 
             </section>
@@ -233,19 +232,19 @@ const OrderDetailsContent = () => {
 
             <section className="marginTop30">
                 <h2 className="panelContent__header--smaller">
-                    Wstążki z dedykacją
+                    Wstążka z dedykacją
                 </h2>
                 <main className="panelContent__frame__main">
-                    {ribbons.map((item, index) => (
+                    {ribbons.length ? ribbons.map((item, index) => (
                         <section key={index} className="panelContent__ribbons__item">
-                            <h3 className="panelContent__ribbons__column">
-                                {item.name} - {item.option} - {item.size}
-                            </h3>
+                            <figure className="panelContent__ribbons__column">
+                                <img className="panelContent__ribbons__column__img" src={tick} alt="tak" />
+                            </figure>
                             <h3 className="panelContent__ribbons__column panelContent__ribbons__column--caption">
                                 <b>Napis:</b> {item.caption}
                             </h3>
                         </section>
-                    ))}
+                    )) : <img src={x} alt="nie" /> }
                 </main>
             </section>
 

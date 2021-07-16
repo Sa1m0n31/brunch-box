@@ -6,208 +6,101 @@ import {useLocation} from "react-router";
 import Modal from 'react-modal'
 import closeImg from "../static/img/close.png";
 import settings from "../helpers/settings";
+import JoditEditor from "jodit-react";
+import axios from "axios";
 
 const PanelShippingContent = () => {
-    const [shippingMethods, setShippingMethods] = useState([]);
-    const [image, setImage] = useState(null);
     const [addedMsg, setAddedMsg] = useState("");
-    const [modal, setModal] = useState(false);
-    const [candidate, setCandidate] = useState(-1);
-    const [deleted, setDeleted] = useState(false);
-    const [deleteMsg, setDeleteMsg] = useState("");
-
-    const location = useLocation();
+    const [address, setAddress] = useState("");
+    const [addressEn, setAddressEn] = useState("");
+    const [personal, setPersonal] = useState(false);
 
     useEffect(() => {
-        getAllShippingMethods()
+        axios.get(`${settings.API_URL}/shipping/get-info`)
             .then(res => {
-                setShippingMethods(res.data.shippingMethods);
-                console.log(res.data.shippingMethods);
-            });
-
-        if(sessionStorage.getItem('sec-shipping-added')) {
-            const added = new URLSearchParams(location.search).get("added");
-            sessionStorage.removeItem('sec-shipping-added');
-
-            if(added === "1") setAddedMsg("Metoda wysyłki została dodana");
-            else if(added === "0") setAddedMsg("Nazwa metody wysyłki nie może być pusta");
-            else if(added === "-1") setAddedMsg("Metoda wysyłki o podanej nazwie już istnieje");
-        }
-    }, [modal]);
+                if(res.data.result) {
+                    const result = res.data.result[0];
+                    setAddress(result.address);
+                    setAddressEn(result.address_en);
+                    setPersonal(result.is_on);
+                }
+            })
+    }, []);
 
     useEffect(() => {
-        setTimeout(() => {
-            setAddedMsg("");
-        }, 3000);
+        if(addedMsg !== "") {
+            setTimeout(() => {
+                setAddedMsg("");
+            }, 3000);
+        }
     }, [addedMsg]);
 
-    const handleSubmit = e => {
-        sessionStorage.setItem('sec-shipping-added', 'T');
-    }
-
-    const openModal = (id) => {
-        setCandidate(id);
-        setModal(true);
-    }
-
-    const deleteShippingMethodById = () => {
-        deleteShippingMethod(candidate)
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post(`${settings.API_URL}/shipping/update`, {
+            address,
+            addressEn,
+            personal
+        })
             .then(res => {
-                setDeleted(true);
-                if(res.data.result === 0) {
-                    /* Error */
-                    setDeleteMsg("Coś poszło nie tak... Prosimy spróbować później");
-                }
+                if(res.data.result === 1) setAddedMsg("Dane pomyślnie zaktualizowane");
+                else setAddedMsg("Coś poszło nie tak... Prosimy spróbować później");
             });
-    }
-
-    const closeModal = () => {
-        setModal(false);
-        setDeleted(false);
     }
 
     return <main className="panelContent">
-
-        <Modal
-            isOpen={modal}
-            portalClassName="panelModal"
-        >
-
-            {!deleted ? <>
-                <h2 className="modalQuestion">
-                    Czy na pewno chcesz usunąć tę metodę wysyłki?
-                </h2>
-
-                <section className="modalQuestion__buttons">
-                    <button className="modalQuestion__btn" onClick={() => { deleteShippingMethodById() }}>
-                        Tak
-                    </button>
-                    <button className="modalQuestion__btn" onClick={() => { closeModal() }}>
-                        Nie
-                    </button>
-                </section>
-            </> : <h2 className="modalQuestion">
-                {deleteMsg === "" ? "Metoda wysyłki została usunięta" : deleteMsg}
-            </h2>}
-
-            <button className="modalClose" onClick={() => { closeModal() }}>
-                <img className="modalClose__img" src={closeImg} alt="zamknij" />
-            </button>
-        </Modal>
-
         <header className="panelContent__header">
             <h1 className="panelContent__header__h">
-                Wysyłka
+                Odbiór osobisty
             </h1>
         </header>
         <section className="panelContent__frame">
             <section className="panelContent__frame__section">
                 <h1 className="panelContent__frame__header">
-                    Dodawanie metody wysyłki
+                    Edycja adresu odbioru osobistego
                 </h1>
 
-                {addedMsg === "" ?  <form className="panelContent__frame__form categoriesForm"
-                                          method="POST"
-                                          action="http://brunchbox.skylo-test3.pl/shipping/add"
-                                          encType="multipart/form-data"
-                                          onSubmit={(e) => { handleSubmit(e) }}
+                {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm shippingForm"
+                                         onSubmit={(e) => { handleSubmit(e) }}
                 >
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="name"
-                               type="text"
-                               placeholder="Nazwa matody wysyłki" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="deliveryTime"
-                               type="text"
-                               placeholder="Czas dostawy" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        <input className="addProduct__input"
-                               name="price"
-                               type="text"
-                               placeholder="Cena" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Zdjęcie metody wysłki
-                        <input name="image"
-                               type="file" />
+                    <section className="d-flex">
+                        <label className="jodit--label">
+                            <span>Adres do odbioru osobistego (polski)</span>
+                            <JoditEditor
+                                name="address"
+                                value={address}
+                                tabIndex={1} // tabIndex of textarea
+                                onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                                onChange={newContent => { setAddress(newContent) }}
+                            />
+                        </label>
+                        <label className="jodit--label">
+                            <span>Adres do odbioru osobistego (angielski)</span>
+                            <JoditEditor
+                                name="address_en"
+                                value={addressEn}
+                                tabIndex={1} // tabIndex of textarea
+                                onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                                onChange={newContent => { setAddressEn(newContent) }}
+                            />
+                        </label>
+                    </section>
 
+                    <label className="panelContent__filters__btnWrapper marginBottom40">
+                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
+                            <span className={personal ? "panelContent__filters__btn--active" : "d-none"} />
+                        </button>
+                        Włącz opcję odbioru osobistego
                     </label>
 
-                    <button className="addProduct__btn" type="submit">
-                        Dodaj metodę wysyłki
+                    <button className="addProduct__btn btn--maxWidth" type="submit">
+                        Aktualizuj
                     </button>
-                </form> :  <section className="addedMsgWrapper">
-                    <h2 className="addedMsg">
+                </form> : <section className="addedMsgWrapper">
+                    <h2 className="addedMsgWrapper">
                         {addedMsg}
                     </h2>
                 </section>}
-            </section>
-
-            <section className="panelContent__frame__section categoryList">
-                <h1 className="panelContent__frame__header">
-                    Lista metod wysyłki
-                </h1>
-
-                <main className="panelContent__content">
-                    {shippingMethods.map((item, index) => (
-                        <section className="panelContent__item productItem" key={index}>
-                            <section className="panelContent__column">
-                                {item.img_path ? <img className="panelContent__productImg" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="zdjecie-kategorii" /> : ""}
-                            </section>
-
-                            <section className="panelContent__column">
-                                <h4 className="panelContent__column__label">
-                                    Nazwa
-                                </h4>
-                                <h3 className="panelContent__column__value">
-                                    {item.name}
-                                </h3>
-                            </section>
-
-                            <section className="panelContent__column">
-                                <h4 className="panelContent__column__label">
-                                    Cena
-                                </h4>
-                                <h3 className="panelContent__column__value">
-                                    {item.price}
-                                </h3>
-                            </section>
-
-                            <section className="panelContent__column">
-                                <h4 className="panelContent__column__label">
-                                    Czas dostawy
-                                </h4>
-                                <h3 className="panelContent__column__value">
-                                    {item.delivery_time}
-                                </h3>
-                            </section>
-
-                            <section className="panelContent__column">
-                                <h4 className="panelContent__column__label">
-                                    Działania
-                                </h4>
-                                <div className="panelContent__column__value">
-                                    <div className="panelContent__column__value panelContent__column__value--buttons">
-                                        <button className="panelContent__column__btn">
-                                            <a className="panelContent__column__link" href="#">
-                                                <img className="panelContent__column__icon" src={exit} alt="przejdz" />
-                                            </a>
-                                        </button>
-                                        <button className="panelContent__column__btn" onClick={() => { openModal(item.id) }}>
-                                            <a className="panelContent__column__link" href="#">
-                                                <img className="panelContent__column__icon" src={trash} alt="usuń" />
-                                            </a>
-                                        </button>
-                                    </div>
-                                </div>
-                            </section>
-                        </section>
-                    ))}
-                </main>
             </section>
         </section>
     </main>

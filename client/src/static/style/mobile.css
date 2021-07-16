@@ -1096,4 +1096,20 @@
     .aboutUs__header {
         font-size: 18px;
     }
+
+    /* Coupons */
+    .couponSection {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .button--coupon {
+        width: 200px;
+    }
+
+    .errorsContainer--coupon {
+        text-align: center;
+        display: block;
+        margin: 10px auto;
+    }
 }

@@ -22,12 +22,15 @@ import skorupiaki from '../static/img/allergens/skorupiaki.png'
 import soja from '../static/img/allergens/soja.png'
 
 import JoditEditor from 'jodit-react';
+import ReactTooltip from "react-tooltip";
 
 const AddProductContent = () => {
     const editorR = useRef(null);
 
     const allergensImg = [gluten, grzyby, jajka, kukurydza, lubin, mieczaki, mleko, musztarda, orzechy, orzechyZiemne, ryba, seler,
         sezam, siarka, skorupiaki, soja];
+    const allergensNames = ['gluten', 'grzyby', 'jajka', 'kukurydza', 'łubin', 'mięczaki', 'mleko', 'musztarda', 'orzechy', 'orzechy ziemne', 'ryba', 'seler',
+        'sezam', 'siarka', 'skorupiaki', 'soja'];
 
     const [update, setUpdate] = useState(false);
     const [name, setName] = useState("");
@@ -366,7 +369,16 @@ const AddProductContent = () => {
                     <p className="text-center">Zaznacz alergeny</p>
                     <section className="addProduct__allergies">
                         {allergensImg.map((item, index) => (
-                            <button className={allergies[index] ? "addProduct__allergies__item allergiesChecked" : "addProduct__allergies__item"} key={index} onClick={(e) => { toggleAllergies(e, index) }}>
+                            <button className={allergies[index] ? "addProduct__allergies__item allergiesChecked" : "addProduct__allergies__item"}
+                                    key={index}
+                                    onClick={(e) => { toggleAllergies(e, index) }}
+                                    data-tip
+                                    data-for={`id${index}`}
+                            >
+                                <ReactTooltip
+                                    id={`id${index}`} type="dark" effect="float" >
+                                    { allergensNames[index] }
+                                </ReactTooltip>
                                 <img className="allergensImg" src={item} alt="alergen" />
                             </button>
                         ))}

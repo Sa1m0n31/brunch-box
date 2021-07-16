@@ -14,6 +14,7 @@ import close from '../static/img/close.png'
 import write from '../static/img/write.svg'
 import aboutUs from '../static/img/about-us.png'
 import others from '../static/img/file.png'
+import discount from '../static/img/discount.png'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -121,7 +122,7 @@ const PanelMenu = ({active, submenu}) => {
                     <li className="panelMenu__list__item">
                         <a className="panelMenu__list__item__link" id={active === 4 ? "menuItem--active" : ""} href="/panel/wysylka">
                             <img className="panelMenu__list__item__img" src={box} alt="wysylka" />
-                            Wysyłka
+                            Odbiór osobisty
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
@@ -153,7 +154,13 @@ const PanelMenu = ({active, submenu}) => {
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/pozostale">
+                        <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/kupony">
+                            <img className="panelMenu__list__item__img" src={discount} alt="kupony" />
+                            Kupony rabatowe
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/pozostale">
                             <img className="panelMenu__list__item__img" src={others} alt="pozostale" />
                             Pozostałe
                         </a>

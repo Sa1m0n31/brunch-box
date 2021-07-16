@@ -21,6 +21,9 @@ const BlogContent = () => {
     }
 
     return <main className="offerContent">
+        <h1 className="offerContent__header">
+            Blog
+        </h1>
         <main className="blogContent">
             {posts?.map((item, index) => (
                 <a key={index} className="blogContent__item" href={`/wpis/${convertToURL(item.title)}`}>

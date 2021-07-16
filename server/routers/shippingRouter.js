@@ -8,6 +8,46 @@ const path = require("path");
 const upload = multer({ dest: 'uploads/' });
 
 con.connect((err) => {
+    /* UPDATE INFO */
+    router.post("/update", (request, response) => {
+        let { address, addressEn, personal } = request.body;
+        personal = !!personal;
+
+        const values = [address, addressEn, personal];
+        const query = 'UPDATE shipping_methods SET address = ?, address_en = ?, is_on = ? WHERE id = 1';
+        con.query(query, values, (err, res) => {
+           if(res) {
+               response.send({
+                   result: 1
+               });
+           }
+           else {
+               response.send({
+                   result: 0
+               });
+           }
+        });
+    });
+
+    /* GET INFO */
+    router.get("/get-info", (request, response) => {
+       const query = 'SELECT * FROM shipping_methods';
+       con.query(query, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
+
+
+    /* ------------ USELESS ------------------ */
     /* ADD SHIPPING METHOD */
     router.post("/add", upload.single("image"), (request, response) => {
         const name = request.body.name;
@@ -54,63 +94,6 @@ con.connect((err) => {
                 if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=1");
                 else response.redirect("http://brunchbox.skylo-test3.pl/panel/wysylka?added=-1");
             })
-        }
-    });
-
-    /* UPDATE SHIPPING METHOD */
-    router.post("/update", (request, response) => {
-        const id = request.body.id;
-        const name = request.body.name;
-        const price = request.body.price;
-        const deliveryTime = request.body.deliveryTime;
-        const image = request.body.image;
-        let result = 0;
-
-        if(image) {
-            const values = [image];
-            const query = 'SELECT id FROM images WHERE file_path = ?';
-            con.query(query, values, (err, res) => {
-               if(res[0]) {
-                   /* New image exists in database */
-                   const imageId = res[0].id;
-                   const values = [name, price, deliveryTime, imageId, id];
-                   const query = 'UPDATE shipping_methods SET name = ?, price = ?, delivery_time = ?, image = ? WHERE id = ?';
-                   con.query(query, values, (err, res) => {
-                       if(!err) result = 1;
-                       response.send({
-                           result
-                       });
-                   });
-               }
-               else {
-                   /* It's new image */
-                   const values = [image];
-                   const query = 'INSERT INTO images VALUES (NULL, NULL, ?)';
-                    con.query(query, values, (err, res) => {
-                        console.log(err);
-                        console.log(res);
-                        const imageId = res.insertId;
-                        const values = [name, price, deliveryTime, imageId, id];
-                        const query = 'UPDATE shipping_methods SET name = ?, price = ?, delivery_time = ?, image = ? WHERE id = ?';
-                        con.query(query, values, (err, res) => {
-                            if(!err) result = 1;
-                            response.send({
-                                result
-                            });
-                        })
-                    });
-               }
-            });
-        }
-        else {
-            const values = [name, price, deliveryTime, id];
-            const query = 'UPDATE shipping_methods SET name = ?, price = ?, delivery_time = ? WHERE id = ?';
-            con.query(query, values, (err, res) => {
-               if(!err) result = 1;
-               response.send({
-                   result
-               });
-            });
         }
     });
 

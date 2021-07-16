@@ -83,16 +83,17 @@ const Cart = () => {
             {cart?.length ? <>
                 {cart.map((item, index) => {
                     return <section className="cart__item" id={"cart" + item.id + item.size + item.option}>
-                        <section className="cart__item__imgWrapper">
+                        <a className="cart__item__imgWrapper" href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
                             <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>
-                        </section>
+                        </a>
 
                         <section className="cart__item__column firstCol">
                             <h3 className="cart__item__label">
                                 Nazwa produktu
                             </h3>
                             <h2 className="cart__item__value">
-                                {cartProducts[index]?.name?.split("/")[0]} ({cartProducts[index]?.bracket_name?.split("/")[0]})
+                                {cartProducts[index]?.name?.split("/")[0]}<br/>
+                                ({cartProducts[index]?.bracket_name?.split("/")[0]})
                             </h2>
                         </section>
 
@@ -138,7 +139,7 @@ const Cart = () => {
                             </h3>
                             <section className="cart__item__value cart__item__value--flex">
                                 <button className="cart__item__value cart__item__value--button">
-                                    <a href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name)}>
+                                    <a href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
                                         <img className="cart__item__icon" src={write} alt="wroc-do-produktu"/>
                                     </a>
                                 </button>

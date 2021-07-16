@@ -1039,3 +1039,36 @@ input[type=file] {
 .panelContent__othersSection {
     width: 45%;
 }
+
+.panelContent__ribbons__column__img {
+    width: 20px;
+}
+
+.d-flex {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.shippingForm {
+    width: 100%;
+}
+
+.btn--maxWidth {
+    max-width: 400px;
+}
+
+.d-flex .jodit--label {
+    width: 45%;
+}
+
+.marginBottom40 {
+    margin-bottom: 40px;
+}
+
+.errorsContainer {
+    color: red;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
