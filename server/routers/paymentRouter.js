@@ -35,10 +35,16 @@ con.connect(err => {
         });
     });
 
+    router.all('/', function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        next();
+    });
+
     /* PAYMENT */
     router.post("/payment", cors(), async (request, response) => {
         /* Add order to database */
-        let sessionId = uuidv4();
+        const { sessionId } = request.body;
 
         /* Generate SHA-384 checksum */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
@@ -58,18 +64,19 @@ con.connect(err => {
                 merchantId: marchantId,
                 amount: parseFloat(request.body.amount) * 100,
                 currency: "PLN",
-                description: "Płatność za zakupy w sklepie BrunchBox",
+                description: "Platnosc za zakupy w sklepie BrunchBox",
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "http://brunchbox.skylo-test3.pl/dziekujemy",
-                urlStatus: "http://brunchbox.skylo-test3.pl/payment/verify",
+                urlReturn: "https://brunchbox.skylo-test3.pl/dziekujemy",
+                urlStatus: "https://brunchbox.skylo-test3.pl/payment/verify",
                 sign: gen_hash
             };
 
             // console.log(postData);
             let responseToClient;
 
+            /* FIRST STEP - REGISTER */
             got.post("https://sandbox.przelewy24.pl/api/v1/transaction/register", {
                 json: postData,
                 responseType: 'json',
@@ -79,14 +86,14 @@ con.connect(err => {
             })
                 .then(res => {
                     responseToClient = res.body.data.token;
-                    if(res.body.data.token) {
+                    // if(res.body.data.token) {
                         /* TMP */
                         // const query = 'UPDATE orders SET payment_status = "opłacone" WHERE id = (SELECT id FROM orders ORDER BY date DESC LIMIT 1)';
                         // con.query(query, (err, res) => {
                         //     console.log("UPDATING PAYMENT STATUS");
                         //     console.log(err);
                         // });
-                    }
+                    // }
 
                     response.send({
                         result: responseToClient
@@ -101,22 +108,17 @@ con.connect(err => {
 
     /* Payment - verify */
     router.post("/verify", async (request, response) => {
-        let marchantId = request.body.merchantId;
+        let merchantId = request.body.merchantId;
         let posId = request.body.posId;
         let sessionId = request.body.sessionId;
         let amount = request.body.amount;
         let currency = request.body.currency;
         let orderId = request.body.orderId;
 
-        console.log("Veryfying 1");
-
         /* Get data */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
         con.query(query, (err, res) => {
-            console.log("Veryfying 2...");
-            let marchantId = res[0].marchant_id;
             let crc = res[0].crc;
-            let apiKey = res[0].api_key;
 
             /* Calculate SHA384 checksum */
             let hash, data, gen_hash;
@@ -126,7 +128,7 @@ con.connect(err => {
 
             got.put("https://sandbox.przelewy24.pl/api/v1/transaction/verify", {
                 json: {
-                    marchantId,
+                    merchantId,
                     posId,
                     sessionId,
                     amount,
@@ -140,12 +142,27 @@ con.connect(err => {
                 }
             })
                 .then(res => {
-                    console.log("HEY!");
-                    console.log(res.body.data);
+                    /* TEST */
+                    const values = [sessionId];
+                    const query = 'UPDATE orders SET payment_status = ? WHERE id = 70';
+                    con.query(query, values, (err, res) => {
+                        console.log("UPDATING PAYMENT STATUS");
+                        console.log(err);
+                    });
+
+
                     if(res.body.data.status === 'success') {
                         /* Change value in databse - payment complete */
-                        const values = [orderId];
-                        const query = 'UPDATE orders SET payment_status = "opłacone" WHERE id = ?';
+                        const values = [sessionId];
+                        const query = 'UPDATE orders SET payment_status = "opłacone" WHERE przelewy24_id = ?';
+                        con.query(query, values, (err, res) => {
+                            console.log("UPDATING PAYMENT STATUS");
+                            console.log(err);
+                        });
+                    }
+                    else {
+                        const values = [sessionId];
+                        const query = 'UPDATE orders SET payment_status = "niepowodzenie" WHERE przelewy24_id = ?';
                         con.query(query, values, (err, res) => {
                             console.log("UPDATING PAYMENT STATUS");
                             console.log(err);
@@ -153,7 +170,7 @@ con.connect(err => {
                     }
                 })
 
-            res.send({
+            response.send({
                 status: "OK"
             });
         });

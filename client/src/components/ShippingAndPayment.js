@@ -5,6 +5,7 @@ import { useFormik } from 'formik'
 import {getProductById} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
 import {getNextDays} from "../helpers/datetimeFunctions";
+import { v4 as uuidv4 } from 'uuid';
 
 const ShippingAndPayment = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
@@ -405,6 +406,7 @@ const ShippingAndPayment = () => {
     useEffect(() => {
         /* Payment */
         if(formValidate) {
+            const sessionId = uuidv4();
             setFormValidate(false);
 
             /* Add user */
@@ -422,12 +424,13 @@ const ShippingAndPayment = () => {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
-                        street: personal ? "-" : formik.values.street,
+                        street: personal ? "0" : formik.values.street,
                         building: personal ? "0" : formik.values.building,
                         flat: personal ? "0" : formik.values.flat,
-                        postalCode: personal ? "-" : formik.values.postalCode,
+                        postalCode: personal ? "0" : formik.values.postalCode,
                         user: insertedUserId,
                         comment: formik.values.comment,
+                        sessionId,
                         delivery: calendar[dayOfDelivery].humanDate + ", godz: " + availableHours[hourOfDelivery].start + ":00 - " + availableHours[hourOfDelivery].end + ":00"
                     })
                         .then(res => {
@@ -454,10 +457,11 @@ const ShippingAndPayment = () => {
                                 });
                             });
 
-                            /* Payment */
+                            /* PAYMENT PROCESS */
                             let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
 
                             axios.post("http://brunchbox.skylo-test3.pl/payment/payment", {
+                                sessionId,
                                 amount,
                                 email: formik.values.email
                             })

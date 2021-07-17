@@ -61,15 +61,13 @@ con.connect(err => {
 
    /* ADD ORDER */
    router.post("/add", (request, response) => {
-       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, delivery } = request.body;
+       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, sessionId, user, comment, delivery } = request.body;
        if(flat === "") flat = null;
        building = parseInt(building) || 0;
-       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, delivery];
-       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "opłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?)';
+       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, delivery, sessionId];
+       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?)';
        con.query(query, values, (err, res) => {
           let result = 0;
-          console.log("Welcome in /order/add");
-          console.log(err);
           if(res) {
               if(res.insertId) result = res.insertId;
           }

@@ -14,7 +14,7 @@ const Cart = () => {
     const [update, setUpdate] = useState(false);
     const [cartSum, setCartSum] = useState(0);
 
-    useEffect(() => {
+    useEffect(async () => {
        let newArr = [];
        if(cart) {
            const cb = () => {
@@ -23,19 +23,19 @@ const Cart = () => {
                setCartSum(calculateSum());
            }
 
-           cart.forEach((item, index, array) => {
-               const pr = getSingleProduct(item.id)
+           let promises = [];
+
+           cart.forEach(async (item) => {
+               promises.push(getSingleProduct(item.id)
                    .then(res => {
                        newArr.push(res.data.result[0]);
-                   });
-
-               Promise.all([pr])
-                   .then(() => {
-                       if(index === array.length-1) {
-                           cb();
-                       }
-                   })
+                   }));
            });
+
+           Promise.all(promises)
+               .then(() => {
+                   cb();
+               });
        }
     }, []);
 
