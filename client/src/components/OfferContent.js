@@ -8,6 +8,7 @@ import settings from "../admin/helpers/settings";
 import {getCategoryByName} from "../helpers/categoryFunctions";
 
 import Loader from "react-loader-spinner";
+import HomePageSection from "./HomePageSection";
 
 const OfferContent = ({type}) => {
     const [title, setTitle] = useState("");
@@ -42,12 +43,12 @@ const OfferContent = ({type}) => {
     }, []);
 
     return <main className="offerContent">
-        {/*{category ? <h1 className="offerContent__header">*/}
-        {/*    {header}*/}
-        {/*    <span className="thin marginLeft15">({subheader})</span>*/}
-        {/*</h1> : <h1 className="offerContent__header">*/}
-        {/*    Nasza oferta*/}
-        {/*</h1>}*/}
+        {category ? <h1 className="offerContent__header">
+            {header}
+            <h2 className="offerContent__subheader marginLeft15">({subheader})</h2>
+        </h1> : <h1 className="offerContent__header">
+            Nasza oferta
+        </h1>}
 
         {loaded ? <section className="offerContent__grid">
             {products.map((item, index) => {
@@ -57,7 +58,7 @@ const OfferContent = ({type}) => {
                                      data-aos="zoom-in"
                                      key={index}
                                      to={{
-                                         pathname: `/produkt/${convertToURL(item.product_name)}`,
+                                         pathname: `/produkt/${convertToURL(item.product_name.split("/")[0])}`,
                                          state: {
                                              id: item.id,
                                              title: item.name,

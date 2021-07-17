@@ -23,6 +23,9 @@ const PanelCategoriesContent = () => {
     const [id, setId] = useState(0);
     const [parentId, setParentId] = useState(0);
     const [hidden, setHidden] = useState(false);
+    const [nameEn, setNameEn] = useState("");
+    const [headerEn, setHeaderEn] = useState("");
+    const [subheaderEn, setSubheaderEn] = useState("");
 
     const location = useLocation();
 
@@ -41,6 +44,9 @@ const PanelCategoriesContent = () => {
                         setSubheader(result.subheader);
                         setParentId(result.parent_id);
                         setHidden(result.hidden);
+                        setNameEn(result.name_en);
+                        setHeaderEn(result.header_en);
+                        setSubheaderEn(result.subheader_en);
                     }
                 });
         }
@@ -176,6 +182,33 @@ const PanelCategoriesContent = () => {
                                type="text"
                                placeholder="Czas dostawy" />
                     </label>
+
+                    <label className="addProduct__label addProduct__label--frame">
+                        <input className="addProduct__input"
+                               name="nameEn"
+                               value={nameEn}
+                               onChange={(e) => { setNameEn(e.target.value) }}
+                               type="text"
+                               placeholder="Nazwa kategorii (angielski)" />
+                    </label>
+                    <label className="addProduct__label addProduct__label--frame">
+                        <input className="addProduct__input"
+                               name="headerEn"
+                               value={headerEn}
+                               onChange={(e) => { setHeaderEn(e.target.value) }}
+                               type="text"
+                               placeholder="Nagłówek kategorii (angielski)" />
+                    </label>
+                    <label className="addProduct__label addProduct__label--frame">
+                        <input className="addProduct__input"
+                               name="subheaderEn"
+                               value={subheaderEn}
+                               onChange={(e) => { setSubheaderEn(e.target.value) }}
+                               type="text"
+                               placeholder="Czas dostawy (angielski)" />
+                    </label>
+
+
 
                     <select className="addProduct__categorySelect"
                             name="parentId"

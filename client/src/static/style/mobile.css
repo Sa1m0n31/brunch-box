@@ -1112,4 +1112,20 @@
         display: block;
         margin: 10px auto;
     }
+
+    /* Calendar */
+    .shippingAndPayment__section--hours {
+        grid-template-columns: 100%;
+        grid-template-rows: repeat(12, 1fr);
+    }
+
+    .ribbonBtnLabel--hour {
+        font-size: 14px;
+    }
+
+    .shippingAndPayment__section--noMarginBottom,
+    .shippingAndPayment__section--hours
+    {
+        margin-bottom: 0;
+    }
 }

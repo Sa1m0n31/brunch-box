@@ -8,14 +8,17 @@ import ChangePasswordForm from "./ChangePasswordForm";
 
 import Modal from 'react-modal';
 import { deleteAdmin } from "../helpers/settingsFunctions";
+import PanelDatesSettings from "./PanelDatesSettings";
 
 const PanelSettingsContent = () => {
     const [admins, setAdmins] = useState([]);
     const [deleted, setDeleted] = useState(-1);
     const [modal, setModal] = useState(false);
     const [candidateToDelete, setCandidateToDelete] = useState(-1);
+    const [hoursDatabase, setHoursDatabase] = useState([]);
 
     useEffect(() => {
+        /* Get admins */
         getAllAdmins()
             .then(res => {
                 setAdmins(res.data.result);
@@ -82,6 +85,8 @@ const PanelSettingsContent = () => {
                 Ustawienia
             </h1>
         </header>
+        <PanelDatesSettings />
+
         <section className="panelContent__frame">
             <section className="panelContent__frame__section">
                 <h1 className="panelContent__frame__header">

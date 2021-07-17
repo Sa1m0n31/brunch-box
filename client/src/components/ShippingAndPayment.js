@@ -4,9 +4,9 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import {getProductById} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
+import {getNextDays} from "../helpers/datetimeFunctions";
 
 const ShippingAndPayment = () => {
-    const [msg, setMsg] = useState("");
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
     const [amount, setAmount] = useState(parseInt(localStorage.getItem('sec-amount')));
     const [ribbon, setRibbon] = useState(false);
@@ -25,6 +25,26 @@ const ShippingAndPayment = () => {
     const [couponUsed, setCouponUsed] = useState(false);
     const [discount, setDiscount] = useState("");
     const [couponError, setCouponError] = useState(false);
+    const [calendar, setCalendar] = useState(getNextDays(14));
+    const [dayOfDelivery, setDayOfDelivery] = useState(-1);
+    const [hourOfDelivery, setHourOfDelivery] = useState(-1);
+    const [availableHours, setAvailableHours] = useState([
+        { start: 10, end: 11, available: true },
+        { start: 11, end: 12, available: true },
+        { start: 12, end: 13, available: true },
+        { start: 13, end: 14, available: true },
+        { start: 14, end: 15, available: true },
+        { start: 15, end: 16, available: true },
+        { start: 16, end: 17, available: true },
+        { start: 17, end: 18, available: true },
+        { start: 18, end: 19, available: true },
+        { start: 19, end: 20, available: true },
+        { start: 20, end: 21, available: true },
+        { start: 21, end: 22, available: true },
+    ]);
+    const [fastest, setFastest] = useState(false);
+    const [excludedHours, setExcludedHours] = useState([]);
+    const [changeOnFastest, setChangeOnFastest] = useState(0);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -42,8 +62,30 @@ const ShippingAndPayment = () => {
         });
     }
 
+    const setExcludedDates = () => {
+        /* Get excluded days info */
+        axios.get("http://localhost:5000/dates/get-all")
+            .then(res => {
+                const excludedDaysInfo = res.data.result;
+                let excludedHoursTmp = [];
+                excludedDaysInfo?.forEach((item, index, array) => {
+                    excludedHoursTmp.push({
+                        day: item.day.substring(0, 10),
+                        hour: item.hour_start
+                    });
+                    if(index === array.length-1) {
+                        setExcludedHours(excludedHoursTmp);
+                    }
+                });
+            });
+    }
+
     useEffect(() => {
         if(!amount) window.location = "/";
+
+        /* Set excluded days and hours */
+        setExcludedDates();
+        console.log(excludedHours);
 
         /* Get personal takeaway info */
         axios.get(`${settings.API_URL}/shipping/get-info`)
@@ -71,10 +113,6 @@ const ShippingAndPayment = () => {
         });
 
     }, []);
-
-    useEffect(() => {
-
-    }, [personal]);
 
     const validationSchema = Yup.object({
         firstName: Yup.string()
@@ -127,9 +165,242 @@ const ShippingAndPayment = () => {
         },
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
-            setFormValidate(true);
+            /* Additional validation for delivery date and time */
+            if((calendar[dayOfDelivery])&&(availableHours[hourOfDelivery])) {
+                setFormValidate(true);
+            }
         }
     });
+
+    useEffect(() => {
+        if(fastest) {
+            /* Choose fastest possible hour */
+            chooseFastestPossibleHourInLoop();
+        }
+        else {
+            setDayOfDelivery(-1);
+            setHourOfDelivery(-1);
+        }
+    }, [fastest]);
+
+    useEffect(() => {
+        //setFastest(false);
+        if(fastest) {
+            setChangeOnFastest(changeOnFastest+1);
+        }
+        else {
+            setChangeOnFastest(0);
+        }
+        if((changeOnFastest)||(!fastest)) {
+            setFastest(false);
+            setHourOfDelivery(-1);
+        }
+
+        if(dayOfDelivery !== -1) {
+            const selectedDay = calendar[dayOfDelivery];
+
+            /* Exclude excluded days and hours */
+            const isExcluded = (start) => {
+                return excludedHours.findIndex(item => {
+                    return ((item.day === selectedDay.fullDate)&&(start === item.hour));
+                }) !== -1;
+            }
+
+            const findIndex = excludedHours.findIndex(item => (
+                item.day === selectedDay.fullDate
+            ));
+
+            if(dayOfDelivery === 0) {
+                /* For today */
+                const hour = new Date().getHours();
+                if(hour <= 9) {
+                    if(findIndex !== -1) {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: !isExcluded(item.start) && item.start >= 12
+                            }
+                        }));
+                    }
+                    else {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: item.start >= 12
+                            }
+                        }));
+                    }
+                }
+                else {
+                    if(findIndex !== -1) {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: !isExcluded(item.start) && item.start > hour+2
+                            }
+                        }));
+                    }
+                    else {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: item.start > hour+2
+                            }
+                        }));
+                    }
+                }
+            } else {
+                /* For next days */
+                if ((selectedDay.dayOfTheWeek === 0) || (selectedDay.dayOfTheWeek === 2) || (selectedDay.dayOfTheWeek === 3)) {
+                    if(findIndex !== -1) {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: !isExcluded(item.start) && item.end !== 22
+                            }
+                        }));
+                    }
+                    else {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: item.end !== 22
+                            }
+                        }));
+                    }
+                } else {
+                    if(findIndex !== -1) {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: !isExcluded(item.start)
+                            }
+                        }));
+                    }
+                    else {
+                        setAvailableHours(availableHours.map((item) => {
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: true
+                            }
+                        }));
+                    }
+                }
+            }
+        }
+    }, [dayOfDelivery]);
+
+    useEffect(() => {
+        if(fastest) {
+            setChangeOnFastest(changeOnFastest+1);
+        }
+        else {
+            setChangeOnFastest(0);
+        }
+
+        if(changeOnFastest) setFastest(false);
+    }, [hourOfDelivery]);
+
+    const isHourAvailable = (dayIndex, hourIndex) => {
+        if(hourIndex !== -1) {
+            const newArr = excludedHours.filter(item => {
+                return item.hour === availableHours[hourIndex].start && item.day === calendar[dayIndex].fullDate;
+            });
+            return !newArr.length;
+        }
+        else {
+            return false;
+        }
+    }
+
+    Date.prototype.addHours = function(h) {
+        this.setTime(this.getTime() + (h*60*60*1000));
+        return this;
+    }
+
+    const chooseFastestPossibleHourInLoop = () => {
+        let i = 0;
+        while((!chooseFastestPossibleHour(i))&&(i<14*24)) {
+            i++;
+        }
+    }
+
+    const daysDifference = (date1, date2) => {
+        const diffTime = Math.abs(date2 - date1);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    const chooseFastestPossibleHour = (h) => {
+        const myDate = new Date().addHours(h);
+        const currentDate = new Date();
+        const hour = myDate.getHours();
+        const dayOfTheWeek = myDate.getDay();
+        if ((dayOfTheWeek === 4) || (dayOfTheWeek === 5) || (dayOfTheWeek === 6)) {
+            if (hour < 9) {
+                /* For today */
+                if (isHourAvailable(daysDifference(myDate, currentDate), 0)) {
+                    setDayOfDelivery(daysDifference(myDate, currentDate));
+                    setHourOfDelivery(0);
+                    return true;
+                } else return false;
+            } else if (hour < 19) {
+                /* For today */
+                if (isHourAvailable(daysDifference(myDate, currentDate), availableHours.findIndex(item => {
+                    return item.start === parseInt(parseInt(hour) + 3);
+                }))) {
+                    setDayOfDelivery(daysDifference(myDate, currentDate));
+                    setHourOfDelivery(availableHours.findIndex(item => {
+                        return item.start === parseInt(parseInt(hour) + 3);
+                    }));
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                /* For next day */
+                if (isHourAvailable(Math.max(1, daysDifference(myDate, currentDate)), 0)) {
+                    setDayOfDelivery(Math.max(1, daysDifference(myDate, currentDate)));
+                    setHourOfDelivery(0);
+                    return true;
+                } else return false;
+            }
+        } else {
+            if (hour < 9) {
+                /* For today */
+                if (isHourAvailable(daysDifference(myDate, currentDate), 0)) {
+                    setDayOfDelivery(daysDifference(myDate, currentDate));
+                    setHourOfDelivery(0);
+                    return true;
+                } else return false;
+            } else if (hour < 18) {
+                /* For today */
+                if (isHourAvailable(daysDifference(myDate, currentDate), availableHours.findIndex(item => {
+                    return item.start === hour + 3;
+                }))) {
+                    setDayOfDelivery(daysDifference(myDate, currentDate));
+                    setHourOfDelivery(availableHours.findIndex(item => {
+                        return item.start === hour + 3;
+                    }));
+                    return true;
+                } else return false;
+            } else {
+                /* For next day */
+                if (isHourAvailable(Math.max(1, daysDifference(myDate, currentDate)), 0)) {
+                    setDayOfDelivery(Math.max(1, daysDifference(myDate, currentDate)));
+                    setHourOfDelivery(0);
+                    return true;
+                } else return false;
+            }
+        }
+    }
 
     useEffect(() => {
         /* Payment */
@@ -156,7 +427,8 @@ const ShippingAndPayment = () => {
                         flat: personal ? "0" : formik.values.flat,
                         postalCode: personal ? "-" : formik.values.postalCode,
                         user: insertedUserId,
-                        comment: formik.values.comment
+                        comment: formik.values.comment,
+                        delivery: calendar[dayOfDelivery].humanDate + ", godz: " + availableHours[hourOfDelivery].start + ":00 - " + availableHours[hourOfDelivery].end + ":00"
                     })
                         .then(res => {
                             const orderId = res.data.result;
@@ -247,8 +519,58 @@ const ShippingAndPayment = () => {
             Wpisz swoje dane i dokończ zamówienie
         </h1>
 
-        <main className="cart cart--flex"
-        >
+        <main className="cart cart--flex">
+            <section className="shippingAndPayment__section">
+                <h2 className="shippingAndPayment__header">
+                    Wybierz dzień dostawy
+                </h2>
+                <section className="shippingAndPayment__calendar">
+                    {calendar?.map((item, index) => (
+                        <button className={dayOfDelivery === index ? "shippingAndPayment__calendar__btn shippingAndPayment__calendar__btn--checked" : "shippingAndPayment__calendar__btn"}
+                                key={index}
+                                onClick={(e) => { e.preventDefault(); setDayOfDelivery(index); }}
+                        >
+                            <h3 className="calendarDay">
+                                {item.day}
+                            </h3>
+                            <h4 className="calendarMonth">
+                                {item.month}
+                            </h4>
+                        </button>
+                    ))}
+                </section>
+                <label className="ribbonBtnLabel ribbonBtnLabel--hour">
+                    <button className="ribbonBtn" onClick={(e) => {
+                        e.preventDefault();
+                        setFastest(!fastest);
+                    }}>
+                        <span className={fastest ? "ribbon" : "d-none"}></span>
+                    </button>
+                    Dostarcz zamówienie najszybciej jak to możliwe
+                </label>
+            </section>
+
+            <section className="shippingAndPayment__section shippingAndPayment__section--noMarginBottom">
+                <h2 className="shippingAndPayment__header">
+                    Wybierz godzinę dostawy
+                </h2>
+                <section className="shippingAndPayment__section shippingAndPayment__section--hours">
+                    {availableHours.map((item, index) => {
+                            return <label className={item.available ? "ribbonBtnLabel ribbonBtnLabel--hour" : "ribbonBtnLabel ribbonBtnLabel--hour hour--disabled"}>
+                                <button disabled={!item.available} className="ribbonBtn" onClick={(e) => {
+                                    e.preventDefault();
+                                    setHourOfDelivery(index);
+                                }}>
+                                    <span className={hourOfDelivery === index && item.available ? "ribbon" : "d-none"}></span>
+                                </button>
+                                {item.start.toString() + ":00 - " + item.end.toString() + ":00"}
+                            </label>
+                    })}
+                </section>
+            </section>
+        </main>
+
+        <main className="cart cart--flex">
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
                     Dane osobowe

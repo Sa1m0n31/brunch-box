@@ -1072,3 +1072,31 @@ input[type=file] {
     font-size: 13px;
     margin-bottom: 10px;
 }
+
+.cart--flex--admin {
+    flex-wrap: wrap;
+}
+
+.cart--flex--admin .addProduct__btn {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+label {
+    font-style: italic;
+}
+
+.marginTop20 {
+    margin-top: 20px;
+    display: block;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.smaller {
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 400;
+}

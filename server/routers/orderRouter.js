@@ -61,11 +61,11 @@ con.connect(err => {
 
    /* ADD ORDER */
    router.post("/add", (request, response) => {
-       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment } = request.body;
+       let { paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, delivery } = request.body;
        if(flat === "") flat = null;
        building = parseInt(building) || 0;
-       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment];
-       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "opłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?)';
+       const values = [paymentMethod, shippingMethod, city, street, building, flat, postalCode, user, comment, delivery];
+       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, "opłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?)';
        con.query(query, values, (err, res) => {
           let result = 0;
           console.log("Welcome in /order/add");
@@ -125,7 +125,7 @@ con.connect(err => {
     router.post("/get-order", (request, response) => {
        const { id } = request.body;
        const values = [id];
-       const query = 'SELECT o.id, o.order_comment, o.payment_method, o.shipping_method, o.city, o.street, o.building, o.flat, o.postal_code, ' +
+       const query = 'SELECT o.id, o.order_comment, o.delivery, o.payment_method, o.shipping_method, o.city, o.street, o.building, o.flat, o.postal_code, ' +
            'o.payment_status, o.date, p.name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, s.quantity, s.option, s.size, ' +
            'u.first_name, u.last_name, u.phone_number, u.email FROM sells s JOIN orders o ON o.id = s.order_id JOIN products p ' +
            'ON s.product_id = p.id JOIN users u ON u.id = o.user WHERE order_id = ?';

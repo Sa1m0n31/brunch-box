@@ -163,11 +163,11 @@ const OrderDetailsContent = () => {
                         </section>
                     })}
 
-                    {/*<div className="panelContent__cart__sum">*/}
-                    {/*    <h3>*/}
-                    {/*        Suma koszyka: {sum !== 0 ? sum : ""} PLN*/}
-                    {/*    </h3>*/}
-                    {/*</div>*/}
+                    <div className="panelContent__cart__sum">
+                        <h3>
+                            <span className="smaller">Czas dostarczenia zamówienia:</span> {cart[0].delivery}
+                        </h3>
+                    </div>
                 </main>
 
             </section>

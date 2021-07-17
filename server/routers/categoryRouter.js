@@ -41,7 +41,7 @@ con.connect(err => {
         });
 
         const addCategory = () => {
-            let { name, parentId, header, subheader, hidden } = request.body;
+            let { name, parentId, header, subheader, hidden, nameEn, headerEn, subheaderEn } = request.body;
             hidden = hidden === "hidden";
 
             if(parentId === "0") parentId = null;
@@ -54,8 +54,8 @@ con.connect(err => {
             const values = [`categories/${filename}`];
             const query = 'INSERT INTO images VALUES (NULL, ?)';
             con.query(query, values, (err, res) => {
-                const values = [name, parentId, fileId, header, subheader, hidden];
-                const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?, ?, ?, ?)';
+                const values = [name, parentId, fileId, header, subheader, hidden, nameEn, headerEn, subheaderEn];
+                const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
                 con.query(query, values, (err, res) => {
                     console.log(err);
@@ -86,7 +86,7 @@ con.connect(err => {
 
     /* GET ALL CATEGORIES */
     router.get("/get-all", (request, response) => {
-        con.query('SELECT c1.id as id, c1.name as name, c1.header as header, c1.subheader as subheader, c2.name as parent_name, i.file_path as img_path, c1.hidden as hidden FROM categories c2 RIGHT OUTER JOIN categories c1 ON c1.parent_id = c2.id LEFT OUTER JOIN images i ON c1.image_id = i.id', (err, res) => {
+        con.query('SELECT c1.id as id, c1.name as name, c1.header as header, c1.subheader as subheader, c2.name as parent_name, i.file_path as img_path, c1.hidden as hidden, c1.name_en, c1.header_en, c1.subheader_en FROM categories c2 RIGHT OUTER JOIN categories c1 ON c1.parent_id = c2.id LEFT OUTER JOIN images i ON c1.image_id = i.id', (err, res) => {
            response.send({
                result: res
            });
@@ -167,7 +167,7 @@ con.connect(err => {
         });
 
         const updateCategory = () => {
-            let { id, name, header, subheader, parentId, hidden } = request.body;
+            let { id, name, header, subheader, parentId, hidden, nameEn, headerEn, subheaderEn } = request.body;
             hidden = hidden === "hidden";
             id = parseInt(id);
             parentId = parseInt(parentId);
@@ -176,8 +176,8 @@ con.connect(err => {
                 const values = [filename];
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    const values = [name, parentId, res.insertId, header, subheader, hidden, id];
-                    const query = 'UPDATE categories SET name = ?, parent_id = ?, image_id = ?, header = ?, subheader = ?, hidden = ? WHERE id = ?';
+                    const values = [name, parentId, res.insertId, header, subheader, hidden, nameEn, headerEn, subheaderEn, id];
+                    const query = 'UPDATE categories SET name = ?, parent_id = ?, image_id = ?, header = ?, subheader = ?, hidden = ?, name_en = ?, header_en = ?, subheader_en = ? WHERE id = ?';
 
                     con.query(query, values, (err, res) => {
                         console.log(err);
@@ -189,11 +189,10 @@ con.connect(err => {
                 });
             }
             else {
-                const values = [name, parentId, header, subheader, hidden, id];
-                const query = 'UPDATE categories SET name = ?, parent_id = ?, header = ?, subheader = ?, hidden = ? WHERE id = ?';
+                const values = [name, parentId, header, subheader, hidden, nameEn, headerEn, subheaderEn, id];
+                const query = 'UPDATE categories SET name = ?, parent_id = ?, header = ?, subheader = ?, hidden = ?, name_en = ?, header_en = ?, subheader_en = ? WHERE id = ?';
 
                 con.query(query, values, (err, res) => {
-                    console.log(err);
                     let result = 0;
                     if(res) result = 1;
                     if(!err) response.redirect("http://brunchbox.skylo-test3.pl/panel/kategorie?added=2");
