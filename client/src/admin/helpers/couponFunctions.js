@@ -3,7 +3,7 @@ import settings from "./settings";
 
 const { API_URL } = settings;
 
-const addCoupon = (code, from, to, percent, discountValue) => {
+const addCoupon = (code, from, to, percent, discountValue, timesToUse) => {
     let amount = null;
     if(percent) {
         percent = discountValue
@@ -17,11 +17,12 @@ const addCoupon = (code, from, to, percent, discountValue) => {
         from,
         to,
         percent,
-        amount
+        amount,
+        timesToUse
     });
 }
 
-const updateCoupon = (id, code, from, to, percent, discountValue) => {
+const updateCoupon = (id, code, from, to, percent, discountValue, timesToUse) => {
     let amount = null;
     if(percent) {
         percent = discountValue
@@ -36,7 +37,8 @@ const updateCoupon = (id, code, from, to, percent, discountValue) => {
         from,
         to,
         percent,
-        amount
+        amount,
+        timesToUse
     });
 }
 

@@ -21,6 +21,8 @@ const PanelCouponsContent = () => {
     const [deleted, setDeleted] = useState(false);
     const [deleteMsg, setDeleteMsg] = useState("");
     const [error, setError] = useState("");
+    const [timesToUse, setTimesToUse] = useState(0);
+    const [infinite, setInfinite] = useState(false);
 
     const location = useLocation();
 
@@ -90,9 +92,16 @@ const PanelCouponsContent = () => {
             setError("Ustal datę zakończenia");
             return 0;
         }
+        if((!infinite)&&(!timesToUse)) {
+            setError("Ustal liczbę możliwych użyć kodu");
+            return 0;
+        }
+        if(timesToUse === "Nieograniczony") {
+            setTimesToUse(null);
+        }
 
         if(!update) {
-            addCoupon(code, from, to, percent, discountValue)
+            addCoupon(code, from, to, percent, discountValue, timesToUse)
                 .then(res => {
                     if(res.data.result) {
                         setAddedMsg("Kupon został dodany");
@@ -103,7 +112,7 @@ const PanelCouponsContent = () => {
                 });
         }
         else {
-            updateCoupon(id, code, from, to, percent, discountValue)
+            updateCoupon(id, code, from, to, percent, discountValue, timesToUse)
                 .then(res => {
                     if(res.data.result) {
                         setAddedMsg("Kupon został zaktualizowany");
@@ -131,6 +140,11 @@ const PanelCouponsContent = () => {
                 if(res.data.result) setDeleted(true);
             });
     }
+
+    useEffect(() => {
+        if(infinite) setTimesToUse("Nieograniczony");
+        else setTimesToUse(0);
+    }, [infinite]);
 
     return <main className="panelContent">
         <Modal
@@ -227,6 +241,21 @@ const PanelCouponsContent = () => {
                                value={to}
                                onChange={(e) => { setTo(e.target.value) }}
                                type="date" />
+                    </label>
+                    <label className="addProduct__label addProduct__label--frame">
+                        Ilość możliwych użyć kodu
+                        <input className="addProduct__input"
+                               name="timesToUse"
+                               disabled={infinite}
+                               value={timesToUse}
+                               onChange={(e) => { setTimesToUse(e.target.value) }}
+                               type="number" />
+                    </label>
+                    <label className="panelContent__filters__btnWrapper">
+                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setInfinite(!infinite); }}>
+                            <span className={infinite ? "panelContent__filters__btn--active" : "d-none"} />
+                        </button>
+                        Nieograniczona liczba użyć
                     </label>
 
                     <span className="errorsContainer">

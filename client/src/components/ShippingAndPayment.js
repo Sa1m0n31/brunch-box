@@ -457,6 +457,14 @@ const ShippingAndPayment = () => {
                                 });
                             });
 
+                            /* Decrement coupon times_to_use value */
+                            if(sessionStorage.getItem('brunchbox-coupon-used') === 'T') {
+                                sessionStorage.removeItem('brunchbox-coupon-used');
+                                axios.post("http://brunchbox.skylo-test3.pl/coupon/decrement", {
+                                    couponContent
+                                });
+                            }
+
                             /* PAYMENT PROCESS */
                             let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
 
@@ -500,6 +508,7 @@ const ShippingAndPayment = () => {
                 if((res.data.result)&&(!couponUsed)) {
                     setCouponUsed(true);
                     setCouponError(false);
+                    sessionStorage.setItem('brunchbox-coupon-used', 'T');
                     if(res.data.percent) {
                         /* Discount by percent */
                         const percent = res.data.percent;
