@@ -14,6 +14,7 @@
     "react-animated-modal": "^1.1.1",
     "react-async": "^10.0.1",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
     "react-image-gallery": "^1.1.1",
     "react-image-lightbox": "^5.1.1",
     "react-images-upload": "^1.2.8",

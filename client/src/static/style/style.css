@@ -711,7 +711,6 @@ ol {
 .singleProduct__title--cursive {
     font-family: 'Courgette', cursive;
     display: block;
-    text-align: center;
 }
 
 .singleProduct__price {
@@ -878,6 +877,10 @@ ol {
     margin-top: 150px;
     padding: 40px clamp(10%, calc((100vw - 1400px) / 2), 10%);
     background: #f9f9f9;
+}
+
+.cart__item__icon {
+    width: 17px;
 }
 
 .cart__header {
@@ -1337,7 +1340,7 @@ ol {
 .shippingAndPayment__calendar {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     margin-top: 30px;
 }
@@ -1349,7 +1352,8 @@ ol {
     border: 1px solid #000;
     border-radius: 4px;
     margin-bottom: 20px;
-    min-width: 60px;
+    min-width: 70px;
+    margin-right: 10px;
     transition: .4s all ease-in-out;
 }
 
@@ -1468,6 +1472,7 @@ ol {
 .blogContent__item__title {
     margin-top: 20px;
     position: relative;
+    font-style: italic;
 }
 
 .blogContent__item__title::after {
@@ -1484,6 +1489,7 @@ ol {
     margin-top: 40px;
     text-align: justify;
     font-size: 14px;
+    font-style: italic;
 }
 
 /* About us */
@@ -1551,6 +1557,10 @@ ol {
 
 .singlePost__article {
     width: 70%;
+}
+
+.singlePost__article * {
+    font-style: italic;
 }
 
 .singlePost__aside {
@@ -1774,4 +1784,61 @@ ol {
     height: 0;
     opacity: 0;
     overflow: hidden;
+}
+
+.cart__item__banquetWrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 30px;
+}
+
+.cart__item__banquet {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, .25);
+    margin-bottom: 0 !important;
+}
+
+.cartBanquet__header {
+    text-align: center;
+    margin-top: 30px;
+    font-family: 'Courgette', Serif;
+}
+
+.cart--borderRed {
+    border: 1px solid red;
+}
+
+.banquet__product:last-of-type {
+    border-bottom: 1px solid rgba(0, 0, 0, .25);
+}
+
+/* Animations */
+.shakeAnimation {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    animation-delay: .5s;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
 }

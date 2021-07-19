@@ -20,8 +20,23 @@ const TopMenu = () => {
     const mobileMenuList = useRef(null);
     const mobileMenuLanguages = useRef(null);
 
+    const [count, setCount] = useState(0);
+
     useEffect(() => {
         let lastScrollTop = 0;
+
+        /* Calculate number of products in cart */
+        let normalCart = 0, banquetCart = 0;
+        normalCart = JSON.parse(localStorage.getItem('sec-cart'));
+        banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
+
+        if(normalCart) {
+            normalCart = normalCart.length;
+        }
+        if(banquetCart) {
+            banquetCart = banquetCart.flat().length;
+        }
+        setCount(normalCart + banquetCart);
 
         window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
             let st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
@@ -143,7 +158,7 @@ const TopMenu = () => {
                     <a className="topMenu__list__item__link" href="/koszyk">
                         <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
                         <span className="cartCounter">
-                            { JSON.parse(localStorage.getItem('sec-cart'))?.length || 0 }
+                            { count }
                         </span>
                     </a>
                 </li>
@@ -163,7 +178,7 @@ const TopMenu = () => {
         <a className="topMenu__list__item__link d-mobile" href="/koszyk">
             <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
             <span className="cartCounter">
-                            { JSON.parse(localStorage.getItem('sec-cart'))?.length || 0 }
+                            { count }
                         </span>
         </a>
         <button className="button--hamburger d-mobile" onClick={() => openMobileMenu()}>

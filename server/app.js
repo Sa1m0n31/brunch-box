@@ -61,6 +61,9 @@ app.get("/dostawa-i-platnosc", (req, res) => {
 app.get("/koszyk", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
+app.get("/oferta-dla-grup", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 app.get("/admin", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });

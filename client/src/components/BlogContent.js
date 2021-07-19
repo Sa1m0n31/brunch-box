@@ -29,7 +29,6 @@ const BlogContent = () => {
                 <a key={index} className="blogContent__item" href={`/wpis/${convertToURL(item.title)}`}>
                     <figure className="blogContent__item__imgWrapper">
                         <img className="blogContent__item__img" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt={item.title} />
-                        {/*<img className="blogContent__item__img" src={exampleImg} alt={item.title} />*/}
                     </figure>
 
                     <h2 className="blogContent__item__title">

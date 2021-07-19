@@ -3,11 +3,11 @@ import React, {useEffect, useRef, useState} from 'react'
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 
-import { editCart } from "../helpers/editCart";
+import {addToCartBanquet, editCart} from "../helpers/editCart";
 import Modal from 'react-modal'
 import closeImg from '../static/img/close.png'
 import tickImg from '../static/img/tick-sign.svg'
-import arrowDown from '../static/img/caret_down.svg'
+import { v4 as uuidv4 } from 'uuid';
 
 import { useLocation } from "react-router";
 import {getImageById, getProductAllergens, getProductByName, getSingleProduct} from "../helpers/productFunctions";
@@ -73,7 +73,7 @@ const CustomMenuContent = () => {
 
     useEffect(() => {
         /* Get all products from 'Menu bankietowe' */
-        axios.get("http://localhost:5000/product/get-banquet-products")
+        axios.get("http://brunchbox.skylo-test3.pl/product/get-banquet-products")
             .then(res => {
                 console.log(res.data.result);
                 if(res.data) {
@@ -97,8 +97,23 @@ const CustomMenuContent = () => {
 
     const addToCart = (id) => {
         if((snacksChoosen % 50 === 0)&&(snacksChoosen !== 0)) {
-            editCart(id, option, size, 1);
-            setModal(true);
+           console.log(products);
+           console.log(productInfo);
+           const cartInfo = productInfo.map((item, index) => {
+               return {
+                   uuid: uuidv4(),
+                   id: products[index].id,
+                   name: products[index].name,
+                   image: products[index].main_image,
+                   price25: products[index].price_25,
+                   price50: products[index].price_50,
+                   selected25: item.selected25,
+                   selected50: item.selected50,
+                   amount: item.amount
+               }
+           });
+           addToCartBanquet(cartInfo);
+           setModal(true);
         }
         else {
             setModalWarning(true);
@@ -226,7 +241,7 @@ const CustomMenuContent = () => {
     }, [amount]);
 
     return <>
-        <main className="singleProduct">
+        <main className="singleProduct singleProduct--banquet">
 
             <img className="singleProduct--img singleProduct--img--1" src={bb1} alt="brunch-box" />
             <img className="singleProduct--img singleProduct--img--2" src={bb2} alt="brunch-box" />
@@ -299,19 +314,6 @@ const CustomMenuContent = () => {
                         </h1>
                     </section>
                     <section className="section--banquet">
-                        {/*<label>*/}
-                        {/*    Liczba boxów (każdy box zawiera 50 przekąsek):*/}
-                        {/*    <select className="section--banquet__select"*/}
-                        {/*        value={amount}*/}
-                        {/*        onChange={(e) => { setAmount(e.target.value) }}*/}
-                        {/*    >*/}
-                        {/*        <option value={1}>1</option>*/}
-                        {/*        <option value={2}>2</option>*/}
-                        {/*        <option value={3}>3</option>*/}
-                        {/*        <option value={4}>4</option>*/}
-                        {/*        <option value={5}>5</option>*/}
-                        {/*    </select>*/}
-                        {/*</label>*/}
                         <section className="row row--banquetFirst">
                             <label className="label--banquet">
                                 Liczba skompletowanych boxów: <b className="banquet--big">{snacksChoosen / 50}</b>
@@ -403,36 +405,6 @@ const CustomMenuContent = () => {
                             </section>
                         ))}
                     </section>
-
-                    {/*<div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>*/}
-                    {/*</div>*/}
-
-                    {/*<div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc.split("---")[0]}}>*/}
-
-                    {/*</div>*/}
-
-                    {/*{allergens ? <div className="singleProduct__options singleProduct__options--allergens">*/}
-                    {/*    <h3 className="singleProduct__options__header marginRight15">*/}
-                    {/*        Alergeny:*/}
-                    {/*    </h3>*/}
-                    {/*    {allergens.map((item, index) => {*/}
-                    {/*        const allergen = allergensList.findIndex(itemOnTheList => {*/}
-                    {/*            return itemOnTheList === item.allergen;*/}
-                    {/*        });*/}
-                    {/*        if((allergen)||(allergen === 0)) {*/}
-                    {/*            return <>*/}
-                    {/*                <img className="allergensImg allergensImg--client"*/}
-                    {/*                     src={allergensImg[allergen]}*/}
-                    {/*                     data-tip*/}
-                    {/*                     data-for={`id${index}`}*/}
-                    {/*                     alt="alergen" />*/}
-                    {/*                <ReactTooltip id={`id${index}`} type='dark' effect='float'>*/}
-                    {/*                    {item.allergen.split("/")[0]}*/}
-                    {/*                </ReactTooltip>*/}
-                    {/*            </>*/}
-                    {/*        }*/}
-                    {/*    })}*/}
-                    {/*</div> : ""}*/}
 
                     <section className="singleProduct__options">
                         <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id) }}>

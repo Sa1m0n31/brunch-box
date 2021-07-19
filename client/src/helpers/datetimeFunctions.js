@@ -32,9 +32,9 @@ const addTrailingZero = (month) => {
 
 const numberToMonth = (n) => {
     const months = [
-        'Stycznia', 'Lutego', 'Marca', 'Kwietnia',
-        'Maja', 'Czerwca', 'Lipiec', 'Sierpnia',
-        'Września', 'Października', 'Listopada', 'Grudnia'
+        'Styczeń', 'Luty', 'Marzec', 'Kwiecień',
+        'Maj', 'Czerwiec', 'Lipiec', 'Sierpień',
+        'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
     ];
 
     return months[n];

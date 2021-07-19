@@ -28,21 +28,46 @@ const editCart = (id, option, size, quantity) => {
        }]
    }
 
-    console.log(currentCart);
-
     localStorage.setItem('sec-cart', JSON.stringify(currentCart));
 }
 
-const deleteFromCart = ({ id, size, option }) => {
-    let currentCart = JSON.parse(localStorage.getItem('sec-cart'));
+const addToCartBanquet = (cartInfo) => {
+    if(localStorage.getItem('sec-cart-banquet')) {
+        const currentCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
+        currentCart.push(cartInfo);
+        localStorage.setItem('sec-cart-banquet', JSON.stringify(currentCart));
+    }
+    else {
+        localStorage.setItem('sec-cart-banquet', JSON.stringify([cartInfo]));
+    }
+}
 
-    console.log("Delete: " + id + ", " + size + ", " + option);
+const deleteFromCart = ({ uuid, id, size, option, banquet }) => {
+    if(banquet) {
+        let currentCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
 
-    const newCart = currentCart.filter((item) => {
-        return item.id !== id || item.size !== size || item.option !== option;
-    });
+        const newCart = [];
+        currentCart.forEach((item) => {
+            newCart.push(item.filter((itemChild) => {
+                return uuid !== itemChild.uuid;
+            }));
+        });
 
-    localStorage.setItem('sec-cart', JSON.stringify(newCart));
+        // newCart.filter(item => {
+        //     return item.length;
+        // });
+
+        localStorage.setItem('sec-cart-banquet', JSON.stringify(newCart));
+    }
+    else {
+        let currentCart = JSON.parse(localStorage.getItem('sec-cart'));
+
+        const newCart = currentCart.filter((item) => {
+            return item.id !== id || item.size !== size || item.option !== option;
+        });
+
+        localStorage.setItem('sec-cart', JSON.stringify(newCart));
+    }
 }
 
 const calculatePrice = (size, option, quantity, prices) => {
@@ -60,4 +85,4 @@ const calculatePrice = (size, option, quantity, prices) => {
     return price;
 }
 
-export { editCart, deleteFromCart, calculatePrice }
+export { editCart, deleteFromCart, calculatePrice, addToCartBanquet }

@@ -148,17 +148,14 @@ const OrderDetailsContent = () => {
                             <section className="panelContent__cart__column">
                                 <span>{item.name?.split("/")[0]}</span>
                             </section>
-                            <section className="panelContent__cart__column panelPrice">
-                                <span>{getCartItemPrice(item)} PLN</span>
-                            </section>
                             <section className="panelContent__cart__column panelQuantity">
-                                <span>{item.quantity} szt.</span>
+                                <span>Ilość: {item.quantity}</span>
                             </section>
                             <section className="panelContent__cart__column">
                                 <span>{item.option}</span>
                             </section>
                             <section className="panelContent__cart__column">
-                                <span>Rozmiar {item.size}</span>
+                                <span>{item.size ? `Rozmiar: ${item.size}` : ""}</span>
                             </section>
                         </section>
                     })}

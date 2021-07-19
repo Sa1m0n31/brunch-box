@@ -46,10 +46,11 @@ const ShippingAndPayment = () => {
     const [fastest, setFastest] = useState(false);
     const [excludedHours, setExcludedHours] = useState([]);
     const [changeOnFastest, setChangeOnFastest] = useState(0);
+    const [dateError, setDateError] = useState(false);
 
     const fillRibbonsArray = () => {
         let arr = [];
-        cart.forEach((item, index, array) => {
+        cart?.forEach((item, index, array) => {
             for(let i=0; i<item.quantity; i++) {
                 arr.push({
                     ribbon: false,
@@ -65,7 +66,7 @@ const ShippingAndPayment = () => {
 
     const setExcludedDates = () => {
         /* Get excluded days info */
-        axios.get("http://localhost:5000/dates/get-all")
+        axios.get("http://brunchbox.skylo-test3.pl/dates/get-all")
             .then(res => {
                 const excludedDaysInfo = res.data.result;
                 let excludedHoursTmp = [];
@@ -101,7 +102,7 @@ const ShippingAndPayment = () => {
             });
 
         /* Get cart products names */
-        cart.forEach((item, index, array) => {
+        cart?.forEach((item, index, array) => {
             getProductById(item.id)
                 .then(res => {
                     if(res.data.result) {
@@ -170,6 +171,9 @@ const ShippingAndPayment = () => {
             if((calendar[dayOfDelivery])&&(availableHours[hourOfDelivery])) {
                 setFormValidate(true);
             }
+            else {
+                setDateError(true);
+            }
         }
     });
 
@@ -185,7 +189,6 @@ const ShippingAndPayment = () => {
     }, [fastest]);
 
     useEffect(() => {
-        //setFastest(false);
         if(fastest) {
             setChangeOnFastest(changeOnFastest+1);
         }
@@ -444,9 +447,9 @@ const ShippingAndPayment = () => {
                                 });
                             }
 
-                            /* Add sells */
+                            /* Add sells - normal products */
                             const cart = JSON.parse(localStorage.getItem('sec-cart'));
-                            cart.forEach((item, cartIndex) => {
+                            cart?.forEach((item, cartIndex) => {
                                 /* Add sells */
                                 axios.post("http://brunchbox.skylo-test3.pl/order/add-sell", {
                                     orderId,
@@ -454,6 +457,23 @@ const ShippingAndPayment = () => {
                                     option: item.option,
                                     quantity: item.quantity,
                                     size: item.size
+                                });
+                            });
+
+                            /* Add sells - banquet products */
+                            const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
+                            banquetCart?.forEach((item) => {
+                                item.forEach(itemChild => {
+                                    /* Add banquet sells */
+                                    if(itemChild.amount) {
+                                        axios.post("http://brunchbox.skylo-test3.pl/order/add-sell", {
+                                            orderId,
+                                            productId: itemChild.id,
+                                            option: itemChild.selected25 ? "25 szt." : "50 szt.",
+                                            quantity: itemChild.amount,
+                                            size: null
+                                        });
+                                    }
                                 });
                             });
 
@@ -477,6 +497,7 @@ const ShippingAndPayment = () => {
                                     /* Remove cart from local storage */
                                     localStorage.removeItem('sec-cart');
                                     localStorage.removeItem('sec-amount');
+                                    localStorage.removeItem('sec-cart-banquet');
 
                                     const token = res.data.result;
                                     window.location.href = `${paymentUri}${token}`;
@@ -527,12 +548,21 @@ const ShippingAndPayment = () => {
             });
     }
 
+    useEffect(() => {
+        if(dateError) {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    }, [dateError]);
+
     return <form className="cartContent" onSubmit={formik.handleSubmit}>
         <h1 className="cart__header cart__header--shippingAndPayment">
             Wpisz swoje dane i dokończ zamówienie
         </h1>
 
-        <main className="cart cart--flex">
+        <main className={dateError ? "cart cart--flex cart--borderRed shakeAnimation" : "cart cart--flex"}>
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
                     Wybierz dzień dostawy
@@ -759,7 +789,7 @@ const ShippingAndPayment = () => {
                 </a>
             </button>
 
-            <section>
+            <section className="cart__summary__bottomRight">
                 <header className="cart__summary__header">
                     <h3 className="cart__summary__header__label">
                         Łącznie do zapłaty:

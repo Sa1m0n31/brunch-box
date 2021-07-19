@@ -62,7 +62,7 @@ const SingleProductContent = () => {
     }
 
     const getProductIdByURL = (name) => {
-        const newName = name[name.length-2].replace(/-/g, " ");
+        const newName = name[name.length-1].replace(/-/g, " ");
         return getProductByName(newName);
     }
 
@@ -158,7 +158,12 @@ const SingleProductContent = () => {
     }, [size, option])
 
     const addToCart = (id, option, size) => {
-        editCart(id, option, size, 1);
+        if(product.category_id === 2) {
+            editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+        }
+        else {
+            editCart(id, option, size, 1);
+        }
         setModal(true);
     }
 
@@ -252,13 +257,13 @@ const SingleProductContent = () => {
                             Dostępne rozmiary:
                         </h3>
                         <div className="singleProduct__options__buttons">
-                            <button className={size === "M" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setSize("M")}>
-                                M
+                            <button className={size === "M" || size === "1/2 boxa" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setSize("1/2 boxa")}>
+                                {product.category_id === 2 ? "1/2 boxa" : "M"}
                             </button>
-                            <button className={size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setSize("L")}>
-                                L
+                            <button className={size === "Cały box" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setSize("Cały box")}>
+                                {product.category_id === 2 ? "Cały box" : "L"}
                             </button>
                         </div>
                     </div> : ""}
@@ -306,7 +311,6 @@ const SingleProductContent = () => {
                     <section className="singleProduct__options">
                         <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id, option, size) }}>
                             Dodaj do koszyka
-                            {/*<img className="button--addToCart__img" src={cartImg} alt="koszyk" />*/}
                         </button>
                     </section>
                 </section></> : <main className="loading">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import './static/style/style.css'
 import './static/style/admin.css'
 import './static/style/mobile.css'
@@ -43,8 +44,6 @@ function App() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, initial-scale='+(1/window.devicePixelRatio));
-
        AOS.init({
            delay: 200,
            duration: 500
@@ -56,7 +55,11 @@ function App() {
            });
     }, []);
 
-  return (
+  return (<>
+          <Helmet>
+              <title>BrunchBox - przekąski na każdą okazję</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+          </Helmet>
     <div className="App">
         <Router>
             <Switch>
@@ -173,6 +176,7 @@ function App() {
             </Switch>
         </Router>
     </div>
+      </>
   );
 }
 
