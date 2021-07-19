@@ -37,6 +37,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import PanelOthers from "./admin/pages/PanelOthers";
 import PanelCoupons from "./admin/pages/PanelCoupons";
+import CustomMenu from "./pages/CustomMenu";
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -90,9 +91,18 @@ function App() {
 
                 {/* CATEGORIES */}
                 {categories.map((item, index) => {
-                    return <Route key={index} path={"/" + convertToURL(item.name)}>
-                        <Offer type={item.name} />
-                    </Route>
+                   if(index === 2) {
+                       /* Banquet menu */
+                       return <Route key={index} path="/menu-bankietowe">
+                           <CustomMenu />
+                       </Route>
+                   }
+                   else {
+                       /* Normal menu */
+                       return <Route key={index} path={"/" + convertToURL(item.name)}>
+                           <Offer type={item.name} />
+                       </Route>
+                   }
                 })}
 
                 {/* Page for all products */}

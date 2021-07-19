@@ -134,12 +134,6 @@ const SingleProductContent = () => {
         }
     }, []);
 
-    const detectCurrentIndex = (str) => {
-        return images.findIndex((item) => {
-           return item === str;
-        });
-    }
-
     useEffect(() => {
         if(option === "Mięsna") setCurrentDesc(product.meat_description);
         else setCurrentDesc(product.vege_description);
@@ -160,9 +154,6 @@ const SingleProductContent = () => {
             setPrice(product.price_l_vege);
             switchMainImage(3);
         }
-
-        /* Change image */
-
 
     }, [size, option])
 

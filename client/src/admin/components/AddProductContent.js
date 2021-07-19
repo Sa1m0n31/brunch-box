@@ -36,7 +36,8 @@ const AddProductContent = () => {
     const [name, setName] = useState("");
     const [bracket, setBracket] = useState("");
     const [id, setId] = useState(0);
-    const [categoryId, setCategoryId] = useState(0);
+    const [categoryId, setCategoryId] = useState(1); // 1 - Oferta indywidualna, 2 - Menu grupowe, 3 - Menu bankietowe
+    const [currentCat, setCurrentCat] = useState(0);
     const [product, setProduct] = useState([]);
     const [categories, setCategories] = useState([]);
     const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
@@ -45,8 +46,8 @@ const AddProductContent = () => {
     /* Prices */
     const [priceMMeat, setPriceMMeat] = useState("");
     const [priceLMeat, setPriceLMeat] = useState("");
-    const [priceMWege, setPriceMWege] = useState("");
-    const [priceLWege, setPriceLWege] = useState("");
+    const [priceMWege, setPriceMWege] = useState(null);
+    const [priceLWege, setPriceLWege] = useState(null);
 
     /* Descriptions */
     const [shortDescription, setShortDescription] = useState("");
@@ -177,6 +178,13 @@ const AddProductContent = () => {
         setAllergies(newAllergies);
     }
 
+    useEffect(() => {
+        if(categoryId !== 3) setSizeM(true);
+        else {
+            setSizeL(true);
+        }
+    }, [categoryId]);
+
     return <main className="panelContent addProduct">
         <header className="addProduct__header">
             <h1 className="addProduct__header__h">
@@ -210,50 +218,73 @@ const AddProductContent = () => {
                 </label>
 
                 {/* PRICES */}
-                <label className={sizeM && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeM && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceM_meat"
-                           type="number"
-                           step={0.01}
-                           value={priceMMeat}
-                           onChange={(e) => { setPriceMMeat(e.target.value) }}
-                           placeholder="Cena dla rozmiaru M - opcja mięsna (domyślna)" />
-                </label>
-                <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceL_meat"
-                           type="number"
-                           step={0.01}
-                           value={priceLMeat}
-                           onChange={(e) => { setPriceLMeat(e.target.value) }}
-                           placeholder="Cena dla rozmiaru L - opcja mięsna (domyślna)" />
-                </label>
+                {categoryId === 1 || categoryId === 2 ? <>
+                    <label className={sizeM && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
+                        <input className={sizeM && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
+                               name="priceM_meat"
+                               type="number"
+                               step={0.01}
+                               value={priceMMeat}
+                               onChange={(e) => { setPriceMMeat(e.target.value) }}
+                               placeholder="Cena dla rozmiaru M - opcja mięsna (domyślna)" />
+                    </label>
+                    <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
+                        <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
+                               name="priceL_meat"
+                               type="number"
+                               step={0.01}
+                               value={priceLMeat}
+                               onChange={(e) => { setPriceLMeat(e.target.value) }}
+                               placeholder="Cena dla rozmiaru L - opcja mięsna (domyślna)" />
+                    </label>
 
-                <label className={sizeM && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeM && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceM_vege"
-                           type="number"
-                           step={0.01}
-                           value={priceMWege}
-                           onChange={(e) => { setPriceMWege(e.target.value) }}
-                           placeholder="Cena dla rozmiaru M - opcja wege" />
-                </label>
-                <label className={sizeL && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
-                    <input className={sizeL && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
-                           name="priceL_vege"
-                           type="number"
-                           step={0.01}
-                           value={priceLWege}
-                           onChange={(e) => { setPriceLWege(e.target.value) }}
-                           placeholder="Cena dla rozmiaru L - opcja wege" />
-                </label>
+                    <label className={sizeM && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
+                        <input className={sizeM && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
+                               name="priceM_vege"
+                               type="number"
+                               step={0.01}
+                               value={priceMWege}
+                               onChange={(e) => { setPriceMWege(e.target.value) }}
+                               placeholder="Cena dla rozmiaru M - opcja wege" />
+                    </label>
+                    <label className={sizeL && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
+                        <input className={sizeL && optionWege ? "addProduct__input" : "addProduct__input--invisible"}
+                               name="priceL_vege"
+                               type="number"
+                               step={0.01}
+                               value={priceLWege}
+                               onChange={(e) => { setPriceLWege(e.target.value) }}
+                               placeholder="Cena dla rozmiaru L - opcja wege" />
+                    </label>
+                </> : <>
+                    <label className={sizeM && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
+                        <input className={sizeM && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
+                               name="priceM_meat"
+                               type="number"
+                               step={0.01}
+                               value={priceMMeat}
+                               onChange={(e) => { setPriceMMeat(e.target.value) }}
+                               placeholder="Cena dla 25 sztuk" />
+                    </label>
+                    <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
+                        <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
+                               name="priceL_meat"
+                               type="number"
+                               step={0.01}
+                               value={priceLMeat}
+                               onChange={(e) => { setPriceLMeat(e.target.value) }}
+                               placeholder="Cena dla 50 sztuk" />
+                    </label>
+                </>}
 
-                <select className="addProduct__categorySelect" name="categoryId" value={categoryId} onChange={(e) => { setCategoryId(e.target.value) }}>
-                    <option value={0}>
-                        Wybierz kategorię
-                    </option>
+                <select className="addProduct__categorySelect"
+                        name="categoryId"
+                        value={categoryId}
+                        onChange={(e) => {
+                            setCategoryId(parseInt(e.target.value));
+                        }}>
                     {categories.map((item, index) => {
-                        return <option key={index} value={item.id}>{item.name}</option>
+                        return <option key={index} value={index+1}>{item.name}</option>
                     })}
                 </select>
 
@@ -270,7 +301,7 @@ const AddProductContent = () => {
                     />
                 </label>
 
-                <label className="jodit--label">
+                {categoryId !== 3 ? <label className="jodit--label">
                     <span>Długi opis</span>
                     <JoditEditor
                         name="longDescription"
@@ -280,41 +311,40 @@ const AddProductContent = () => {
                         onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
                         onChange={newContent => { setLongDescription(newContent) }}
                     />
-                </label>
+                </label> : ""}
 
 
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu (opcja mięsna M)</span>
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja mięsna M)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="mainImage" />
                 </label>
                 <label className="fileInputLabel">
-                    <span>Galeria - 1 (opcja mięsna L)</span>
+                    <span>Galeria - 1 {categoryId === 1 ? "(opcja mięsna L)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery1" />
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Galeria - 2 (opcja wege M)</span>
+                    <span>Galeria - 2 {categoryId === 1 ? "(opcja wege M)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery2" />
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Galeria - 3 (opcja wege L)</span>
+                    <span>Galeria - 3 {categoryId === 1 ? "(opcja wege L)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery3" />
                 </label>
-
             </section>
 
             <section className="addProduct__form__section">
 
-                <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft">
+                {categoryId === 1 || categoryId === 2 ?  <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft">
                     <h4 className="addProduct__form__subsection__header">
                         Dostępne opcje
                     </h4>
@@ -330,23 +360,26 @@ const AddProductContent = () => {
                         </button>
                         Wegetariańska
                     </label>
-                </section>
+                </section> : ""}
 
                 <section className="addProduct__form__subsection addProduct__form__subsection--marginLeft marginTop30">
                     <h4 className="addProduct__form__subsection__header">
                         Dostępne rozmiary
                     </h4>
                     <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); }}>
+                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => {
+                            e.preventDefault();
+                            if(categoryId === 3) setSizeM(!sizeM);
+                        }}>
                             <span className={sizeM ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>
-                        M (domyślna)
+                        {categoryId === 3 ? "25 szt." : "M (domyślna)"}
                     </label>
                     <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
                         <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setSizeL(!sizeL); }}>
                             <span className={sizeL ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>
-                        L
+                        {categoryId === 3 ? "50 szt." : "L"}
                     </label>
                 </section>
 
@@ -385,27 +418,29 @@ const AddProductContent = () => {
                     </section>
                 </label>
 
-                <label className="jodit--label">
-                    <span>Składniki produktu w wersji mięsnej (domyślne)</span>
-                    <JoditEditor
-                        name="meatDescription"
-                        value={meatDescription}
-                        tabIndex={1} // tabIndex of textarea
-                        onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                        onChange={newContent => { setMeatDescription(newContent) }}
-                    />
-                </label>
+                {categoryId !== 3 ? <>
+                    <label className="jodit--label">
+                        <span>Składniki produktu w wersji mięsnej (domyślne)</span>
+                        <JoditEditor
+                            name="meatDescription"
+                            value={meatDescription}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                            onChange={newContent => { setMeatDescription(newContent) }}
+                        />
+                    </label>
 
-                <label className="jodit--label">
-                    <span>Składniki produktu w wersji vege</span>
-                    <JoditEditor
-                        name="vegeDescription"
-                        value={vegeDescription}
-                        tabIndex={1} // tabIndex of textarea
-                        onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                        onChange={newContent => { setVegeDescription(newContent) }}
-                    />
-                </label>
+                    <label className="jodit--label">
+                        <span>Składniki produktu w wersji vege</span>
+                        <JoditEditor
+                            name="vegeDescription"
+                            value={vegeDescription}
+                            tabIndex={1} // tabIndex of textarea
+                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
+                            onChange={newContent => { setVegeDescription(newContent) }}
+                        />
+                    </label>
+                </> : ""}
 
                 <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
                     <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setHidden(!hidden); }}>

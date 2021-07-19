@@ -37,19 +37,33 @@ con.connect(err => {
    router.post("/add-allergens", (request, response) => {
       const { id, allergens } = request.body;
 
+      console.log(id);
+      console.log(allergens);
+
       /* Remove all allergens for current product */
       const values = [id];
       const query = 'DELETE FROM allergens WHERE product_id = ?';
       con.query(query, values, (err, res) => {
          if(allergens) {
-            allergens.forEach(item => {
+            allergens.forEach((item, index, array) => {
                const values = [id, item];
                const query = 'INSERT INTO allergens VALUES (NULL, ?, ?)';
                con.query(query, values, (err, res) => {
+                  console.log(err);
                });
+
+               if(index === array.length-1) {
+                  response.send({
+                     result: 1
+                  });
+               }
             });
          }
-         response.send({ result: 1 });
+         else {
+            response.send({
+               result: 1
+            });
+         }
       });
    });
 
@@ -114,6 +128,11 @@ con.connect(err => {
          hidden = hidden === "hidden";
 
          categoryId = parseInt(categoryId);
+
+         if(isNaN(priceM_vege)) priceM_vege = null;
+         if(isNaN(priceL_vege)) priceL_vege = null;
+         if(isNaN(priceM_meat)) priceM_meat = null;
+         if(isNaN(priceL_meat)) priceL_meat = null;
 
             /* Add image to database */
             const values = [id, name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
@@ -183,6 +202,11 @@ con.connect(err => {
          vegan = vegan === 'true' || vegan == 1;
          meat = meat === 'true' || meat == 1;
          hidden = hidden === "hidden";
+
+         if(isNaN(priceM_vege)) priceM_vege = null;
+         if(isNaN(priceL_vege)) priceL_vege = null;
+         if(isNaN(priceM_meat)) priceM_meat = null;
+         if(isNaN(priceL_meat)) priceL_meat = null;
 
          categoryId = parseInt(categoryId);
 
@@ -297,6 +321,30 @@ con.connect(err => {
             });
          }
       });
+   });
+
+   /* GET ALL BANQUET PRODUCTS */
+   router.get("/get-banquet-products", (request, response) => {
+      const query = 'SELECT p.id, p.name, p.short_description, p.price_m_meat as price_25, p.price_l_meat as price_50, ' +
+          'i.file_path as main_image, i1.file_path as gallery_1, i2.file_path as gallery_2, i3.file_path as gallery_3 ' +
+          'FROM products p ' +
+          'LEFT OUTER JOIN images i ON p.main_image = i.id ' +
+          'LEFT OUTER JOIN images i1 ON p.gallery_1 = i1.id ' +
+          'LEFT OUTER JOIN images i2 ON p.gallery_2 = i2.id ' +
+          'LEFT OUTER JOIN images i3 ON p.gallery_3 = i3.id ' +
+          'WHERE p.category_id = 3';
+      con.query(query, (err, res) => {
+         if(res) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: 0
+            });
+         }
+      })
    });
 
    /* GET SINGLE PRODUCT BY ID */
