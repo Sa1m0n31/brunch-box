@@ -352,7 +352,7 @@ const ShippingAndPayment = () => {
                 /* For today */
                 if (isHourAvailable(daysDifference(myDate, currentDate), 0)) {
                     setDayOfDelivery(daysDifference(myDate, currentDate));
-                    setHourOfDelivery(0);
+                    setHourOfDelivery(2);
                     return true;
                 } else return false;
             } else if (hour < 19) {
@@ -381,7 +381,7 @@ const ShippingAndPayment = () => {
                 /* For today */
                 if (isHourAvailable(daysDifference(myDate, currentDate), 0)) {
                     setDayOfDelivery(daysDifference(myDate, currentDate));
-                    setHourOfDelivery(0);
+                    setHourOfDelivery(2);
                     return true;
                 } else return false;
             } else if (hour < 18) {
