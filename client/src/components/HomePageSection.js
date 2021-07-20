@@ -22,19 +22,18 @@ const HomePageSection = () => {
         <div className="homePageSection__menu">
             {categories.map((item, index) => {
                 if(!item.hidden) {
-                    return <section key={index} className="homePageSection__item">
+                    return <a key={index} className="homePageSection__item" href={convertToURL(item.name)}>
                         <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path}
                              alt="produkt"/>
                         <h3 className="homePageSection__item__header">
                             {item.name}
                         </h3>
                         <button className="button button--landing button--homePageSection">
-                            <a className="button--landing__link button--homePageSection__link"
-                               href={convertToURL(item.name)}>
+                            <a className="button--landing__link button--homePageSection__link">
                                 Więcej informacji
                             </a>
                         </button>
-                    </section>
+                    </a>
                 }
                 else {
                     return "";

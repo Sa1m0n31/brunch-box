@@ -122,7 +122,7 @@ const Cart = () => {
                             <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>
                         </a>
 
-                        <section className="cart__item__column firstCol">
+                        <a href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])} className="cart__item__column firstCol">
                             <h3 className="cart__item__label">
                                 Nazwa produktu
                             </h3>
@@ -130,7 +130,7 @@ const Cart = () => {
                                 {cartProducts[index]?.name?.split("/")[0]}<br/>
                                 ({cartProducts[index]?.bracket_name?.split("/")[0]})
                             </h2>
-                        </section>
+                        </a>
 
                         <section className="cart__item__column secondCol">
                             <h3 className="cart__item__label">
@@ -206,14 +206,14 @@ const Cart = () => {
                                         <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + itemChild?.image} alt="produkt"/>
                                     </a>
 
-                                    <section className="cart__item__column firstCol">
+                                    <a href="http://brunchbox.skylo-test3.pl/menu-bankietowe/" className="cart__item__column firstCol">
                                         <h3 className="cart__item__label">
                                             Nazwa produktu
                                         </h3>
                                         <h2 className="cart__item__value">
                                             {itemChild?.name?.split("/")[0]}<br/>
                                         </h2>
-                                    </section>
+                                    </a>
 
                                     <section className="cart__item__column secondCol">
                                         <h3 className="cart__item__label">

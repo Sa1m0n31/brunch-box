@@ -44,6 +44,7 @@ const SingleProductContent = () => {
 
     const [loaded, setLoaded] = useState(false);
     const [modal, setModal] = useState(false);
+    const [modalHint, setModalHint] = useState(false);
 
     const location = useLocation();
 
@@ -159,7 +160,32 @@ const SingleProductContent = () => {
 
     const addToCart = (id, option, size) => {
         if(product.category_id === 2) {
-            editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+            /* Check number of half boxes in current cart */
+            const currentCart = JSON.parse(localStorage.getItem('sec-cart'));
+            let numberOfHalfs = 0;
+            if(currentCart) {
+                currentCart.forEach((item, index, array) => {
+                    if(item.size === "1/2 boxa") {
+                        numberOfHalfs += item.quantity;
+                    }
+
+                    if(index === array.length-1) {
+                        if(numberOfHalfs % 2 === 0) {
+                            setModalHint(true);
+                            editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+                        }
+                        else {
+                            setModalHint(false);
+                            editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+                        }
+                    }
+                });
+            }
+            else {
+                console.log(size);
+                if(size === "M") setModalHint(true);
+                editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+            }
         }
         else {
             editCart(id, option, size, 1);
@@ -205,16 +231,20 @@ const SingleProductContent = () => {
             </button>
 
             <img className="modalTick" src={tickImg} alt="dodano-do-koszyka" />
-            <h2 className="modalHeader">
-                Produkt został dodany do koszyka
+            <h2 className={modalHint ? "modalHeader modalHeader--smaller" : "modalHeader"}>
+                {!modalHint ? "Produkt został dodany do koszyka" : "Połowa boxa została dodana do koszyka. Uzupełnij swój box o drugą połówkę."}
             </h2>
             <section className="modal__buttons">
-                <button className="modal__btn" onClick={() => { setModal(false) }}>
-                    Kontynuuj zakupy
-                </button>
-                <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
-                    Przejdź do kasy
-                </button>
+                {!modalHint ? <>
+                    <button className="modal__btn" onClick={() => { setModal(false) }}>
+                        Kontynuuj zakupy
+                    </button>
+                    <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
+                        Przejdź do kasy
+                    </button>
+                </> : <a href="http://brunchbox.skylo-test3.pl/oferta-dla-grup" className="modal__btn">
+                    Wybierz drugą połowę
+                </a>}
             </section>
         </Modal>
 

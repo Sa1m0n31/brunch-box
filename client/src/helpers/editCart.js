@@ -1,7 +1,7 @@
 const editCart = (id, option, size, quantity) => {
     let currentCart = JSON.parse(localStorage.getItem('sec-cart'));
 
-    /* Iterrate over array of products - find if product is on the list */
+   /* Iterrate over array of products - find if product is on the list */
    let newProduct = 1;
    if(currentCart?.length) {
        currentCart.forEach(item => {
@@ -53,10 +53,6 @@ const deleteFromCart = ({ uuid, id, size, option, banquet }) => {
             }));
         });
 
-        // newCart.filter(item => {
-        //     return item.length;
-        // });
-
         localStorage.setItem('sec-cart-banquet', JSON.stringify(newCart));
     }
     else {
@@ -66,7 +62,8 @@ const deleteFromCart = ({ uuid, id, size, option, banquet }) => {
             return item.id !== id || item.size !== size || item.option !== option;
         });
 
-        localStorage.setItem('sec-cart', JSON.stringify(newCart));
+        if(newCart.length === 0) localStorage.removeItem('sec-cart');
+        else localStorage.setItem('sec-cart', JSON.stringify(newCart));
     }
 }
 

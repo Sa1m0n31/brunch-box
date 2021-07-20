@@ -8,6 +8,7 @@ import Modal from 'react-modal'
 import closeImg from '../static/img/close.png'
 import tickImg from '../static/img/tick-sign.svg'
 import { v4 as uuidv4 } from 'uuid';
+import arrow from '../static/img/caret_down.svg'
 
 import { useLocation } from "react-router";
 import {getImageById, getProductAllergens, getProductByName, getSingleProduct} from "../helpers/productFunctions";
@@ -23,15 +24,11 @@ import bb4 from '../static/img/brunchbox-4.png';
 import axios from "axios";
 
 const CustomMenuContent = () => {
-    const [size, setSize] = useState("M");
     const [product, setProduct] = useState([1]);
     const [products, setProducts] = useState([]);
-    const [option, setOption] = useState("Mięsna");
     const [photoIndex, setPhotoIndex] = useState(0);
     const [galleryOpen, setGalleryOpen] = useState(false);
     const [price, setPrice] = useState(0);
-    const [longDesc, setLongDesc] = useState(false);
-    const [currentDesc, setCurrentDesc] = useState("");
     const [allergens, setAllergens] = useState([]);
 
     const [mainImage, setMainImage] = useState(null);
@@ -140,6 +137,21 @@ const CustomMenuContent = () => {
         let uncheck50 = false;
         if(productInfo[i].selected50) uncheck50 = true;
 
+        const numberOf25Selected = productInfo.filter(item => {
+            return item.selected25;
+        }).length;
+        console.log("NUMBER: " + numberOf25Selected);
+        if(numberOf25Selected % 2 === 0) {
+            console.log("hello!!!");
+            setProductInfo(productInfo.map((item, index) => {
+                return {
+                    selected25: item.selected25,
+                    selected50: item.selected50,
+                    amount: 5
+                }
+            }));
+        }
+
         setProductInfo(productInfo.map((item, index) => (
             {
                 selected25: i === index ? !item.selected25 : item.selected25,
@@ -173,7 +185,7 @@ const CustomMenuContent = () => {
                 {
                     selected25: item.selected25,
                     selected50: item.selected50,
-                    amount: i === index ? parseInt(n) : item.amount
+                    amount: i === index ? parseInt(n) : 1
                 }
             )));
         }
@@ -188,6 +200,12 @@ const CustomMenuContent = () => {
         }
 
         handleAccordion(i);
+    }
+
+    const hideSection = () => {
+        setAccordion(accordion.map((item, index) => {
+            return false;
+        }));
     }
 
     const handleAccordion = (i) => {
@@ -328,7 +346,7 @@ const CustomMenuContent = () => {
                             <section className="banquet__product">
                                 <section className="row">
                                     <button className="banquet__product__title"
-                                        onClick={() => { handleAccordion(index); }}
+                                        onClick={() => { accordion[index] ? hideSection() : handleAccordion(index); }}
                                     >
                                         {item.name?.split("/")[0]}
                                     </button>
@@ -401,6 +419,11 @@ const CustomMenuContent = () => {
                                             }
                                         })}
                                     </div> : ""}
+
+                                    <button className="button--hide" onClick={() => { hideSection() }}>
+                                        Zwiń
+                                        <img className="button--hide__img" src={arrow} alt="zwin" />
+                                    </button>
                                 </section>
                             </section>
                         ))}

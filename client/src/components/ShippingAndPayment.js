@@ -591,29 +591,26 @@ const ShippingAndPayment = () => {
                     </button>
                     Dostarcz zamówienie najszybciej jak to możliwe
                 </label>
-            </section>
 
-            <section className="shippingAndPayment__section shippingAndPayment__section--noMarginBottom">
-                <h2 className="shippingAndPayment__header">
+                {/* Second section */}
+                <h2 className="shippingAndPayment__header marginTop50">
                     Wybierz godzinę dostawy
                 </h2>
                 <section className="shippingAndPayment__section shippingAndPayment__section--hours">
                     {availableHours.map((item, index) => {
-                            return <label className={item.available ? "ribbonBtnLabel ribbonBtnLabel--hour" : "ribbonBtnLabel ribbonBtnLabel--hour hour--disabled"}>
-                                <button disabled={!item.available} className="ribbonBtn" onClick={(e) => {
-                                    e.preventDefault();
-                                    setHourOfDelivery(index);
-                                }}>
-                                    <span className={hourOfDelivery === index && item.available ? "ribbon" : "d-none"}></span>
-                                </button>
-                                {item.start.toString() + ":00 - " + item.end.toString() + ":00"}
-                            </label>
+                        return <label className={item.available ? "ribbonBtnLabel ribbonBtnLabel--hour" : "ribbonBtnLabel ribbonBtnLabel--hour hour--disabled"}>
+                            <button disabled={!item.available} className="ribbonBtn" onClick={(e) => {
+                                e.preventDefault();
+                                setHourOfDelivery(index);
+                            }}>
+                                <span className={hourOfDelivery === index && item.available ? "ribbon" : "d-none"}></span>
+                            </button>
+                            {item.start.toString() + ":00 - " + item.end.toString() + ":00"}
+                        </label>
                     })}
                 </section>
             </section>
-        </main>
 
-        <main className="cart cart--flex">
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
                     Dane osobowe
@@ -712,10 +709,10 @@ const ShippingAndPayment = () => {
 
                     </section>
                 </> : ""}
-            </section>
 
-            <section className="shippingAndPayment__section">
-                <h2 className="shippingAndPayment__header">
+
+                {/* Second section */}
+                <h2 className="shippingAndPayment__header marginTop50">
                     Pozostałe informacje
                 </h2>
 
@@ -736,18 +733,18 @@ const ShippingAndPayment = () => {
                 <section className={coupon ? "ribbonDedication" : "o-none"}>
                     <section className="couponSection">
                         {!couponUsed ? <><label className="ribbonLabel">
-                                <input className="shippingAndPayment__input"
-                                       name="coupon"
-                                       type="text"
-                                       value={couponContent}
-                                       onChange={(e) => { setCouponContent(e.target.value); }}
-                                       placeholder="Tu wpisz swój kupon" />
-                            </label>
+                            <input className="shippingAndPayment__input"
+                                   name="coupon"
+                                   type="text"
+                                   value={couponContent}
+                                   onChange={(e) => { setCouponContent(e.target.value); }}
+                                   placeholder="Tu wpisz swój kupon" />
+                        </label>
                             <button className="button button--coupon" onClick={(e) => { checkCoupon(e) }}>
                                 Dodaj kupon
                             </button></> : <h3 className="couponUsed">
-                                Kupon: { couponContent }, zniżka: { discount }
-                            </h3>}
+                            Kupon: { couponContent }, zniżka: { discount }
+                        </h3>}
                     </section>
                     <span className="errorsContainer errorsContainer--coupon">
                         {couponError ? "Podany kupon rabatowy nie istnieje" : ""}
@@ -763,22 +760,23 @@ const ShippingAndPayment = () => {
 
                 <section className={ribbon ? "ribbonDedication" : "o-none"}>
                     <label className="ribbonLabel">
-                    <input className="shippingAndPayment__input"
-                           name="ribbonFrom"
-                           type="text"
-                           value={formik.values.ribbonFrom}
-                           onChange={formik.handleChange}
-                           placeholder="Od kogo" />
+                        <input className="shippingAndPayment__input"
+                               name="ribbonFrom"
+                               type="text"
+                               value={formik.values.ribbonFrom}
+                               onChange={formik.handleChange}
+                               placeholder="Od kogo" />
                     </label>
                     <label className="ribbonLabel">
-                    <input className="shippingAndPayment__input"
-                           name="ribbonTo"
-                           type="text"
-                           value={formik.values.ribbonTo}
-                           onChange={formik.handleChange}
-                           placeholder="Dla kogo" />
+                        <input className="shippingAndPayment__input"
+                               name="ribbonTo"
+                               type="text"
+                               value={formik.values.ribbonTo}
+                               onChange={formik.handleChange}
+                               placeholder="Dla kogo" />
                     </label>
                 </section>
+
             </section>
         </main>
 

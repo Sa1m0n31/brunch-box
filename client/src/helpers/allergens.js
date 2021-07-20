@@ -18,7 +18,7 @@ import soja from '../static/img/allergens/soja.png'
 const allergensList = ["gluten/gluten", "grzyby/mushrooms", "jajka/eggs",
     "kukurydza/corn", "łubin/lupin", "mięczaki/mollusca",
     "mleko/milk", "musztarda/mustard", "orzechy/nuts",
-    "orzechy ziemne/peanut", "ryba/fish",
+    "brokół/broccoli", "ryba/fish",
     "seler/celery", "sezam/sesame", "siarka/sulphur",
     "skorupiaki/shellfish", "soja/soya"];
 const allergensImg = [gluten, grzyby, jajka, kukurydza, lubin, mieczaki, mleko, musztarda, orzechy, orzechyZiemne, ryba, seler,
