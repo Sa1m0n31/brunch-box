@@ -96,7 +96,7 @@ function App() {
                 {categories.map((item, index) => {
                    if(index === 2) {
                        /* Banquet menu */
-                       return <Route key={index} path="/menu-bankietowe">
+                       return <Route key={index} path="/przekaski-bankietowe">
                            <CustomMenu />
                        </Route>
                    }

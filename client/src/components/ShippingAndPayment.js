@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import {getProductById} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
-import {getNextDays} from "../helpers/datetimeFunctions";
+import {getNextDays, numberToDayOfTheWeek} from "../helpers/datetimeFunctions";
 import { v4 as uuidv4 } from 'uuid';
 
 const ShippingAndPayment = () => {
@@ -557,7 +557,7 @@ const ShippingAndPayment = () => {
         }
     }, [dateError]);
 
-    return <form className="cartContent" onSubmit={formik.handleSubmit}>
+    return <form className="cartContent shippingAndPayment" onSubmit={formik.handleSubmit}>
         <h1 className="cart__header cart__header--shippingAndPayment">
             Wpisz swoje dane i dokończ zamówienie
         </h1>
@@ -576,9 +576,12 @@ const ShippingAndPayment = () => {
                             <h3 className="calendarDay">
                                 {item.day}
                             </h3>
-                            <h4 className="calendarMonth">
-                                {item.month}
+                            <h4 className="calendarDayOfWeek">
+                                {numberToDayOfTheWeek(item.dayOfTheWeek)}
                             </h4>
+                            <h5 className="calendarMonth">
+                                {item.month}
+                            </h5>
                         </button>
                     ))}
                 </section>

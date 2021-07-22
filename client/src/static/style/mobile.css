@@ -113,6 +113,12 @@
     .panelContent__cart__content {
         margin-left: 0;
     }
+
+    /* Shipping and payment */
+    .shippingAndPayment__calendar {
+        display: flex;
+        flex-wrap: wrap;
+    }
 }
 
 @media(max-width: 1200px) {
@@ -688,6 +694,10 @@
     }
 
     /* Single product */
+    .singleProduct {
+        padding-bottom: 50px;
+    }
+
     .singleProduct > *, .singleProduct__bottom {
         width: 100%;
         max-width: 500px;
@@ -1123,10 +1133,6 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-    }
-
-    .singleProduct__bottom {
-        padding: 0 5vw;
     }
 
     /* Single product */

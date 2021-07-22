@@ -282,6 +282,17 @@ const SingleProductContent = () => {
 
                     </div>
 
+                    <section className="singleProduct__bottom">
+                        <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>
+                            {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu
+                            <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />
+                        </button>
+
+                        <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>
+
+                        </main>
+                    </section>
+
                     {product.l ? <div className="singleProduct__options">
                         <h3 className="singleProduct__options__header">
                             Dostępne rozmiary:
@@ -338,7 +349,7 @@ const SingleProductContent = () => {
                         })}
                     </div> : ""}
 
-                    <section className="singleProduct__options">
+                    <section className="singleProduct__options marginTop10">
                         <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id, option, size) }}>
                             Dodaj do koszyka
                         </button>
@@ -368,16 +379,16 @@ const SingleProductContent = () => {
             }}
         /> : ""}
     </main>
-        <section className="singleProduct__bottom">
-            <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>
-                {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu
-                <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />
-            </button>
+        {/*<section className="singleProduct__bottom">*/}
+        {/*    <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>*/}
+        {/*        {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu*/}
+        {/*        <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />*/}
+        {/*    </button>*/}
 
-            <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>
+        {/*    <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>*/}
 
-            </main>
-        </section>
+        {/*    </main>*/}
+        {/*</section>*/}
         </>
 }
 

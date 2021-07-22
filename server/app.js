@@ -40,10 +40,10 @@ app.get("/polityka-prywatnosci", (req, res) => {
 app.get("/wpis/*", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-app.get("/dla-grup", (req, res) => {
+app.get("/przekaski-dla-grup", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-app.get("/menu-bankietowe", (req, res) => {
+app.get("/przekaski-bankietowe", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 app.get("/dziekujemy", (req, res) => {
@@ -61,7 +61,7 @@ app.get("/dostawa-i-platnosc", (req, res) => {
 app.get("/koszyk", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-app.get("/oferta-dla-grup", (req, res) => {
+app.get("/przekaski-tematyczne", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 app.get("/admin", (req, res) => {

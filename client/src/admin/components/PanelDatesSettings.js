@@ -28,6 +28,7 @@ const PanelDatesSettings = () => {
     const [dayOfDelivery, setDayOfDelivery] = useState(-1);
     const [hoursOfDelivery, setHoursOfDelivery] = useState([]);
     const [hoursDatabase, setHoursDatabase] = useState([]);
+    const [allHours, setAllHours] = useState(false);
 
     useEffect(() => {
         /* Get dates excluded */
@@ -102,6 +103,17 @@ const PanelDatesSettings = () => {
         }
         else {
             setHoursOfDelivery([...hoursOfDelivery, index]);
+        }
+    }
+
+    const toggleAllHours = () => {
+        if(hoursOfDelivery.length !== 12) {
+            setHoursOfDelivery([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+            setAllHours(true);
+        }
+        else {
+            setAllHours(false);
+            setHoursOfDelivery([]);
         }
     }
 
@@ -246,6 +258,16 @@ const PanelDatesSettings = () => {
                             </label>
                         })}
                     </section>
+                    <label className="ribbonBtnLabel">
+                        <button className="ribbonBtn" onClick={(e) => {
+                            e.preventDefault();
+                            toggleAllHours();
+                        }}>
+                            <span className={allHours ? "ribbon" : "d-none"}></span>
+                        </button>
+                        Wyłącz wszystkie godziny
+                    </label>
+
                 </section></> : <h2 className="addedMsgWrapper w-100">
                     {added}
                 </h2>}
