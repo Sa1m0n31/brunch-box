@@ -4,7 +4,7 @@ import PanelOthersContent from "../components/PanelOthersContent";
 
 const PanelOthers = () => {
     return <main className="panel">
-        <PanelMenu active={10} />
+        <PanelMenu active={11} />
         <PanelOthersContent />
     </main>
 }

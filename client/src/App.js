@@ -39,6 +39,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import PanelOthers from "./admin/pages/PanelOthers";
 import PanelCoupons from "./admin/pages/PanelCoupons";
 import CustomMenu from "./pages/CustomMenu";
+import PanelDelivery from "./admin/pages/PanelDelivery";
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -156,6 +157,9 @@ function App() {
                 </Route>
                 <Route path="/panel/kupony">
                     <PanelCoupons />
+                </Route>
+                <Route path="/panel/dostawa">
+                    <PanelDelivery />
                 </Route>
                 <Route path="/panel/pozostale">
                     <PanelOthers />

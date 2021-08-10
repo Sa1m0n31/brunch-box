@@ -160,7 +160,13 @@ const PanelMenu = ({active, submenu}) => {
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
-                        <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/pozostale">
+                        <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/dostawa">
+                            <img className="panelMenu__list__item__img" src={box} alt="ceny-dostawy" />
+                            Ceny dostawy
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 11 ? "menuItem--active" : ""} href="/panel/pozostale">
                             <img className="panelMenu__list__item__img" src={others} alt="pozostale" />
                             Pozostałe
                         </a>

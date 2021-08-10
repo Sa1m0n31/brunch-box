@@ -51,7 +51,7 @@ con.connect(err => {
         const values = [id];
         const query = 'SELECT * FROM delivery_prices WHERE id = ?';
         con.query(query, values, (err, res) => {
-           reponse.send({
+           response.send({
                result: res
            });
         });
@@ -103,6 +103,7 @@ con.connect(err => {
        const values = [id];
        const query = 'DELETE FROM delivery_prices WHERE id = ?';
        con.query(query, values, (err, res) => {
+           console.log(err);
           if(res) {
               response.send({
                   result: 1
