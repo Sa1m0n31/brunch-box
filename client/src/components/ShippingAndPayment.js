@@ -6,6 +6,7 @@ import {getProductById} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
 import {getNextDays, numberToDayOfTheWeek} from "../helpers/datetimeFunctions";
 import { v4 as uuidv4 } from 'uuid';
+import Loader from "react-loader-spinner";
 
 const ShippingAndPayment = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
@@ -47,6 +48,9 @@ const ShippingAndPayment = () => {
     const [excludedHours, setExcludedHours] = useState([]);
     const [changeOnFastest, setChangeOnFastest] = useState(0);
     const [dateError, setDateError] = useState(false);
+    const [routeResult, setRouteResult] = useState("");
+    const [routeError, setRouteError] = useState("");
+    const [routeLoader, setRouteLoader] = useState(false);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -557,6 +561,28 @@ const ShippingAndPayment = () => {
         }
     }, [dateError]);
 
+    const calculateRoute = () => {
+        const { street, building, postalCode, city } = formik.values;
+        setRouteLoader(true);
+
+        if((street)&&(building)&&(postalCode)&&(city)) {
+            axios.post("http://localhost:5000/maps/get-distance", {
+                street, building, postalCode, city
+            })
+                .then(res => {
+                    if(res.data.result) {
+                        setRouteResult(res.data.result.routes[0].legs[0].distance.text);
+                        setRouteLoader(false);
+                        setRouteError("");
+                    }
+                });
+        }
+        else {
+            setRouteError("Wpisz adres dostawy");
+            setRouteLoader(false);
+        }
+    }
+
     return <form className="cartContent shippingAndPayment" onSubmit={formik.handleSubmit}>
         <h1 className="cart__header cart__header--shippingAndPayment">
             Wpisz swoje dane i dokończ zamówienie
@@ -669,6 +695,7 @@ const ShippingAndPayment = () => {
                                value={formik.values.postalCode}
                                onChange={formik.handleChange}
                                disabled={personal}
+                               onClick={() => { calculateRoute() }}
                                placeholder="Kod pocztowy"
                                type="text" />
                     </label>
@@ -702,16 +729,37 @@ const ShippingAndPayment = () => {
                     </label>
                 </div>
 
-                {personalAvailable ?  <><label className="ribbonBtnLabel">
-                    <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
-                        <span className={personal ? "ribbon" : "d-none"}></span>
-                    </button>
-                    Odbiór osobisty
-                </label>
-                    <section className="address" dangerouslySetInnerHTML={{__html: address}}>
+                <section className="afterFormSection">
+                    {personalAvailable ?  <div><label className="ribbonBtnLabel">
+                        <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
+                            <span className={personal ? "ribbon" : "d-none"}></span>
+                        </button>
+                        Odbiór osobisty
+                    </label>
+                        <section className="address" dangerouslySetInnerHTML={{__html: address}}>
 
+                        </section>
+                    </div> : ""}
+
+                    <section className="routeSection">
+                        <button className="cart__summary__button cart__summary__button--back button__link--small routeSection__btn" onClick={() => { calculateRoute(); }}>
+                            Oblicz cenę dostawy
+                        </button>
+
+                        {routeLoader ? <span className="loaderSpan">
+                            <Loader
+                                type="puff"
+                                color="#000"
+                                width={100}
+                                height={100}
+                            />
+                        </span> : <>
+                            {routeError !== "" ? <h4 className="route route--error">{routeError}</h4> : ""}
+                            {routeResult !== "" ? <h4 className="route"><b>Odległość:</b> {routeResult}</h4> : ""}
+                            {routeResult !== "" ? <h4 className="route"><b>Cena:</b> 12 PLN</h4> : "" }
+                        </>}
                     </section>
-                </> : ""}
+                </section>
 
 
                 {/* Second section */}

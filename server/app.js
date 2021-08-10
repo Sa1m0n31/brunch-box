@@ -90,6 +90,7 @@ const aboutUsRouter = require("./routers/abousUsRouter");
 const pagesRouter = require("./routers/pagesRouter");
 const couponRouter = require("./routers/couponRouter");
 const datesRouter = require("./routers/datesRouter");
+const googleMapsRouter = require("./routers/googleMapsRouter");
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -105,6 +106,7 @@ app.use("/about-us", aboutUsRouter);
 app.use("/pages", pagesRouter);
 app.use("/coupon", couponRouter);
 app.use("/dates", datesRouter);
+app.use("/maps", googleMapsRouter);
 
 app.listen(5000, () => {
     console.log("Listening on port 5000");

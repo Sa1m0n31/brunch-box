@@ -1894,3 +1894,44 @@ ol {
         transform: translate3d(4px, 0, 0);
     }
 }
+
+/* Update - 10.08.2021 */
+.afterFormSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.routeSection {
+    margin-top: 20px;
+}
+
+.route {
+    font-weight: 400;
+    margin: 5px auto;
+    text-align: center;
+}
+
+.route--error {
+    color: #d83b27;
+}
+
+.route--succes {
+    color: #12944b;
+}
+
+.loaderSpan {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loaderSpan > * {
+    margin: 15px auto 0;
+    display: block;
+    zoom: .5;
+}
+
+.routeSection__btn {
+    margin-bottom: 15px;
+}
