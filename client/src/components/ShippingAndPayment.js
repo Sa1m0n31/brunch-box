@@ -7,6 +7,7 @@ import settings from "../admin/helpers/settings";
 import {getNextDays, numberToDayOfTheWeek} from "../helpers/datetimeFunctions";
 import { v4 as uuidv4 } from 'uuid';
 import Loader from "react-loader-spinner";
+import {getAllDeliveryPrices} from "../admin/helpers/deliveryFunctions";
 
 const ShippingAndPayment = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
@@ -21,7 +22,6 @@ const ShippingAndPayment = () => {
     const [cartNames, setCartNames] = useState([]);
     const [personalAvailable, setPersonalAvailable] = useState(false);
     const [personal, setPersonal] = useState(false);
-    const [address, setAddress] = useState("");
     const [coupon, setCoupon] = useState(false);
     const [couponContent, setCouponContent] = useState("");
     const [couponUsed, setCouponUsed] = useState(false);
@@ -51,6 +51,15 @@ const ShippingAndPayment = () => {
     const [routeResult, setRouteResult] = useState("");
     const [routeError, setRouteError] = useState("");
     const [routeLoader, setRouteLoader] = useState(false);
+    const [deliveryPrice, setDeliveryPrice] = useState(0);
+
+    const [originStreet, setOriginStreet] = useState("");
+    const [originBuilding, setOriginBuilding] = useState("");
+    const [originFlat, setOriginFlat] = useState("");
+    const [originPostalCode, setOriginPostalCode] = useState("");
+    const [originCity, setOriginCity] = useState("");
+    const [deliveryError, setDeliveryError] = useState("");
+    const [deliveryValidate, setDeliveryValidate] = useState(-1);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -91,7 +100,6 @@ const ShippingAndPayment = () => {
 
         /* Set excluded days and hours */
         setExcludedDates();
-        console.log(excludedHours);
 
         /* Get personal takeaway info */
         axios.get(`${settings.API_URL}/shipping/get-info`)
@@ -100,7 +108,11 @@ const ShippingAndPayment = () => {
                 if(result) {
                     if(result.is_on) {
                         setPersonalAvailable(true);
-                        setAddress(result.address);
+                        setOriginStreet(result.street);
+                        setOriginBuilding(result.building);
+                        setOriginFlat(result.flat);
+                        setOriginPostalCode(result.postal_code);
+                        setOriginCity(result.city);
                     }
                 }
             });
@@ -171,8 +183,16 @@ const ShippingAndPayment = () => {
         },
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
-            /* Additional validation for delivery date and time */
-            if((calendar[dayOfDelivery])&&(availableHours[hourOfDelivery])) {
+            /* Additional validation for delivery price */
+            if(((personal)||((deliveryPrice))&&(deliveryPrice !== -1))) {
+                setDeliveryValidate(1);
+            }
+            else {
+                setDeliveryValidate(0);
+            }
+
+            /* Additional validation for delivery date and time and delivery price */
+            if(((calendar[dayOfDelivery])&&(availableHours[hourOfDelivery]))||(fastest)) {
                 setFormValidate(true);
             }
             else {
@@ -182,28 +202,6 @@ const ShippingAndPayment = () => {
     });
 
     useEffect(() => {
-        if(fastest) {
-            /* Choose fastest possible hour */
-            chooseFastestPossibleHourInLoop();
-        }
-        else {
-            setDayOfDelivery(-1);
-            setHourOfDelivery(-1);
-        }
-    }, [fastest]);
-
-    useEffect(() => {
-        if(fastest) {
-            setChangeOnFastest(changeOnFastest+1);
-        }
-        else {
-            setChangeOnFastest(0);
-        }
-        if((changeOnFastest)||(!fastest)) {
-            setFastest(false);
-            setHourOfDelivery(-1);
-        }
-
         if(dayOfDelivery !== -1) {
             const selectedDay = calendar[dayOfDelivery];
 
@@ -317,102 +315,20 @@ const ShippingAndPayment = () => {
         if(changeOnFastest) setFastest(false);
     }, [hourOfDelivery]);
 
-    const isHourAvailable = (dayIndex, hourIndex) => {
-        if(hourIndex !== -1) {
-            const newArr = excludedHours.filter(item => {
-                return item.hour === availableHours[hourIndex].start && item.day === calendar[dayIndex].fullDate;
-            });
-            return !newArr.length;
-        }
-        else {
-            return false;
-        }
-    }
-
     Date.prototype.addHours = function(h) {
-        this.setTime(this.getTime() + (h*60*60*1000));
+        this.setTime(this.getTime() + (h * 60 * 60 * 1000));
         return this;
     }
 
-    const chooseFastestPossibleHourInLoop = () => {
-        let i = 0;
-        while((!chooseFastestPossibleHour(i))&&(i<14*24)) {
-            i++;
+    useEffect(() => {
+        if(!deliveryValidate) {
+            calculateRoute();
         }
-    }
-
-    const daysDifference = (date1, date2) => {
-        const diffTime = Math.abs(date2 - date1);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    }
-
-    const chooseFastestPossibleHour = (h) => {
-        const myDate = new Date().addHours(h);
-        const currentDate = new Date();
-        const hour = myDate.getHours();
-        const dayOfTheWeek = myDate.getDay();
-        if ((dayOfTheWeek === 4) || (dayOfTheWeek === 5) || (dayOfTheWeek === 6)) {
-            if (hour < 9) {
-                /* For today */
-                if (isHourAvailable(daysDifference(myDate, currentDate), 0)) {
-                    setDayOfDelivery(daysDifference(myDate, currentDate));
-                    setHourOfDelivery(2);
-                    return true;
-                } else return false;
-            } else if (hour < 19) {
-                /* For today */
-                if (isHourAvailable(daysDifference(myDate, currentDate), availableHours.findIndex(item => {
-                    return item.start === parseInt(parseInt(hour) + 3);
-                }))) {
-                    setDayOfDelivery(daysDifference(myDate, currentDate));
-                    setHourOfDelivery(availableHours.findIndex(item => {
-                        return item.start === parseInt(parseInt(hour) + 3);
-                    }));
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                /* For next day */
-                if (isHourAvailable(Math.max(1, daysDifference(myDate, currentDate)), 0)) {
-                    setDayOfDelivery(Math.max(1, daysDifference(myDate, currentDate)));
-                    setHourOfDelivery(0);
-                    return true;
-                } else return false;
-            }
-        } else {
-            if (hour < 9) {
-                /* For today */
-                if (isHourAvailable(daysDifference(myDate, currentDate), 0)) {
-                    setDayOfDelivery(daysDifference(myDate, currentDate));
-                    setHourOfDelivery(2);
-                    return true;
-                } else return false;
-            } else if (hour < 18) {
-                /* For today */
-                if (isHourAvailable(daysDifference(myDate, currentDate), availableHours.findIndex(item => {
-                    return item.start === hour + 3;
-                }))) {
-                    setDayOfDelivery(daysDifference(myDate, currentDate));
-                    setHourOfDelivery(availableHours.findIndex(item => {
-                        return item.start === hour + 3;
-                    }));
-                    return true;
-                } else return false;
-            } else {
-                /* For next day */
-                if (isHourAvailable(Math.max(1, daysDifference(myDate, currentDate)), 0)) {
-                    setDayOfDelivery(Math.max(1, daysDifference(myDate, currentDate)));
-                    setHourOfDelivery(0);
-                    return true;
-                } else return false;
-            }
-        }
-    }
+    }, [deliveryValidate]);
 
     useEffect(() => {
         /* Payment */
-        if(formValidate) {
+        if((formValidate)&&(deliveryValidate)) {
             const sessionId = uuidv4();
             setFormValidate(false);
 
@@ -438,7 +354,7 @@ const ShippingAndPayment = () => {
                         user: insertedUserId,
                         comment: formik.values.comment,
                         sessionId,
-                        delivery: calendar[dayOfDelivery].humanDate + ", godz: " + availableHours[hourOfDelivery].start + ":00 - " + availableHours[hourOfDelivery].end + ":00"
+                        delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + availableHours[hourOfDelivery].start + ":00 - " + availableHours[hourOfDelivery].end + ":00"
                     })
                         .then(res => {
                             const orderId = res.data.result;
@@ -494,7 +410,7 @@ const ShippingAndPayment = () => {
 
                             axios.post("http://brunchbox.skylo-test3.pl/payment/payment", {
                                 sessionId,
-                                amount,
+                                amount: amount + deliveryPrice,
                                 email: formik.values.email
                             })
                                 .then(res => {
@@ -572,6 +488,7 @@ const ShippingAndPayment = () => {
                 .then(res => {
                     if(res.data.result) {
                         setRouteResult(res.data.result.routes[0].legs[0].distance.text);
+                        calculateDeliveryPrice(parseFloat(res.data.result.routes[0].legs[0].distance.text.split(" ")[0]));
                         setRouteLoader(false);
                         setRouteError("");
                     }
@@ -581,6 +498,24 @@ const ShippingAndPayment = () => {
             setRouteError("Wpisz adres dostawy");
             setRouteLoader(false);
         }
+    }
+
+    const calculateDeliveryPrice = (km) => {
+        getAllDeliveryPrices()
+            .then(res => {
+                const result = res.data.result;
+                result.forEach((item, index, array) => {
+                    console.log(item.km_from + " " + item.km_to + " " + km);
+                   if((item.km_from < km)&&(item.km_to > km)) {
+                        setDeliveryPrice(item.price);
+                        return 0;
+                   }
+
+                   if(index === array.length-1) {
+                       setDeliveryPrice(-1);
+                   }
+                });
+            });
     }
 
     return <form className="cartContent shippingAndPayment" onSubmit={formik.handleSubmit}>
@@ -593,7 +528,9 @@ const ShippingAndPayment = () => {
                 <h2 className="shippingAndPayment__header">
                     Wybierz dzień dostawy
                 </h2>
-                <section className="shippingAndPayment__calendar">
+                <section className={fastest ? "shippingAndPayment__calendar opacity-5" : "shippingAndPayment__calendar"}>
+                    {fastest ? <div className="shippingAndPayment__calendar__overlay"></div> : ""}
+
                     {calendar?.map((item, index) => (
                         <button className={dayOfDelivery === index ? "shippingAndPayment__calendar__btn shippingAndPayment__calendar__btn--checked" : "shippingAndPayment__calendar__btn"}
                                 key={index}
@@ -625,7 +562,9 @@ const ShippingAndPayment = () => {
                 <h2 className="shippingAndPayment__header marginTop50">
                     Wybierz godzinę dostawy
                 </h2>
-                <section className="shippingAndPayment__section shippingAndPayment__section--hours">
+                <section className={fastest ? "shippingAndPayment__section shippingAndPayment__section--hours opacity-5" : "shippingAndPayment__section shippingAndPayment__section--hours"}>
+                    {fastest ? <div className="shippingAndPayment__calendar__overlay"></div> : ""}
+
                     {availableHours.map((item, index) => {
                         return <label className={item.available ? "ribbonBtnLabel ribbonBtnLabel--hour" : "ribbonBtnLabel ribbonBtnLabel--hour hour--disabled"}>
                             <button disabled={!item.available} className="ribbonBtn" onClick={(e) => {
@@ -736,13 +675,14 @@ const ShippingAndPayment = () => {
                         </button>
                         Odbiór osobisty
                     </label>
-                        <section className="address" dangerouslySetInnerHTML={{__html: address}}>
-
+                        <section className="address">
+                            {originStreet} {originBuilding} {originFlat ? "/" + originFlat : ""} <br/>
+                            {originPostalCode} {originCity}
                         </section>
                     </div> : ""}
 
                     <section className="routeSection">
-                        <button className="cart__summary__button cart__summary__button--back button__link--small routeSection__btn" onClick={() => { calculateRoute(); }}>
+                        <button type="button" className="cart__summary__button cart__summary__button--back button__link--small routeSection__btn" onClick={() => { calculateRoute(); }}>
                             Oblicz cenę dostawy
                         </button>
 
@@ -755,8 +695,11 @@ const ShippingAndPayment = () => {
                             />
                         </span> : <>
                             {routeError !== "" ? <h4 className="route route--error">{routeError}</h4> : ""}
-                            {routeResult !== "" ? <h4 className="route"><b>Odległość:</b> {routeResult}</h4> : ""}
-                            {routeResult !== "" ? <h4 className="route"><b>Cena:</b> 12 PLN</h4> : "" }
+
+                            {deliveryPrice !== -1 ? <>
+                                {routeResult !== "" ? <h4 className="route"><b>Odległość:</b> {routeResult}</h4> : ""}
+                                {routeResult !== "" ? <h4 className="route"><b>Cena:</b> {deliveryPrice} PLN</h4> : "" }
+                            </> : <h4 className="route">Wysyłka na podany adres nie jest dostępna</h4> }
                         </>}
                     </section>
                 </section>
@@ -839,12 +782,30 @@ const ShippingAndPayment = () => {
             </button>
 
             <section className="cart__summary__bottomRight">
-                <header className="cart__summary__header">
+                {deliveryPrice && deliveryPrice !== -1 ? <>
+                    <header className="cart__summary__header">
+                        <h3 className="cart__summary__header__label">
+                            Wartość zamówienia
+                        </h3>
+                        <h4 className="cart__summary__header__value">
+                            {amount} PLN
+                        </h4>
+                    </header>
+                    <header className="cart__summary__header">
+                        <h3 className="cart__summary__header__label">
+                            Dostawa:
+                        </h3>
+                        <h4 className="cart__summary__header__value">
+                            {deliveryPrice} PLN
+                        </h4>
+                    </header>
+                </> : ""}
+                <header className={deliveryPrice && deliveryPrice !== -1 ? "cart__summary__header cart__summary__header--sum" : "cart__summary__header"}>
                     <h3 className="cart__summary__header__label">
                         Łącznie do zapłaty:
                     </h3>
                     <h4 className="cart__summary__header__value">
-                        {amount} PLN
+                        {amount + deliveryPrice} PLN
                     </h4>
                 </header>
                 <button className="cart__summary__button cart__summary__button--shippingAndPayment button__link--small" type="submit">

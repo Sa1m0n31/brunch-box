@@ -983,6 +983,10 @@
     .cart__summary__bottomRight {
         margin-top: 20px;
     }
+
+    .cart__summary--shippingAndPayment {
+        padding: 0;
+    }
 }
 
 @media(max-width: 576px) {
@@ -1203,5 +1207,15 @@
     .shippingAndPayment__section--hours
     {
         margin-bottom: 0;
+    }
+
+    /* Shipping and payment */
+    .routeSection__btn {
+        width: 200px;
+        font-size: 13px !important;
+    }
+
+    .routeSection__btn:hover {
+        letter-spacing: 0;
     }
 }

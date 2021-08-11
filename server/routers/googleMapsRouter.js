@@ -10,21 +10,33 @@ con.connect(err => {
     router.post("/get-distance", (request, response) => {
        const { city, postalCode, street, building } = request.body;
 
-       const googleMapsAPIKey = "AIzaSyB-v08acGrxo3OEk5qv5dOcT9zk-z-qnFU";
-       const originCity = "Warszawa";
-       const originPostalCode = "05-075";
-       const originStreet = "Polna";
-       const originBuilding = "15";
+       /* Get origin address */
+       const query = 'SELECT * FROM shipping_methods';
+       con.query(query, (err, res) => {
+           if(res) {
+                const result = res[0];
+                const originCity = result.city;
+                const originPostalCode = result.postal_code;
+                const originStreet = result.street;
+                const originBuilding = result.building;
+                const googleMapsApiKey = result.google_maps_api_key;
 
-       /* API REQUEST TO GOOGLE MAPS */
-       got.post(`https://maps.googleapis.com/maps/api/directions/json?origin=${originStreet}+${originBuilding}+${originPostalCode}+${originCity}&destination=${street}+${building}+${postalCode}+${city}&key=${googleMapsAPIKey}`, {
-           responseType: "json"
-       })
-           .then(res => {
-              response.send({
-                  result: res.body
-              });
-           });
+               /* API REQUEST TO GOOGLE MAPS */
+               got.post(`https://maps.googleapis.com/maps/api/directions/json?origin=${originStreet}+${originBuilding}+${originPostalCode}+${originCity}&destination=${street}+${building}+${postalCode}+${city}&key=${googleMapsApiKey}`, {
+                   responseType: "json"
+               })
+                   .then(res => {
+                       response.send({
+                           result: res.body
+                       });
+                   });
+           }
+           else {
+               response.send({
+                   result: 0
+               });
+           }
+       });
     });
 
     /* GET DELVIERY PRICES */

@@ -16,9 +16,9 @@ const HomePageSection = () => {
 
     return <section className="homePageSection">
         <span id="zestawy"></span>
-        <h2 className="homePageSection__header">
-            Oferta
-        </h2>
+        {/*<h2 className="homePageSection__header">*/}
+        {/*    Oferta*/}
+        {/*</h2>*/}
         <div className="homePageSection__menu">
             {categories.map((item, index) => {
                 if(!item.hidden) {

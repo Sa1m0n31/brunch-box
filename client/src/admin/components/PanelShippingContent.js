@@ -10,19 +10,28 @@ import JoditEditor from "jodit-react";
 import axios from "axios";
 
 const PanelShippingContent = () => {
+    const [street, setStreet] = useState("");
+    const [building, setBuilding] = useState("");
+    const [flat, setFlat] = useState("");
+    const [postalCode, setPostalCode] = useState("");
+    const [city, setCity] = useState("");
+    const [apiKey, setApiKey] = useState("");
     const [addedMsg, setAddedMsg] = useState("");
-    const [address, setAddress] = useState("");
-    const [addressEn, setAddressEn] = useState("");
     const [personal, setPersonal] = useState(false);
 
     useEffect(() => {
-        axios.get(`${settings.API_URL}/shipping/get-info`)
+        axios.get(`http://localhost:5000/shipping/get-info`)
             .then(res => {
                 if(res.data.result) {
                     const result = res.data.result[0];
-                    setAddress(result.address);
-                    setAddressEn(result.address_en);
+
+                    setStreet(result.street);
+                    setBuilding(result.building);
+                    setFlat(result.flat);
+                    setPostalCode(result.postal_code);
+                    setCity(result.city);
                     setPersonal(result.is_on);
+                    setApiKey(result.google_maps_api_key);
                 }
             })
     }, []);
@@ -37,9 +46,8 @@ const PanelShippingContent = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(`${settings.API_URL}/shipping/update`, {
-            address,
-            addressEn,
+        axios.post(`http://localhost:5000/shipping/update`, {
+            street, building, flat, postalCode, city, apiKey,
             personal
         })
             .then(res => {
@@ -63,26 +71,60 @@ const PanelShippingContent = () => {
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm shippingForm"
                                          onSubmit={(e) => { handleSubmit(e) }}
                 >
-                    <section className="d-flex">
-                        <label className="jodit--label">
-                            <span>Adres do odbioru osobistego (polski)</span>
-                            <JoditEditor
-                                name="address"
-                                value={address}
-                                tabIndex={1} // tabIndex of textarea
-                                onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                                onChange={newContent => { setAddress(newContent) }}
-                            />
+                    <section className="d-flex panelShipping__section">
+                        <label className="addProduct__label addProduct__label--frame">
+                            <input className="addProduct__input"
+                                   name="name"
+                                   value={street}
+                                   onChange={(e) => { setStreet(e.target.value) }}
+                                   type="text"
+                                   placeholder="Ulica" />
                         </label>
-                        <label className="jodit--label">
-                            <span>Adres do odbioru osobistego (angielski)</span>
-                            <JoditEditor
-                                name="address_en"
-                                value={addressEn}
-                                tabIndex={1} // tabIndex of textarea
-                                onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                                onChange={newContent => { setAddressEn(newContent) }}
-                            />
+                        <label className="addProduct__label addProduct__label--frame">
+                            <input className="addProduct__input"
+                                   name="building"
+                                   value={building}
+                                   onChange={(e) => { setBuilding(e.target.value) }}
+                                   type="text"
+                                   placeholder="Budynek" />
+                        </label>
+                        <label className="addProduct__label addProduct__label--frame">
+                            <input className="addProduct__input"
+                                   name="flat"
+                                   value={flat}
+                                   onChange={(e) => { setFlat(e.target.value) }}
+                                   type="text"
+                                   placeholder="Mieszkanie" />
+                        </label>
+                    </section>
+
+                    <section className="d-flex panelShipping__section">
+                        <label className="addProduct__label addProduct__label--frame">
+                            <input className="addProduct__input"
+                                   name="postalCode"
+                                   value={postalCode}
+                                   onChange={(e) => { setPostalCode(e.target.value) }}
+                                   type="text"
+                                   placeholder="Kod pocztowy" />
+                        </label>
+                        <label className="addProduct__label addProduct__label--frame">
+                            <input className="addProduct__input"
+                                   name="city"
+                                   value={city}
+                                   onChange={(e) => { setCity(e.target.value) }}
+                                   type="text"
+                                   placeholder="Miasto" />
+                        </label>
+                    </section>
+
+                    <section className="d-flex panelShipping__section">
+                        <label className="addProduct__label addProduct__label--frame">
+                            <input className="addProduct__input"
+                                   name="apiKey"
+                                   value={apiKey}
+                                   onChange={(e) => { setApiKey(e.target.value) }}
+                                   type="text"
+                                   placeholder="Klucz API Google Maps" />
                         </label>
                     </section>
 

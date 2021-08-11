@@ -1100,3 +1100,11 @@ label {
     font-style: italic;
     font-weight: 400;
 }
+
+.panelShipping__section {
+    max-width: 1200px;
+}
+
+.panelShipping__section .addProduct__label:not(:last-child) {
+    margin-right: 20px;
+}
