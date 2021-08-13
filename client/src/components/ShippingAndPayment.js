@@ -42,7 +42,43 @@ const ShippingAndPayment = () => {
         { start: 18, end: 19, available: true },
         { start: 19, end: 20, available: true },
         { start: 20, end: 21, available: true },
-        { start: 21, end: 22, available: true },
+        { start: 21, end: 22, available: true }
+    ]);
+    const [schedule, setSchedule] = useState([
+        {
+            day: 0,
+            hours: [
+                { start: 10, end: 11, available: true },
+                { start: 11, end: 12, available: true },
+                { start: 12, end: 13, available: true },
+                { start: 13, end: 14, available: true },
+                { start: 14, end: 15, available: true },
+                { start: 15, end: 16, available: true },
+                { start: 16, end: 17, available: true },
+                { start: 17, end: 18, available: true },
+                { start: 18, end: 19, available: true },
+                { start: 19, end: 20, available: true },
+                { start: 20, end: 21, available: true },
+                { start: 21, end: 22, available: true }
+            ]
+        },
+        {
+            day: 2,
+            hours: [
+                { start: 10, end: 11, available: true },
+                { start: 11, end: 12, available: true },
+                { start: 12, end: 13, available: true },
+                { start: 13, end: 14, available: true },
+                { start: 14, end: 15, available: true },
+                { start: 15, end: 16, available: true },
+                { start: 16, end: 17, available: true },
+                { start: 17, end: 18, available: true },
+                { start: 18, end: 19, available: true },
+                { start: 19, end: 20, available: true },
+                { start: 20, end: 21, available: true },
+                { start: 21, end: 22, available: true }
+            ]
+        }
     ]);
     const [fastest, setFastest] = useState(false);
     const [excludedHours, setExcludedHours] = useState([]);
@@ -52,7 +88,7 @@ const ShippingAndPayment = () => {
     const [routeError, setRouteError] = useState("");
     const [routeLoader, setRouteLoader] = useState(false);
     const [deliveryPrice, setDeliveryPrice] = useState(0);
-
+    const [block, setBlock] = useState(0);
     const [originStreet, setOriginStreet] = useState("");
     const [originBuilding, setOriginBuilding] = useState("");
     const [originFlat, setOriginFlat] = useState("");
@@ -60,6 +96,9 @@ const ShippingAndPayment = () => {
     const [originCity, setOriginCity] = useState("");
     const [deliveryError, setDeliveryError] = useState("");
     const [deliveryValidate, setDeliveryValidate] = useState(-1);
+    const [hoursUpdated, setHoursUpdated] = useState(false);
+    const [hoursToBlockToday, setHoursToBlockToday] = useState(0);
+    const [hoursToBlockNextDays, setHoursToBlockNextDays] = useState(0);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -129,6 +168,8 @@ const ShippingAndPayment = () => {
                 });
             if(index === cart.length-1) fillRibbonsArray();
         });
+
+        setBlockFirstHours();
 
     }, []);
 
@@ -201,108 +242,159 @@ const ShippingAndPayment = () => {
         }
     });
 
-    useEffect(() => {
-        if(dayOfDelivery !== -1) {
-            const selectedDay = calendar[dayOfDelivery];
+    /* Exclude excluded days and hours */
+    const isExcluded = (start, selectedDay) => {
+        return excludedHours.findIndex(item => {
+            return ((item.day === selectedDay.fullDate)&&(start === item.hour));
+        }) !== -1;
+    }
 
-            /* Exclude excluded days and hours */
-            const isExcluded = (start) => {
-                return excludedHours.findIndex(item => {
-                    return ((item.day === selectedDay.fullDate)&&(start === item.hour));
-                }) !== -1;
+    const setHoursForToday = (simulator = false) => {
+        let hoursToBlock = 0;
+        const selectedDay = calendar[0];
+        const hour = new Date().getHours();
+
+        console.log("hello! " + selectedDay);
+
+        const findIndex = excludedHours.findIndex(item => (
+            item.day === selectedDay.fullDate
+        ));
+
+        if(hour <= 9) {
+            if(findIndex !== -1) {
+                setAvailableHours(availableHours.map((item, index, array) => {
+                    if(!isExcluded(item.start, selectedDay) && item.start >= 12) hoursToBlock++;
+                    if(index === array.length-1) {
+                        setHoursUpdated(!hoursUpdated);
+                        setHoursToBlockToday(hoursToBlock);
+                    }
+                    return {
+                        start: item.start,
+                        end: item.end,
+                        available: !isExcluded(item.start, selectedDay) && item.start >= 12
+                    }
+                }));
             }
+            else {
+                setAvailableHours(availableHours.map((item, index, array) => {
+                    if(item.start >= 12) hoursToBlock++;
+                    if(index === array.length-1) {
+                        setHoursUpdated(!hoursUpdated);
+                        setHoursToBlockToday(hoursToBlock);
+                    }
+                    return {
+                        start: item.start,
+                        end: item.end,
+                        available: item.start >= 12
+                    }
+                }));
+            }
+        }
+        else {
+            if(findIndex !== -1) {
+                setAvailableHours(availableHours.map((item, index, array) => {
+                    if(!isExcluded(item.start, selectedDay) && item.start > hour+2) hoursToBlock++;
+                    if(index === array.length-1) {
+                        setHoursUpdated(!hoursUpdated);
+                        setHoursToBlockToday(hoursToBlock);
+                    }
+                    return {
+                        start: item.start,
+                        end: item.end,
+                        available: !isExcluded(item.start, selectedDay) && item.start > hour+2
+                    }
+                }));
+            }
+            else {
+                setAvailableHours(availableHours.map((item, index, array) => {
+                    if(item.start > hour+2) hoursToBlock++;
+                    if(index === array.length-1) {
+                        setHoursUpdated(!hoursUpdated);
+                        setHoursToBlockToday(hoursToBlock);
+                    }
+                    return {
+                        start: item.start,
+                        end: item.end,
+                        available: item.start > hour+2
+                    }
+                }));
+            }
+        }
+    }
 
+    useEffect( () => {
+        console.log("DAY OF DELIVERY: " + dayOfDelivery);
+        if(dayOfDelivery !== -1) {
+            if(dayOfDelivery === 0) {
+                /* For today */
+                setHoursForToday();
+            }
+            else {
+                /* Next days */
+                setHoursForNextDays();
+            }
+        }
+    }, [dayOfDelivery]);
+
+    const setHoursForNextDays = () => {
+        let hoursToBlock = 0;
+
+        /* Simulate today */
+        setHoursForToday(true);
+
+        for(let i=0; i<dayOfDelivery; i++) {
+            let selectedDay = calendar[i];
             const findIndex = excludedHours.findIndex(item => (
                 item.day === selectedDay.fullDate
             ));
 
-            if(dayOfDelivery === 0) {
-                /* For today */
-                const hour = new Date().getHours();
-                if(hour <= 9) {
-                    if(findIndex !== -1) {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: !isExcluded(item.start) && item.start >= 12
-                            }
-                        }));
-                    }
-                    else {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: item.start >= 12
-                            }
-                        }));
-                    }
+            /* For next days */
+            if ((selectedDay.dayOfTheWeek === 0) || (selectedDay.dayOfTheWeek === 2) || (selectedDay.dayOfTheWeek === 3)) {
+                if(findIndex !== -1) {
+                    setAvailableHours(availableHours.map((item, index, array) => {
+                        if(!isExcluded(item.start, selectedDay) && item.end !== 22) hoursToBlock++;
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: !isExcluded(item.start, selectedDay) && item.end !== 22
+                        }
+                    }));
                 }
                 else {
-                    if(findIndex !== -1) {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: !isExcluded(item.start) && item.start > hour+2
-                            }
-                        }));
-                    }
-                    else {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: item.start > hour+2
-                            }
-                        }));
-                    }
+                    setAvailableHours(availableHours.map((item, index, array) => {
+                        if(item.end !== 22) hoursToBlock++;
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: item.end !== 22
+                        }
+                    }));
                 }
             } else {
-                /* For next days */
-                if ((selectedDay.dayOfTheWeek === 0) || (selectedDay.dayOfTheWeek === 2) || (selectedDay.dayOfTheWeek === 3)) {
-                    if(findIndex !== -1) {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: !isExcluded(item.start) && item.end !== 22
-                            }
-                        }));
-                    }
-                    else {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: item.end !== 22
-                            }
-                        }));
-                    }
-                } else {
-                    if(findIndex !== -1) {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: !isExcluded(item.start)
-                            }
-                        }));
-                    }
-                    else {
-                        setAvailableHours(availableHours.map((item) => {
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: true
-                            }
-                        }));
-                    }
+                if(findIndex !== -1) {
+                    setAvailableHours(availableHours.map((item, index, array) => {
+                        if(!isExcluded(item.start, selectedDay)) hoursToBlock++;
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: !isExcluded(item.start, selectedDay)
+                        }
+                    }));
+                }
+                else {
+                    setAvailableHours(availableHours.map((item, index, array) => {
+                        hoursToBlock++;
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: true
+                        }
+                    }));
                 }
             }
         }
-    }, [dayOfDelivery]);
+        setHoursToBlockNextDays(hoursToBlock);
+    }
 
     useEffect(() => {
         if(fastest) {
@@ -319,6 +411,13 @@ const ShippingAndPayment = () => {
         this.setTime(this.getTime() + (h * 60 * 60 * 1000));
         return this;
     }
+
+    useEffect(() => {
+        if(fastest) {
+            setHourOfDelivery(-1);
+            setDayOfDelivery(-1);
+        }
+    }, [fastest]);
 
     useEffect(() => {
         if(!deliveryValidate) {
@@ -422,7 +521,7 @@ const ShippingAndPayment = () => {
                                     const token = res.data.result;
                                     window.location.href = `${paymentUri}${token}`;
                                 });
-                        })
+                        });
                 });
         }
     }, [formValidate]);
@@ -515,6 +614,132 @@ const ShippingAndPayment = () => {
                        setDeliveryPrice(-1);
                    }
                 });
+            });
+    }
+
+    const checkHoursForNextDays = () => {
+
+    }
+
+    const getNumberOfHoursToBlock = (day) => {
+
+    }
+
+    useEffect(() => {
+        let dayEnd = false;
+
+        setBlockFirstHours();
+
+        let allHoursToBlock = block;
+
+        if(dayOfDelivery === 0) {
+            /* Today */
+            console.log("Block first hours! I have " + (hoursToBlockToday) + " hors to block and my limit is " + allHoursToBlock);
+
+            while((allHoursToBlock)&&(!dayEnd)) {
+                setAvailableHours(availableHours.map((item, index, array) => {
+                    if(item.available) {
+                        allHoursToBlock--;
+                        if(index === array.length-1) {
+                            dayEnd = true;
+                            setBlock(allHoursToBlock);
+                        }
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: false
+                        }
+                    }
+                    else {
+                        if(index === array.length-1) {
+                            dayEnd = true;
+                            setBlock(allHoursToBlock);
+                        }
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: item.available
+                        }
+                    }
+                }));
+            }
+        }
+        else {
+            /* Next days */
+            console.log("Block first hours on day " + dayOfDelivery + "  I have " + (hoursToBlockNextDays - hoursToBlockToday) + " hors to block and my limit is " + allHoursToBlock);
+            allHoursToBlock -= hoursToBlockToday;
+            for(let i=0; i<dayOfDelivery; i++) {
+
+                getNumberOfHoursToBlock(i);
+
+                while(!dayEnd) {
+
+                    setAvailableHours(availableHours.map((item, index, array) => {
+                        return {
+                            start: item.start,
+                            end: item.end,
+                            available: item.start !== 20 ? item.available : false
+                        }
+                    }));
+
+                    setAvailableHours(availableHours.map((item, index, array) => {
+                        console.log("all hours to block: " + allHoursToBlock);
+                        if((item.available)&&(allHoursToBlock)) {
+                            allHoursToBlock--;
+                            if(index === array.length-1) {
+                                dayEnd = true;
+                                setBlock(allHoursToBlock);
+                            }
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: false
+                            }
+                        }
+                        else {
+                            if(index === array.length-1) {
+                                dayEnd = true;
+                                setBlock(allHoursToBlock);
+                            }
+                            return {
+                                start: item.start,
+                                end: item.end,
+                                available: item.available
+                            }
+                        }
+                    }));
+                }
+                dayEnd = false;
+            }
+        }
+    }, [hoursUpdated]);
+
+    const setBlockFirstHours = () => {
+        const banquet = JSON.parse(localStorage.getItem('sec-cart-banquet'));
+        const cart = JSON.parse(localStorage.getItem('sec-cart'));
+
+        axios.get(`http://localhost:5000/dates/get-first-hours-excluded`)
+            .then(res => {
+                if(res.data.result) {
+                    const groupBlock = res.data.result.group_menu;
+                    const banquetBlock = res.data.result.banquet_menu;
+
+                    if(cart) {
+                        if(cart.findIndex(item => {
+                            return item.size === "1/2 boxa" || item.size === "Cały box";
+                        }) !== -1) setBlock(groupBlock);
+                    }
+
+                    if(banquet) {
+                        banquet.forEach(item => {
+                            if(item.findIndex(itemChild => {
+                                return itemChild.uuid;
+                            }) !== -1) {
+                                setBlock(banquetBlock);
+                            }
+                        });
+                    }
+                }
             });
     }
 
@@ -681,7 +906,7 @@ const ShippingAndPayment = () => {
                         </section>
                     </div> : ""}
 
-                    <section className="routeSection">
+                    {!personal ? <section className="routeSection">
                         <button type="button" className="cart__summary__button cart__summary__button--back button__link--small routeSection__btn" onClick={() => { calculateRoute(); }}>
                             Oblicz cenę dostawy
                         </button>
@@ -701,7 +926,7 @@ const ShippingAndPayment = () => {
                                 {routeResult !== "" ? <h4 className="route"><b>Cena:</b> {deliveryPrice} PLN</h4> : "" }
                             </> : <h4 className="route">Wysyłka na podany adres nie jest dostępna</h4> }
                         </>}
-                    </section>
+                    </section> : ""}
                 </section>
 
 

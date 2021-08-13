@@ -170,8 +170,9 @@ const SingleProductContent = () => {
                     }
 
                     if(index === array.length-1) {
-                        if(numberOfHalfs % 2 === 0) {
+                        if((numberOfHalfs % 2 === 0)&&(size === "1/2 boxa")) {
                             setModalHint(true);
+                            console.log(size);
                             editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
                         }
                         else {
@@ -242,7 +243,7 @@ const SingleProductContent = () => {
                     <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
                         Przejdź do kasy
                     </button>
-                </> : <a href="http://brunchbox.skylo-test3.pl/oferta-dla-grup" className="modal__btn">
+                </> : <a href="http://brunchbox.skylo-test3.pl/przekaski-dla-grup" className="modal__btn">
                     Wybierz drugą połowę
                 </a>}
             </section>

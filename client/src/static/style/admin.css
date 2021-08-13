@@ -1108,3 +1108,14 @@ label {
 .panelShipping__section .addProduct__label:not(:last-child) {
     margin-right: 20px;
 }
+
+.form--firstHours > label {
+    display: block;
+    margin-top: 20px !important;
+}
+
+.info {
+    margin-top: 25px;
+    font-size: 22px;
+    text-align: center;
+}

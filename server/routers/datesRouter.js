@@ -3,6 +3,44 @@ const router = express.Router();
 const con = require("../databaseConnection");
 
 con.connect(err => {
+    /* Edit first hours excluded */
+    router.post("/update-first-hours-excluded", (request, response) => {
+       const { groupHours, banquetHours } = request.body;
+
+       const values = [groupHours, banquetHours];
+       const query = 'UPDATE first_hours_excluded SET group_menu = ?, banquet_menu = ? WHERE id = 1';
+
+       con.query(query, values, (err, res) => {
+          if(res) {
+              response.send({
+                  result: 1
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
+
+    /* Get first hours excluded */
+    router.get("/get-first-hours-excluded", (request, response) => {
+       const query = 'SELECT * FROM first_hours_excluded';
+       con.query(query, (err, res) => {
+          if(res) {
+              response.send({
+                  result: res[0]
+              });
+          }
+          else {
+              response.send({
+                  result: 0
+              });
+          }
+       });
+    });
+
     /* Add date */
     router.post("/add", (request, response) => {
        const { hours, day } = request.body;

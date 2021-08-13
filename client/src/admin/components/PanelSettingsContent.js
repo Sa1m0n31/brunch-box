@@ -9,6 +9,7 @@ import ChangePasswordForm from "./ChangePasswordForm";
 import Modal from 'react-modal';
 import { deleteAdmin } from "../helpers/settingsFunctions";
 import PanelDatesSettings from "./PanelDatesSettings";
+import PanelFirstHoursSettings from "./PanelFirstHoursSettings";
 
 const PanelSettingsContent = () => {
     const [admins, setAdmins] = useState([]);
@@ -85,7 +86,10 @@ const PanelSettingsContent = () => {
                 Ustawienia
             </h1>
         </header>
+
         <PanelDatesSettings />
+
+        <PanelFirstHoursSettings />
 
         <section className="panelContent__frame">
             <section className="panelContent__frame__section">
