@@ -8,6 +8,7 @@ const getNextDays = (daysToAdd) => {
             /* Except Mondays */
             aryDates.push({
                 humanDate: addTrailingZero(currentDate.getDate()) + "." + addTrailingZero(currentDate.getMonth()+1) + "." + currentDate.getFullYear(),
+                checkForExcludeDate: currentDate.getFullYear() + "-" + addTrailingZero(currentDate.getMonth()+1) + "-" + addTrailingZero(currentDate.getDate()),
                 fullDate: currentDate.getFullYear() + "-" + addTrailingZero(parseInt(currentDate.getMonth()+1)) + "-" + currentDate.getDate(),
                 day: currentDate.getDate(),
                 dayOfTheWeek: currentDate.getDay(),

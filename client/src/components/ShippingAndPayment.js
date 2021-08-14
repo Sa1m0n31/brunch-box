@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useStateWithCallbackLazy } from 'use-state-with-callback';
 import axios from 'axios'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
@@ -8,6 +9,7 @@ import {getNextDays, numberToDayOfTheWeek} from "../helpers/datetimeFunctions";
 import { v4 as uuidv4 } from 'uuid';
 import Loader from "react-loader-spinner";
 import {getAllDeliveryPrices} from "../admin/helpers/deliveryFunctions";
+import deliverySchedule from "../helpers/deliverySchedule";
 
 const ShippingAndPayment = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
@@ -28,60 +30,11 @@ const ShippingAndPayment = () => {
     const [discount, setDiscount] = useState("");
     const [couponError, setCouponError] = useState(false);
     const [calendar, setCalendar] = useState(getNextDays(14));
-    const [dayOfDelivery, setDayOfDelivery] = useState(-1);
+    const [dayOfDelivery, setDayOfDelivery] = useState(0);
     const [hourOfDelivery, setHourOfDelivery] = useState(-1);
-    const [availableHours, setAvailableHours] = useState([
-        { start: 10, end: 11, available: true },
-        { start: 11, end: 12, available: true },
-        { start: 12, end: 13, available: true },
-        { start: 13, end: 14, available: true },
-        { start: 14, end: 15, available: true },
-        { start: 15, end: 16, available: true },
-        { start: 16, end: 17, available: true },
-        { start: 17, end: 18, available: true },
-        { start: 18, end: 19, available: true },
-        { start: 19, end: 20, available: true },
-        { start: 20, end: 21, available: true },
-        { start: 21, end: 22, available: true }
-    ]);
-    const [schedule, setSchedule] = useState([
-        {
-            day: 0,
-            hours: [
-                { start: 10, end: 11, available: true },
-                { start: 11, end: 12, available: true },
-                { start: 12, end: 13, available: true },
-                { start: 13, end: 14, available: true },
-                { start: 14, end: 15, available: true },
-                { start: 15, end: 16, available: true },
-                { start: 16, end: 17, available: true },
-                { start: 17, end: 18, available: true },
-                { start: 18, end: 19, available: true },
-                { start: 19, end: 20, available: true },
-                { start: 20, end: 21, available: true },
-                { start: 21, end: 22, available: true }
-            ]
-        },
-        {
-            day: 2,
-            hours: [
-                { start: 10, end: 11, available: true },
-                { start: 11, end: 12, available: true },
-                { start: 12, end: 13, available: true },
-                { start: 13, end: 14, available: true },
-                { start: 14, end: 15, available: true },
-                { start: 15, end: 16, available: true },
-                { start: 16, end: 17, available: true },
-                { start: 17, end: 18, available: true },
-                { start: 18, end: 19, available: true },
-                { start: 19, end: 20, available: true },
-                { start: 20, end: 21, available: true },
-                { start: 21, end: 22, available: true }
-            ]
-        }
-    ]);
-    const [fastest, setFastest] = useState(false);
+    const [schedule, setSchedule] = useState(deliverySchedule);
     const [excludedHours, setExcludedHours] = useState([]);
+    const [fastest, setFastest] = useState(false);
     const [changeOnFastest, setChangeOnFastest] = useState(0);
     const [dateError, setDateError] = useState(false);
     const [routeResult, setRouteResult] = useState("");
@@ -94,11 +47,8 @@ const ShippingAndPayment = () => {
     const [originFlat, setOriginFlat] = useState("");
     const [originPostalCode, setOriginPostalCode] = useState("");
     const [originCity, setOriginCity] = useState("");
-    const [deliveryError, setDeliveryError] = useState("");
     const [deliveryValidate, setDeliveryValidate] = useState(-1);
-    const [hoursUpdated, setHoursUpdated] = useState(false);
-    const [hoursToBlockToday, setHoursToBlockToday] = useState(0);
-    const [hoursToBlockNextDays, setHoursToBlockNextDays] = useState(0);
+    const [deliveryPriceSettled, setDeliveryPriceSettled] = useState(false);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -116,8 +66,154 @@ const ShippingAndPayment = () => {
         });
     }
 
-    const setExcludedDates = () => {
-        /* Get excluded days info */
+    useEffect(() => {
+        setExcludedHoursByAdminSettings(excludedHours);
+    }, [excludedHours]);
+
+    useEffect(() => {
+        if(personal) {
+            setDeliveryPrice(0);
+        }
+        else {
+            calculateRoute();
+        }
+    }, [personal]);
+
+    const isDayBlocked = (excludedHours, day) => {
+        return excludedHours.findIndex((item) => {
+            return item.day === day;
+        }) !== -1;
+    }
+
+    const isHourBlocked = (excludedHours, day, hourStart) => {
+        return excludedHours.findIndex((item) => {
+           return item.hour === hourStart && item.day === day;
+        }) !== -1;
+    }
+
+    const isShorterDay = (fullDate) => {
+        const dayArray = fullDate.split("-");
+        const year = parseInt(dayArray[0]);
+        const month = parseInt(dayArray[1]);
+        const day = parseInt(dayArray[2]);
+
+        const dateObj = new Date(year, month-1, day);
+        const dayOfTheWeek = dateObj.getDay();
+
+        return ((dayOfTheWeek === 0)||(dayOfTheWeek === 2)||(dayOfTheWeek === 3));
+    }
+
+    const setExcludedHoursByCurrentTime = () => {
+        const currentSchedule = JSON.parse(localStorage.getItem('schedule'));
+        localStorage.setItem('schedule', JSON.stringify(currentSchedule.map((scheduleItem, scheduleIndex) => {
+            if(scheduleIndex === 0) {
+                /* Block hours for today */
+                const hour = new Date().getHours();
+                if(hour <= 9) {
+                    /* Morning - block hours to 12 */
+                    return {
+                        day: scheduleItem.day,
+                        hours: scheduleItem.hours.map((hoursItem) => {
+                            return { start: hoursItem.start, end: hoursItem.end, available: hour >= 12 ? hoursItem.available : 0 }
+                        })
+                    }
+                }
+                else {
+                    /* During the day - block hours before current hour and next two */
+                    return {
+                        day: scheduleItem.day,
+                        hours: scheduleItem.hours.map((hoursItem) => {
+                            return { start: hoursItem.start, end: hoursItem.end, available: hour + 2 < hoursItem.start ? hoursItem.available : 0 }
+                        })
+                    }
+                }
+            }
+            else return scheduleItem;
+        })));
+        setSchedule(JSON.parse(localStorage.getItem('schedule')));
+    }
+
+    const setExcludedHoursByAdminSettings = (excludedHours) => {
+           localStorage.setItem('schedule', JSON.stringify(schedule.map((scheduleItem) => {
+               if(isDayBlocked(excludedHours, scheduleItem.day)) {
+                   return {
+                       day: scheduleItem.day,
+                       hours: scheduleItem.hours.map((hoursItem) => {
+                           if(isHourBlocked(excludedHours, scheduleItem.day, hoursItem.start)) {
+                               return { start: hoursItem.start, end: hoursItem.end, available: 0 }
+                           }
+                           else {
+                               return hoursItem;
+                           }
+                       })
+                   }
+               }
+               else return scheduleItem;
+           })));
+           setSchedule(JSON.parse(localStorage.getItem('schedule')));
+           setExcludedHoursByDayOfTheWeek();
+    }
+
+    const setExcludedHoursByDayOfTheWeek = () => {
+        const currentSchedule = JSON.parse(localStorage.getItem('schedule'));
+
+        localStorage.setItem('schedule', JSON.stringify(currentSchedule.map((item) => {
+            if(item.day) {
+                if(isShorterDay(item.day)) {
+                    return {
+                        day: item.day,
+                        hours: item.hours.map((hoursItem) => {
+                            if(hoursItem.end === 22) {
+                                return { start: hoursItem.start, end: hoursItem.end, available: 0 }
+                            }
+                            else return hoursItem;
+                        })
+                    }
+                }
+                else return item;
+            }
+            else return item;
+        })));
+        setSchedule(JSON.parse(localStorage.getItem('schedule')));
+        setExcludedHoursByCurrentTime();
+    }
+
+    useEffect(() => {
+        if(block !== 0) {
+            console.log("FUNCTION INVOKED!");
+            setExcludedHoursByProductsInCart()
+        }
+    }, [block]);
+
+    const setExcludedHoursByProductsInCart = () => {
+        let currentBlock = block;
+        localStorage.setItem('schedule', JSON.stringify(schedule.map((item) => {
+            return {
+                item: item.day,
+                hours: item.hours.map((hoursItem) => {
+                    if(hoursItem.available !== 0) currentBlock--;
+
+                    if(currentBlock >= 0) return {start: hoursItem.start, end: hoursItem.end, available: 0}
+                    else return hoursItem;
+                })
+            }
+        })));
+        setSchedule(JSON.parse(localStorage.getItem('schedule')));
+    }
+
+    useEffect(() => {
+        if(!amount) window.location = "/";
+
+        /* Set string dates in schedule */
+        const next14Days = getNextDays(14);
+        setSchedule(schedule.map((item, index) => {
+            return {
+                day: next14Days[index].checkForExcludeDate,
+                hours: item.hours
+            }
+        }));
+
+        /* Set unavailable hours from admin panel */
         axios.get("http://brunchbox.skylo-test3.pl/dates/get-all")
             .then(res => {
                 const excludedDaysInfo = res.data.result;
@@ -127,18 +223,9 @@ const ShippingAndPayment = () => {
                         day: item.day.substring(0, 10),
                         hour: item.hour_start
                     });
-                    if(index === array.length-1) {
-                        setExcludedHours(excludedHoursTmp);
-                    }
                 });
+                setExcludedHours(excludedHoursTmp);
             });
-    }
-
-    useEffect(() => {
-        if(!amount) window.location = "/";
-
-        /* Set excluded days and hours */
-        setExcludedDates();
 
         /* Get personal takeaway info */
         axios.get(`${settings.API_URL}/shipping/get-info`)
@@ -169,7 +256,41 @@ const ShippingAndPayment = () => {
             if(index === cart.length-1) fillRibbonsArray();
         });
 
-        setBlockFirstHours();
+        /* Get first hours excluded from database */
+        axios.get(`http://localhost:5000/dates/get-first-hours-excluded`)
+            .then(res => {
+               if(res.data.result) {
+                   const hoursToBlock = res.data.result;
+
+                   /* Get number of hours to block according to current cart content */
+                   const cartBanquet = JSON.parse(localStorage.getItem('sec-cart-banquet'));
+                   const cartNormal = JSON.parse(localStorage.getItem('sec-cart'));
+
+                   if(cartNormal?.findIndex(item => {
+                        return item.size === "Cały box" || item.size === "1/2 boxa";
+                   }) !== -1) {
+                       setBlock(hoursToBlock.group_menu);
+                   }
+                   else if((cartBanquet)&&(cartBanquet?.findIndex(item => {
+                       if(item.length) {
+                           return item.findIndex(childItem => {
+                               return childItem.uuid;
+                           }) !== -1;
+                       }
+                       else return false;
+                   }) !== -1)) {
+                       setBlock(hoursToBlock.banquet_menu);
+                   }
+                   else setBlock(0);
+               }
+            });
+
+        document.querySelectorAll(".input-address").forEach(item => {
+            item.addEventListener("keyup", (event) => {
+                event.preventDefault();
+                setDeliveryPriceSettled(false);
+            });
+        });
 
     }, []);
 
@@ -225,7 +346,7 @@ const ShippingAndPayment = () => {
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
             /* Additional validation for delivery price */
-            if(((personal)||((deliveryPrice))&&(deliveryPrice !== -1))) {
+            if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))) {
                 setDeliveryValidate(1);
             }
             else {
@@ -233,7 +354,7 @@ const ShippingAndPayment = () => {
             }
 
             /* Additional validation for delivery date and time and delivery price */
-            if(((calendar[dayOfDelivery])&&(availableHours[hourOfDelivery]))||(fastest)) {
+            if(((calendar[dayOfDelivery])&&(hourOfDelivery !== -1))||(fastest)) {
                 setFormValidate(true);
             }
             else {
@@ -242,159 +363,9 @@ const ShippingAndPayment = () => {
         }
     });
 
-    /* Exclude excluded days and hours */
-    const isExcluded = (start, selectedDay) => {
-        return excludedHours.findIndex(item => {
-            return ((item.day === selectedDay.fullDate)&&(start === item.hour));
-        }) !== -1;
-    }
-
-    const setHoursForToday = (simulator = false) => {
-        let hoursToBlock = 0;
-        const selectedDay = calendar[0];
-        const hour = new Date().getHours();
-
-        console.log("hello! " + selectedDay);
-
-        const findIndex = excludedHours.findIndex(item => (
-            item.day === selectedDay.fullDate
-        ));
-
-        if(hour <= 9) {
-            if(findIndex !== -1) {
-                setAvailableHours(availableHours.map((item, index, array) => {
-                    if(!isExcluded(item.start, selectedDay) && item.start >= 12) hoursToBlock++;
-                    if(index === array.length-1) {
-                        setHoursUpdated(!hoursUpdated);
-                        setHoursToBlockToday(hoursToBlock);
-                    }
-                    return {
-                        start: item.start,
-                        end: item.end,
-                        available: !isExcluded(item.start, selectedDay) && item.start >= 12
-                    }
-                }));
-            }
-            else {
-                setAvailableHours(availableHours.map((item, index, array) => {
-                    if(item.start >= 12) hoursToBlock++;
-                    if(index === array.length-1) {
-                        setHoursUpdated(!hoursUpdated);
-                        setHoursToBlockToday(hoursToBlock);
-                    }
-                    return {
-                        start: item.start,
-                        end: item.end,
-                        available: item.start >= 12
-                    }
-                }));
-            }
-        }
-        else {
-            if(findIndex !== -1) {
-                setAvailableHours(availableHours.map((item, index, array) => {
-                    if(!isExcluded(item.start, selectedDay) && item.start > hour+2) hoursToBlock++;
-                    if(index === array.length-1) {
-                        setHoursUpdated(!hoursUpdated);
-                        setHoursToBlockToday(hoursToBlock);
-                    }
-                    return {
-                        start: item.start,
-                        end: item.end,
-                        available: !isExcluded(item.start, selectedDay) && item.start > hour+2
-                    }
-                }));
-            }
-            else {
-                setAvailableHours(availableHours.map((item, index, array) => {
-                    if(item.start > hour+2) hoursToBlock++;
-                    if(index === array.length-1) {
-                        setHoursUpdated(!hoursUpdated);
-                        setHoursToBlockToday(hoursToBlock);
-                    }
-                    return {
-                        start: item.start,
-                        end: item.end,
-                        available: item.start > hour+2
-                    }
-                }));
-            }
-        }
-    }
-
-    useEffect( () => {
-        console.log("DAY OF DELIVERY: " + dayOfDelivery);
-        if(dayOfDelivery !== -1) {
-            if(dayOfDelivery === 0) {
-                /* For today */
-                setHoursForToday();
-            }
-            else {
-                /* Next days */
-                setHoursForNextDays();
-            }
-        }
+    useEffect(() => {
+        setHourOfDelivery(-1);
     }, [dayOfDelivery]);
-
-    const setHoursForNextDays = () => {
-        let hoursToBlock = 0;
-
-        /* Simulate today */
-        setHoursForToday(true);
-
-        for(let i=0; i<dayOfDelivery; i++) {
-            let selectedDay = calendar[i];
-            const findIndex = excludedHours.findIndex(item => (
-                item.day === selectedDay.fullDate
-            ));
-
-            /* For next days */
-            if ((selectedDay.dayOfTheWeek === 0) || (selectedDay.dayOfTheWeek === 2) || (selectedDay.dayOfTheWeek === 3)) {
-                if(findIndex !== -1) {
-                    setAvailableHours(availableHours.map((item, index, array) => {
-                        if(!isExcluded(item.start, selectedDay) && item.end !== 22) hoursToBlock++;
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: !isExcluded(item.start, selectedDay) && item.end !== 22
-                        }
-                    }));
-                }
-                else {
-                    setAvailableHours(availableHours.map((item, index, array) => {
-                        if(item.end !== 22) hoursToBlock++;
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: item.end !== 22
-                        }
-                    }));
-                }
-            } else {
-                if(findIndex !== -1) {
-                    setAvailableHours(availableHours.map((item, index, array) => {
-                        if(!isExcluded(item.start, selectedDay)) hoursToBlock++;
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: !isExcluded(item.start, selectedDay)
-                        }
-                    }));
-                }
-                else {
-                    setAvailableHours(availableHours.map((item, index, array) => {
-                        hoursToBlock++;
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: true
-                        }
-                    }));
-                }
-            }
-        }
-        setHoursToBlockNextDays(hoursToBlock);
-    }
 
     useEffect(() => {
         if(fastest) {
@@ -416,6 +387,9 @@ const ShippingAndPayment = () => {
         if(fastest) {
             setHourOfDelivery(-1);
             setDayOfDelivery(-1);
+        }
+        else {
+            setDayOfDelivery(0);
         }
     }, [fastest]);
 
@@ -453,7 +427,7 @@ const ShippingAndPayment = () => {
                         user: insertedUserId,
                         comment: formik.values.comment,
                         sessionId,
-                        delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + availableHours[hourOfDelivery].start + ":00 - " + availableHours[hourOfDelivery].end + ":00"
+                        delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + hourOfDelivery + ":00 - " + (hourOfDelivery+1) + ":00"
                     })
                         .then(res => {
                             const orderId = res.data.result;
@@ -607,6 +581,7 @@ const ShippingAndPayment = () => {
                     console.log(item.km_from + " " + item.km_to + " " + km);
                    if((item.km_from < km)&&(item.km_to > km)) {
                         setDeliveryPrice(item.price);
+                        setDeliveryPriceSettled(true);
                         return 0;
                    }
 
@@ -614,132 +589,6 @@ const ShippingAndPayment = () => {
                        setDeliveryPrice(-1);
                    }
                 });
-            });
-    }
-
-    const checkHoursForNextDays = () => {
-
-    }
-
-    const getNumberOfHoursToBlock = (day) => {
-
-    }
-
-    useEffect(() => {
-        let dayEnd = false;
-
-        setBlockFirstHours();
-
-        let allHoursToBlock = block;
-
-        if(dayOfDelivery === 0) {
-            /* Today */
-            console.log("Block first hours! I have " + (hoursToBlockToday) + " hors to block and my limit is " + allHoursToBlock);
-
-            while((allHoursToBlock)&&(!dayEnd)) {
-                setAvailableHours(availableHours.map((item, index, array) => {
-                    if(item.available) {
-                        allHoursToBlock--;
-                        if(index === array.length-1) {
-                            dayEnd = true;
-                            setBlock(allHoursToBlock);
-                        }
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: false
-                        }
-                    }
-                    else {
-                        if(index === array.length-1) {
-                            dayEnd = true;
-                            setBlock(allHoursToBlock);
-                        }
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: item.available
-                        }
-                    }
-                }));
-            }
-        }
-        else {
-            /* Next days */
-            console.log("Block first hours on day " + dayOfDelivery + "  I have " + (hoursToBlockNextDays - hoursToBlockToday) + " hors to block and my limit is " + allHoursToBlock);
-            allHoursToBlock -= hoursToBlockToday;
-            for(let i=0; i<dayOfDelivery; i++) {
-
-                getNumberOfHoursToBlock(i);
-
-                while(!dayEnd) {
-
-                    setAvailableHours(availableHours.map((item, index, array) => {
-                        return {
-                            start: item.start,
-                            end: item.end,
-                            available: item.start !== 20 ? item.available : false
-                        }
-                    }));
-
-                    setAvailableHours(availableHours.map((item, index, array) => {
-                        console.log("all hours to block: " + allHoursToBlock);
-                        if((item.available)&&(allHoursToBlock)) {
-                            allHoursToBlock--;
-                            if(index === array.length-1) {
-                                dayEnd = true;
-                                setBlock(allHoursToBlock);
-                            }
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: false
-                            }
-                        }
-                        else {
-                            if(index === array.length-1) {
-                                dayEnd = true;
-                                setBlock(allHoursToBlock);
-                            }
-                            return {
-                                start: item.start,
-                                end: item.end,
-                                available: item.available
-                            }
-                        }
-                    }));
-                }
-                dayEnd = false;
-            }
-        }
-    }, [hoursUpdated]);
-
-    const setBlockFirstHours = () => {
-        const banquet = JSON.parse(localStorage.getItem('sec-cart-banquet'));
-        const cart = JSON.parse(localStorage.getItem('sec-cart'));
-
-        axios.get(`http://localhost:5000/dates/get-first-hours-excluded`)
-            .then(res => {
-                if(res.data.result) {
-                    const groupBlock = res.data.result.group_menu;
-                    const banquetBlock = res.data.result.banquet_menu;
-
-                    if(cart) {
-                        if(cart.findIndex(item => {
-                            return item.size === "1/2 boxa" || item.size === "Cały box";
-                        }) !== -1) setBlock(groupBlock);
-                    }
-
-                    if(banquet) {
-                        banquet.forEach(item => {
-                            if(item.findIndex(itemChild => {
-                                return itemChild.uuid;
-                            }) !== -1) {
-                                setBlock(banquetBlock);
-                            }
-                        });
-                    }
-                }
             });
     }
 
@@ -784,19 +633,19 @@ const ShippingAndPayment = () => {
                 </label>
 
                 {/* Second section */}
-                <h2 className="shippingAndPayment__header marginTop50">
+                {!fastest ? <h2 className="shippingAndPayment__header marginTop50">
                     Wybierz godzinę dostawy
-                </h2>
+                </h2> : ""}
                 <section className={fastest ? "shippingAndPayment__section shippingAndPayment__section--hours opacity-5" : "shippingAndPayment__section shippingAndPayment__section--hours"}>
                     {fastest ? <div className="shippingAndPayment__calendar__overlay"></div> : ""}
 
-                    {availableHours.map((item, index) => {
+                    {schedule[dayOfDelivery]?.hours?.map((item, index) => {
                         return <label className={item.available ? "ribbonBtnLabel ribbonBtnLabel--hour" : "ribbonBtnLabel ribbonBtnLabel--hour hour--disabled"}>
                             <button disabled={!item.available} className="ribbonBtn" onClick={(e) => {
                                 e.preventDefault();
-                                setHourOfDelivery(index);
+                                setHourOfDelivery(item.start);
                             }}>
-                                <span className={hourOfDelivery === index && item.available ? "ribbon" : "d-none"}></span>
+                                <span className={hourOfDelivery === item.start && item.available ? "ribbon" : "d-none"}></span>
                             </button>
                             {item.start.toString() + ":00 - " + item.end.toString() + ":00"}
                         </label>
@@ -845,7 +694,7 @@ const ShippingAndPayment = () => {
                     </label>
 
                     <label className="shippingAndPayment__label label-70">
-                        <input className={formik.errors.city ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
+                        <input className={formik.errors.city ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="city"
                                value={formik.values.city}
                                onChange={formik.handleChange}
@@ -854,7 +703,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-30">
-                        <input className={formik.errors.postalCode ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
+                        <input className={formik.errors.postalCode ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="postalCode"
                                value={formik.values.postalCode}
                                onChange={formik.handleChange}
@@ -865,7 +714,7 @@ const ShippingAndPayment = () => {
                     </label>
 
                     <label className="shippingAndPayment__label label-60">
-                        <input className={formik.errors.street ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
+                        <input className={formik.errors.street ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="street"
                                value={formik.values.street}
                                onChange={formik.handleChange}
@@ -874,7 +723,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-20">
-                        <input className={formik.errors.building ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
+                        <input className={formik.errors.building ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="building"
                                value={formik.values.building}
                                onChange={formik.handleChange}
@@ -883,7 +732,7 @@ const ShippingAndPayment = () => {
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-20">
-                        <input className="shippingAndPayment__input"
+                        <input className="shippingAndPayment__input input--address"
                                name="flat"
                                value={formik.values.flat}
                                onChange={formik.handleChange}
