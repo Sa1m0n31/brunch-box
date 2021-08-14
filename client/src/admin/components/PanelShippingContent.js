@@ -20,7 +20,7 @@ const PanelShippingContent = () => {
     const [personal, setPersonal] = useState(false);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/shipping/get-info`)
+        axios.get(`http://brunchbox.skylo-test3.pl/shipping/get-info`)
             .then(res => {
                 if(res.data.result) {
                     const result = res.data.result[0];
@@ -46,7 +46,7 @@ const PanelShippingContent = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(`http://localhost:5000/shipping/update`, {
+        axios.post(`http://brunchbox.skylo-test3.pl/shipping/update`, {
             street, building, flat, postalCode, city, apiKey,
             personal
         })

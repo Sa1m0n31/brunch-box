@@ -257,7 +257,7 @@ const ShippingAndPayment = () => {
         });
 
         /* Get first hours excluded from database */
-        axios.get(`http://localhost:5000/dates/get-first-hours-excluded`)
+        axios.get(`http://brunchbox.skylo-test3.pl/dates/get-first-hours-excluded`)
             .then(res => {
                if(res.data.result) {
                    const hoursToBlock = res.data.result;
@@ -555,7 +555,7 @@ const ShippingAndPayment = () => {
         setRouteLoader(true);
 
         if((street)&&(building)&&(postalCode)&&(city)) {
-            axios.post("http://localhost:5000/maps/get-distance", {
+            axios.post("http://brunchbox.skylo-test3.pl/maps/get-distance", {
                 street, building, postalCode, city
             })
                 .then(res => {

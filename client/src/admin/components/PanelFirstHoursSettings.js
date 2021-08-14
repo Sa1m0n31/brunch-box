@@ -7,7 +7,7 @@ const PanelFirstHoursSettings = () => {
     const [added, setAdded] = useState(-1);
 
     useEffect(() => {
-        axios.get("http://localhost:5000/dates/get-first-hours-excluded")
+        axios.get("http://brunchbox.skylo-test3.pl/dates/get-first-hours-excluded")
             .then(res => {
                 if(res.data.result) {
                     setGroupHours(res.data.result.group_menu);
@@ -27,7 +27,7 @@ const PanelFirstHoursSettings = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        axios.post("http://localhost:5000/dates/update-first-hours-excluded", {
+        axios.post("http://brunchbox.skylo-test3.pl/dates/update-first-hours-excluded", {
             groupHours, banquetHours
         })
             .then(res => {
