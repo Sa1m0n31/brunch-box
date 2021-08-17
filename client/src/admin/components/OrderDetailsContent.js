@@ -214,20 +214,17 @@ const OrderDetailsContent = () => {
                         <h3 className="panelContent__data w-50">
                             {cart[0].street}
                         </h3>
-                        <h3 className="panelContent__data w-20">
+                        <h3 className="panelContent__data w-50">
                             {cart[0].building}
                         </h3>
-                        <h3 className="panelContent__data w-20">
-                            {cart[0].flat ? cart[0].flat : "-"}
-                        </h3>
                         {cart[0].order_comment !== null ? <p className="panelContent__data w-100">
-                            {cart[0].order_comment}
+                            {cart[0].order_comment ? cart[0].order_comment : "BRAK KOMENTARZA"}
                         </p> : ""}
                     </main>
                 </section>
             </section>
 
-            <section className="marginTop30">
+            <section className="marginTop30 panelContent__orderStatus">
                 <h2 className="panelContent__header--smaller">
                     Wstążka z dedykacją
                 </h2>

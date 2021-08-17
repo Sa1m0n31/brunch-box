@@ -40,7 +40,7 @@ const ShippingAndPayment = () => {
     const [routeResult, setRouteResult] = useState("");
     const [routeError, setRouteError] = useState("");
     const [routeLoader, setRouteLoader] = useState(false);
-    const [deliveryPrice, setDeliveryPrice] = useState(0);
+    const [deliveryPrice, setDeliveryPrice] = useState(-1);
     const [block, setBlock] = useState(0);
     const [originStreet, setOriginStreet] = useState("");
     const [originBuilding, setOriginBuilding] = useState("");
@@ -75,7 +75,7 @@ const ShippingAndPayment = () => {
             setDeliveryPrice(0);
         }
         else {
-            calculateRoute();
+            calculateRoute(null, null, null, null);
         }
     }, [personal]);
 
@@ -285,10 +285,24 @@ const ShippingAndPayment = () => {
                }
             });
 
-        document.querySelectorAll(".input-address").forEach(item => {
-            item.addEventListener("keyup", (event) => {
+        document.querySelectorAll(".input--address").forEach(item => {
+            item.addEventListener("change", (event) => {
                 event.preventDefault();
                 setDeliveryPriceSettled(false);
+                /* Check if should send request to Google Maps API */
+                const allAddressInputs = Array.prototype.slice.call(document.querySelectorAll(".input--address"));
+                if(allAddressInputs?.findIndex(item => {
+                    return item.value === "" || (item.value.length !== 6 && item.name === "postalCode");
+                }) === -1) {
+                    const city = allAddressInputs[0].attributes.value.value;
+                    const postalCode = allAddressInputs[1].attributes.value.value;
+                    const street = allAddressInputs[2].attributes.value.value.split(" ")[0];
+                    const building = allAddressInputs[2].attributes.value.value.split(" ")[1];
+                    calculateRoute(city, postalCode, street, building);
+                }
+                else {
+                    console.log("not ready");
+                }
             });
         });
 
@@ -311,9 +325,7 @@ const ShippingAndPayment = () => {
             .min(6, "Niepoprawny kod pocztowy")
             .max(6, "Niepoprawny kod pocztowy"),
         street: Yup.string()
-            .required("Wpisz swoją ulicę"),
-        building: Yup.string()
-            .required("Wpisz numer swojego budynku")
+            .required("Wpisz swoją ulicę")
     });
 
     const validationSchemaPersonal = Yup.object({
@@ -345,20 +357,25 @@ const ShippingAndPayment = () => {
         },
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
+            console.log("SUBMIT!!!");
             /* Additional validation for delivery price */
             if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))) {
+                console.log("delivery validate");
                 setDeliveryValidate(1);
             }
             else {
+                console.log("delivery not validate");
                 setDeliveryValidate(0);
             }
 
             /* Additional validation for delivery date and time and delivery price */
             if(((calendar[dayOfDelivery])&&(hourOfDelivery !== -1))||(fastest)) {
                 setFormValidate(true);
+                console.log("form valudate");
             }
             else {
                 setDateError(true);
+                console.log("form not validate");
             }
         }
     });
@@ -401,6 +418,8 @@ const ShippingAndPayment = () => {
 
     useEffect(() => {
         /* Payment */
+        console.log(formValidate);
+        console.log(deliveryValidate);
         if((formValidate)&&(deliveryValidate)) {
             const sessionId = uuidv4();
             setFormValidate(false);
@@ -420,9 +439,8 @@ const ShippingAndPayment = () => {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
-                        street: personal ? "0" : formik.values.street,
-                        building: personal ? "0" : formik.values.building,
-                        flat: personal ? "0" : formik.values.flat,
+                        street: personal ? "0" : formik.values.street.split(" ")[0],
+                        building: personal ? "0" : formik.values.street.split(" ")[1],
                         postalCode: personal ? "0" : formik.values.postalCode,
                         user: insertedUserId,
                         comment: formik.values.comment,
@@ -550,9 +568,17 @@ const ShippingAndPayment = () => {
         }
     }, [dateError]);
 
-    const calculateRoute = () => {
-        const { street, building, postalCode, city } = formik.values;
+    const calculateRoute = (city, postalCode, street, building) => {
+        if(!city) city = formik.values.city;
+        if(!postalCode) postalCode = formik.values.postalCode;
+        if(!street) street = formik.values.street.split(" ")[0];
+        if(!building) building = formik.values.street.split(" ")[1];
+
         setRouteLoader(true);
+        console.log(street);
+        console.log(building);
+        console.log(city);
+        console.log(postalCode);
 
         if((street)&&(building)&&(postalCode)&&(city)) {
             axios.post("http://brunchbox.skylo-test3.pl/maps/get-distance", {
@@ -560,6 +586,8 @@ const ShippingAndPayment = () => {
             })
                 .then(res => {
                     if(res.data.result) {
+                        console.log("hello!");
+                        console.log(res.data.result);
                         setRouteResult(res.data.result.routes[0].legs[0].distance.text);
                         calculateDeliveryPrice(parseFloat(res.data.result.routes[0].legs[0].distance.text.split(" ")[0]));
                         setRouteLoader(false);
@@ -577,16 +605,17 @@ const ShippingAndPayment = () => {
         getAllDeliveryPrices()
             .then(res => {
                 const result = res.data.result;
+                let block = false;
                 result.forEach((item, index, array) => {
-                    console.log(item.km_from + " " + item.km_to + " " + km);
-                   if((item.km_from < km)&&(item.km_to > km)) {
+                   if((parseFloat(item.km_from) <= km)&&(parseFloat(item.km_to) > km)) {
+                        block = true;
                         setDeliveryPrice(item.price);
                         setDeliveryPriceSettled(true);
                         return 0;
                    }
 
-                   if(index === array.length-1) {
-                       setDeliveryPrice(-1);
+                   if((!block)&&(index === array.length-1)) {
+                       setDeliveryPrice(111);
                    }
                 });
             });
@@ -708,41 +737,114 @@ const ShippingAndPayment = () => {
                                value={formik.values.postalCode}
                                onChange={formik.handleChange}
                                disabled={personal}
-                               onClick={() => { calculateRoute() }}
                                placeholder="Kod pocztowy"
                                type="text" />
                     </label>
 
-                    <label className="shippingAndPayment__label label-60">
+                    <label className="shippingAndPayment__label label-100">
                         <input className={formik.errors.street ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="street"
                                value={formik.values.street}
                                onChange={formik.handleChange}
-                               placeholder="Ulica"
+                               placeholder="Ulica, numer domu, numer mieszkania"
                                disabled={personal}
                                type="text" />
                     </label>
-                    <label className="shippingAndPayment__label label-20">
-                        <input className={formik.errors.building ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
-                               name="building"
-                               value={formik.values.building}
-                               onChange={formik.handleChange}
-                               placeholder="Numer domu"
-                               disabled={personal}
-                               type="text" />
-                    </label>
-                    <label className="shippingAndPayment__label label-20">
-                        <input className="shippingAndPayment__input input--address"
-                               name="flat"
-                               value={formik.values.flat}
-                               onChange={formik.handleChange}
-                               placeholder="Numer mieszkania"
-                               disabled={personal}
-                               type="text" />
-                    </label>
+                    {/*<label className="shippingAndPayment__label label-20">*/}
+                    {/*    <input className={formik.errors.building ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}*/}
+                    {/*           name="building"*/}
+                    {/*           value={formik.values.building}*/}
+                    {/*           onChange={formik.handleChange}*/}
+                    {/*           placeholder="Numer domu"*/}
+                    {/*           disabled={personal}*/}
+                    {/*           type="text" />*/}
+                    {/*</label>*/}
+                    {/*<label className="shippingAndPayment__label label-20">*/}
+                    {/*    <input className="shippingAndPayment__input input--address"*/}
+                    {/*           name="flat"*/}
+                    {/*           value={formik.values.flat}*/}
+                    {/*           onChange={formik.handleChange}*/}
+                    {/*           placeholder="Numer mieszkania"*/}
+                    {/*           disabled={personal}*/}
+                    {/*           type="text" />*/}
+                    {/*</label>*/}
                 </div>
 
                 <section className="afterFormSection">
+                    {/*{!personal ? <section className="routeSection">*/}
+                    {/*    {routeLoader ? <span className="loaderSpan">*/}
+                    {/*        <Loader*/}
+                    {/*            type="puff"*/}
+                    {/*            color="#000"*/}
+                    {/*            width={100}*/}
+                    {/*            height={100}*/}
+                    {/*        />*/}
+                    {/*    </span> : <>*/}
+                    {/*        {routeError !== "" ? <h4 className="route route--error">{routeError}</h4> : ""}*/}
+
+                    {/*        {deliveryPrice !== -1 ? <>*/}
+                    {/*            {routeResult !== "" ? <h4 className="route"><b>Odległość:</b> {routeResult}</h4> : ""}*/}
+                    {/*            {routeResult !== "" ? <h4 className="route"><b>Cena:</b> {deliveryPrice} PLN</h4> : "" }*/}
+                    {/*        </> : <h4 className="route">Wysyłka na podany adres nie jest dostępna</h4> }*/}
+                    {/*    </>}*/}
+                    {/*</section> : ""}*/}
+
+                    <section className="extraInputs">
+                        <label className="ribbonBtnLabel">
+                            <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setCoupon(!coupon); }}>
+                                <span className={coupon ? "ribbon" : "d-none"}></span>
+                            </button>
+                            Mam kupon rabatowy
+                        </label>
+
+                        <section className={coupon ? "ribbonDedication" : "o-none"}>
+                            <section className="couponSection">
+                                {!couponUsed ? <><label className="ribbonLabel">
+                                    <input className="shippingAndPayment__input"
+                                           name="coupon"
+                                           type="text"
+                                           value={couponContent}
+                                           onChange={(e) => { setCouponContent(e.target.value); }}
+                                           placeholder="Tu wpisz swój kupon" />
+                                </label>
+                                    <button className="button button--coupon" onClick={(e) => { checkCoupon(e) }}>
+                                        Dodaj kupon
+                                    </button></> : <h3 className="couponUsed">
+                                    Kupon: { couponContent }, zniżka: { discount }
+                                </h3>}
+                            </section>
+                            <span className="errorsContainer errorsContainer--coupon">
+                        {couponError ? "Podany kupon rabatowy nie istnieje" : ""}
+                    </span>
+                        </section>
+
+                        <label className="ribbonBtnLabel">
+                            <button className="ribbonBtn" onClick={(e) => { addRibbon(e) }}>
+                                <span className={ribbon ? "ribbon" : "d-none"}></span>
+                            </button>
+                            Wstążka z dedykacją (10 PLN)
+                        </label>
+
+                        <section className={ribbon ? "ribbonDedication" : "o-none"}>
+                            <label className="ribbonLabel">
+                                <input className="shippingAndPayment__input"
+                                       name="ribbonFrom"
+                                       type="text"
+                                       value={formik.values.ribbonFrom}
+                                       onChange={formik.handleChange}
+                                       placeholder="Od kogo" />
+                            </label>
+                            <label className="ribbonLabel">
+                                <input className="shippingAndPayment__input"
+                                       name="ribbonTo"
+                                       type="text"
+                                       value={formik.values.ribbonTo}
+                                       onChange={formik.handleChange}
+                                       placeholder="Dla kogo" />
+                            </label>
+                        </section>
+                    </section>
+
                     {personalAvailable ?  <div><label className="ribbonBtnLabel">
                         <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
                             <span className={personal ? "ribbon" : "d-none"}></span>
@@ -754,28 +856,6 @@ const ShippingAndPayment = () => {
                             {originPostalCode} {originCity}
                         </section>
                     </div> : ""}
-
-                    {!personal ? <section className="routeSection">
-                        <button type="button" className="cart__summary__button cart__summary__button--back button__link--small routeSection__btn" onClick={() => { calculateRoute(); }}>
-                            Oblicz cenę dostawy
-                        </button>
-
-                        {routeLoader ? <span className="loaderSpan">
-                            <Loader
-                                type="puff"
-                                color="#000"
-                                width={100}
-                                height={100}
-                            />
-                        </span> : <>
-                            {routeError !== "" ? <h4 className="route route--error">{routeError}</h4> : ""}
-
-                            {deliveryPrice !== -1 ? <>
-                                {routeResult !== "" ? <h4 className="route"><b>Odległość:</b> {routeResult}</h4> : ""}
-                                {routeResult !== "" ? <h4 className="route"><b>Cena:</b> {deliveryPrice} PLN</h4> : "" }
-                            </> : <h4 className="route">Wysyłka na podany adres nie jest dostępna</h4> }
-                        </>}
-                    </section> : ""}
                 </section>
 
 
@@ -791,60 +871,6 @@ const ShippingAndPayment = () => {
                     onChange={formik.handleChange}
                     placeholder="Komentarz do zamówienia (opcjonalnie)" />
 
-                <label className="ribbonBtnLabel">
-                    <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setCoupon(!coupon); }}>
-                        <span className={coupon ? "ribbon" : "d-none"}></span>
-                    </button>
-                    Mam kupon rabatowy
-                </label>
-
-                <section className={coupon ? "ribbonDedication" : "o-none"}>
-                    <section className="couponSection">
-                        {!couponUsed ? <><label className="ribbonLabel">
-                            <input className="shippingAndPayment__input"
-                                   name="coupon"
-                                   type="text"
-                                   value={couponContent}
-                                   onChange={(e) => { setCouponContent(e.target.value); }}
-                                   placeholder="Tu wpisz swój kupon" />
-                        </label>
-                            <button className="button button--coupon" onClick={(e) => { checkCoupon(e) }}>
-                                Dodaj kupon
-                            </button></> : <h3 className="couponUsed">
-                            Kupon: { couponContent }, zniżka: { discount }
-                        </h3>}
-                    </section>
-                    <span className="errorsContainer errorsContainer--coupon">
-                        {couponError ? "Podany kupon rabatowy nie istnieje" : ""}
-                    </span>
-                </section>
-
-                <label className="ribbonBtnLabel">
-                    <button className="ribbonBtn" onClick={(e) => { addRibbon(e) }}>
-                        <span className={ribbon ? "ribbon" : "d-none"}></span>
-                    </button>
-                    Wstążka z dedykacją (10 PLN)
-                </label>
-
-                <section className={ribbon ? "ribbonDedication" : "o-none"}>
-                    <label className="ribbonLabel">
-                        <input className="shippingAndPayment__input"
-                               name="ribbonFrom"
-                               type="text"
-                               value={formik.values.ribbonFrom}
-                               onChange={formik.handleChange}
-                               placeholder="Od kogo" />
-                    </label>
-                    <label className="ribbonLabel">
-                        <input className="shippingAndPayment__input"
-                               name="ribbonTo"
-                               type="text"
-                               value={formik.values.ribbonTo}
-                               onChange={formik.handleChange}
-                               placeholder="Dla kogo" />
-                    </label>
-                </section>
-
             </section>
         </main>
 
@@ -856,15 +882,7 @@ const ShippingAndPayment = () => {
             </button>
 
             <section className="cart__summary__bottomRight">
-                {deliveryPrice && deliveryPrice !== -1 ? <>
-                    <header className="cart__summary__header">
-                        <h3 className="cart__summary__header__label">
-                            Wartość zamówienia
-                        </h3>
-                        <h4 className="cart__summary__header__value">
-                            {amount} PLN
-                        </h4>
-                    </header>
+                {deliveryPrice !== -1 ? <>
                     <header className="cart__summary__header">
                         <h3 className="cart__summary__header__label">
                             Dostawa:
@@ -874,7 +892,7 @@ const ShippingAndPayment = () => {
                         </h4>
                     </header>
                 </> : ""}
-                <header className={deliveryPrice && deliveryPrice !== -1 ? "cart__summary__header cart__summary__header--sum" : "cart__summary__header"}>
+                <header className={deliveryPrice !== -1 ? "cart__summary__header cart__summary__header--sum" : "cart__summary__header"}>
                     <h3 className="cart__summary__header__label">
                         Łącznie do zapłaty:
                     </h3>

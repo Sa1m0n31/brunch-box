@@ -1218,4 +1218,16 @@
     .routeSection__btn:hover {
         letter-spacing: 0;
     }
+
+    .afterFormSection {
+        flex-direction: column;
+    }
+
+    .extraInputs {
+        order: 5;
+    }
+
+    .cart__summary__header {
+        justify-content: flex-start;
+    }
 }

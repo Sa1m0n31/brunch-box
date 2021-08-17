@@ -1970,3 +1970,7 @@ ol {
     font-size: 14px !important;
     font-style: italic;
 }
+
+.extraInputs {
+    width: 60%;
+}
