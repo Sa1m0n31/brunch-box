@@ -104,6 +104,10 @@ ol {
     transition: .2s all ease-in-out;
 }
 
+.topMenu__languages--mobile {
+    margin-top: 20px;
+}
+
 .topMenu__languages {
     margin-left: 50px;
     display: flex;
@@ -173,7 +177,7 @@ ol {
 .mobileMenu__closeBtn {
     background: transparent;
     position: absolute;
-    top: 20px;
+    top: 70px;
     right: 20px;
     width: 20px;
     height: auto;
@@ -192,7 +196,7 @@ ol {
 }
 
 .mobileMenu__list {
-    margin: 60px 0 0 0;
+    margin: 10px 0 0 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1413,6 +1417,14 @@ ol {
     margin: 10px 0;
 }
 
+.ribbonBtnLabel--fastest {
+    margin: 20px 0 0;
+}
+
+.ribbonBtnLabel--chooseHour {
+    display: none;
+}
+
 .hour--disabled {
     opacity: .4;
 }
@@ -1973,4 +1985,13 @@ ol {
 
 .extraInputs {
     width: 60%;
+}
+
+#d-none {
+    display: none;
+}
+
+.ReactModalPortal {
+    position: relative;
+    z-index: 10001;
 }

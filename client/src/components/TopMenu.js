@@ -38,12 +38,14 @@ const TopMenu = () => {
         }
         setCount(normalCart + banquetCart);
 
-        window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+        window.addEventListener("scroll", function(){
             let st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+            const mobileMenuClose = document.querySelector(".mobileMenu__closeBtn");
             if((topBar)&&(topBarChild1)&&(topBarChild2)) {
                 if (st > lastScrollTop) {
                     // scroll down
                     if(window.pageYOffset > 100) {
+                        mobileMenuClose.style.top = "20px";
                         if(topBarChild1.current) topBarChild1.current.style.opacity = "0";
                         if(topBarChild2.current) topBarChild2.current.style.opacity = "0";
                         setTimeout(() => {
@@ -192,6 +194,15 @@ const TopMenu = () => {
 
             <img className="mobileMenu__logo" src={logoImg} alt="brunch-box-logo" ref={mobileMenuLogo} />
 
+            <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
+                {/*<a className="topMenu__languages__btn" href={settings.API_URL}>*/}
+                {/*    <img className="topMenu__languages__img" src={poland} alt="polski" />*/}
+                {/*</a>*/}
+                <a className="topMenu__languages__btn" href="http://en.brunchbox.skylo-test3.pl">
+                    <img className="topMenu__languages__img" src={uk} alt="angielski" />
+                </a>
+            </div>
+
             <ul className="mobileMenu__list" ref={mobileMenuList}>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/">
@@ -219,15 +230,6 @@ const TopMenu = () => {
                     </a>
                 </li>
             </ul>
-
-            <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
-                <a className="topMenu__languages__btn" href={settings.API_URL}>
-                    <img className="topMenu__languages__img" src={poland} alt="polski" />
-                </a>
-                <a className="topMenu__languages__btn" href="http://en.brunchbox.skylo-test3.pl">
-                    <img className="topMenu__languages__img" src={uk} alt="angielski" />
-                </a>
-            </div>
         </menu>
     </header>
         </>

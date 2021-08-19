@@ -49,6 +49,7 @@ const ShippingAndPayment = () => {
     const [originCity, setOriginCity] = useState("");
     const [deliveryValidate, setDeliveryValidate] = useState(-1);
     const [deliveryPriceSettled, setDeliveryPriceSettled] = useState(false);
+    const [chooseHour, setChooseHour] = useState(false);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -204,6 +205,11 @@ const ShippingAndPayment = () => {
     useEffect(() => {
         if(!amount) window.location = "/";
 
+        /* Set fastest/choose hour based on screen resolution (mobile/desktop) */
+        if(window.innerWidth < 768) {
+            setFastest(true);
+        }
+
         /* Set string dates in schedule */
         const next14Days = getNextDays(14);
         setSchedule(schedule.map((item, index) => {
@@ -299,9 +305,6 @@ const ShippingAndPayment = () => {
                     const street = allAddressInputs[2].attributes.value.value.split(" ")[0];
                     const building = allAddressInputs[2].attributes.value.value.split(" ")[1];
                     calculateRoute(city, postalCode, street, building);
-                }
-                else {
-                    console.log("not ready");
                 }
             });
         });
@@ -631,7 +634,25 @@ const ShippingAndPayment = () => {
                 <h2 className="shippingAndPayment__header">
                     Wybierz dzień dostawy
                 </h2>
-                <section className={fastest ? "shippingAndPayment__calendar opacity-5" : "shippingAndPayment__calendar"}>
+                <label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest">
+                    <button className="ribbonBtn" onClick={(e) => {
+                        e.preventDefault();
+                        setFastest(!fastest);
+                    }}>
+                        <span className={fastest ? "ribbon" : "d-none"}></span>
+                    </button>
+                    Dostarcz zamówienie najszybciej jak to możliwe
+                </label>
+                <label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest ribbonBtnLabel--chooseHour">
+                    <button className="ribbonBtn" onClick={(e) => {
+                        e.preventDefault();
+                        setFastest(!fastest);
+                    }}>
+                        <span className={!fastest ? "ribbon" : "d-none"}></span>
+                    </button>
+                    Wybierz datę i godzinę zamówienia
+                </label>
+                <section className={fastest ? "shippingAndPayment__calendar opacity-5" : "shippingAndPayment__calendar"} id={fastest && window.innerWidth < 768 ? "d-none" : ""}>
                     {fastest ? <div className="shippingAndPayment__calendar__overlay"></div> : ""}
 
                     {calendar?.map((item, index) => (
@@ -651,15 +672,6 @@ const ShippingAndPayment = () => {
                         </button>
                     ))}
                 </section>
-                <label className="ribbonBtnLabel ribbonBtnLabel--hour">
-                    <button className="ribbonBtn" onClick={(e) => {
-                        e.preventDefault();
-                        setFastest(!fastest);
-                    }}>
-                        <span className={fastest ? "ribbon" : "d-none"}></span>
-                    </button>
-                    Dostarcz zamówienie najszybciej jak to możliwe
-                </label>
 
                 {/* Second section */}
                 {!fastest ? <h2 className="shippingAndPayment__header marginTop50">
@@ -790,6 +802,18 @@ const ShippingAndPayment = () => {
                     {/*</section> : ""}*/}
 
                     <section className="extraInputs">
+                        {personalAvailable ?  <div><label className="ribbonBtnLabel">
+                            <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
+                                <span className={personal ? "ribbon" : "d-none"}></span>
+                            </button>
+                            Odbiór osobisty
+                        </label>
+                            <section className="address">
+                                {originStreet} {originBuilding} {originFlat ? "/" + originFlat : ""} <br/>
+                                {originPostalCode} {originCity}
+                            </section>
+                        </div> : ""}
+
                         <label className="ribbonBtnLabel">
                             <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setCoupon(!coupon); }}>
                                 <span className={coupon ? "ribbon" : "d-none"}></span>
@@ -844,18 +868,6 @@ const ShippingAndPayment = () => {
                             </label>
                         </section>
                     </section>
-
-                    {personalAvailable ?  <div><label className="ribbonBtnLabel">
-                        <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
-                            <span className={personal ? "ribbon" : "d-none"}></span>
-                        </button>
-                        Odbiór osobisty
-                    </label>
-                        <section className="address">
-                            {originStreet} {originBuilding} {originFlat ? "/" + originFlat : ""} <br/>
-                            {originPostalCode} {originCity}
-                        </section>
-                    </div> : ""}
                 </section>
 
 
