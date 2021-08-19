@@ -2,7 +2,7 @@ import axios from "axios";
 import settings from "./settings";
 
 //const { API_URL } = settings;
-const API_URL = 'http://brunchbox.skylo-test3.pl'; /* TODO */
+const API_URL = 'https://brunchbox.skylo-test3.pl'; /* TODO */
 
 const getAllDeliveryPrices = () => {
     return axios.get(`${API_URL}/maps/get-delivery-prices`);

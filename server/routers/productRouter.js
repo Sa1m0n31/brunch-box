@@ -142,8 +142,8 @@ con.connect(err => {
             con.query(query, values, (err, res) => {
                console.log("Error?");
                console.log(err);
-               if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-               else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
+               if(res) response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
+               else response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
             });
       }
    });
@@ -272,8 +272,8 @@ con.connect(err => {
                con.query(query, values);
             }
 
-            if(res) response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-            else response.redirect("http://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
+            if(res) response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
+            else response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
          });
       }
    });

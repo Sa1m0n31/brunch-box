@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const con = require("../databaseConnection");
 
+const nodemailer = require("nodemailer");
+const smtpTransport = require('nodemailer-smtp-transport');
+
 con.connect(err => {
    /* GET ALL ORDERS */
    router.get("/get-orders", (request, response) => {
@@ -63,17 +66,46 @@ con.connect(err => {
    router.post("/add", (request, response) => {
        let { paymentMethod, shippingMethod, city, street, building, postalCode, sessionId, user, comment, delivery } = request.body;
        building = parseInt(building) || 0;
-       console.log(request.body);
        const values = [paymentMethod, shippingMethod, city, street, building, postalCode, user, comment, delivery, sessionId];
        const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, NULL, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?)';
        con.query(query, values, (err, res) => {
           let result = 0;
           if(res) {
               if(res.insertId) result = res.insertId;
+
+              /* Nodemailer */
+              let transporter = nodemailer.createTransport(smtpTransport ({
+                  auth: {
+                      user: 'powiadomienia@brunchbox.pl',
+                      pass: 'BrunchboxSkylo@123'
+                  },
+                  host: 's124.cyber-folks.pl',
+                  secureConnection: false,
+                  port: 587,
+                  tls: {
+                      rejectUnauthorized: false
+                  },
+              }));
+
+              let mailOptions = {
+                  from: 'powiadomienia@brunchbox.pl',
+                  to: "kontakt@skylo.pl",
+                  subject: 'Nowe zamówienie w sklepie Brunchbox',
+                  html: '<h2>Nowe zamówienie!</h2> ' +
+                      '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
+                      '<a href="https://brunchbox.skylo-test3.pl/admin">' +
+                      'Przejdź do panelu administratora' +
+                      ' </a>'
+              }
+
+              transporter.sendMail(mailOptions, function(error, info) {
+                  console.log(error);
+                  console.log(info);
+                  response.send({
+                      result
+                  });
+              });
           }
-          response.send({
-              result
-          });
        });
    });
 

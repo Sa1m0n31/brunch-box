@@ -70,7 +70,7 @@ const CustomMenuContent = () => {
 
     useEffect(() => {
         /* Get all products from 'Menu bankietowe' */
-        axios.get("http://brunchbox.skylo-test3.pl/product/get-banquet-products")
+        axios.get("https://brunchbox.skylo-test3.pl/product/get-banquet-products")
             .then(res => {
                 console.log(res.data.result);
                 if(res.data) {

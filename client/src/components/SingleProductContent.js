@@ -243,7 +243,7 @@ const SingleProductContent = () => {
                     <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
                         Przejdź do kasy
                     </button>
-                </> : <a href="http://brunchbox.skylo-test3.pl/przekaski-dla-grup" className="modal__btn">
+                </> : <a href="https://brunchbox.skylo-test3.pl/przekaski-dla-grup" className="modal__btn">
                     Wybierz drugą połowę
                 </a>}
             </section>

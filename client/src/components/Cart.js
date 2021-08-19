@@ -118,11 +118,11 @@ const Cart = () => {
             {cart?.length || cartBanquet?.flat()?.length ? <>
                 {cart?.map((item, index) => {
                     return <section className="cart__item" id={"cart" + item.id + item.size + item.option}>
-                        <a className="cart__item__imgWrapper" href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
+                        <a className="cart__item__imgWrapper" href={"https://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
                             <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>
                         </a>
 
-                        <a href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])} className="cart__item__column firstCol">
+                        <a href={"https://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])} className="cart__item__column firstCol">
                             <h3 className="cart__item__label">
                                 Nazwa produktu
                             </h3>
@@ -174,7 +174,7 @@ const Cart = () => {
                             </h3>
                             <section className="cart__item__value cart__item__value--flex">
                                 <button className="cart__item__value cart__item__value--button">
-                                    <a href={"http://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
+                                    <a href={"https://brunchbox.skylo-test3.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
                                         <img className="cart__item__icon" src={write} alt="wroc-do-produktu"/>
                                     </a>
                                 </button>
@@ -202,11 +202,11 @@ const Cart = () => {
                         {cartBanquet?.flat()?.map((itemChild, index) => {
                             if(itemChild.amount !== 0) {
                                 return <section className="cart__item cart__item__banquet">
-                                    <a className="cart__item__imgWrapper" href="http://brunchbox.skylo-test3.pl/menu-bankietowe/">
+                                    <a className="cart__item__imgWrapper" href="https://brunchbox.skylo-test3.pl/menu-bankietowe/">
                                         <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + itemChild?.image} alt="produkt"/>
                                     </a>
 
-                                    <a href="http://brunchbox.skylo-test3.pl/menu-bankietowe/" className="cart__item__column firstCol">
+                                    <a href="https://brunchbox.skylo-test3.pl/menu-bankietowe/" className="cart__item__column firstCol">
                                         <h3 className="cart__item__label">
                                             Nazwa produktu
                                         </h3>
@@ -248,7 +248,7 @@ const Cart = () => {
                                         </h3>
                                         <section className="cart__item__value cart__item__value--flex">
                                             <button className="cart__item__value cart__item__value--button">
-                                                <a href="http://brunchbox.skylo-test3.pl/menu-bankietowe/">
+                                                <a href="https://brunchbox.skylo-test3.pl/menu-bankietowe/">
                                                     <img className="cart__item__icon" src={write} alt="wroc-do-produktu"/>
                                                 </a>
                                             </button>
