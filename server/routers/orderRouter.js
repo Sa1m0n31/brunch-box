@@ -80,8 +80,8 @@ con.connect(err => {
                       pass: 'BrunchboxSkylo@123'
                   },
                   host: 's124.cyber-folks.pl',
-                  secureConnection: false,
-                  port: 587,
+                  secureConnection: true,
+                  port: 465,
                   tls: {
                       rejectUnauthorized: false
                   },
@@ -89,7 +89,7 @@ con.connect(err => {
 
               let mailOptions = {
                   from: 'powiadomienia@brunchbox.pl',
-                  to: "kontakt@skylo.pl",
+                  to: "zamowienia@brunchbox.pl",
                   subject: 'Nowe zamówienie w sklepie Brunchbox',
                   html: '<h2>Nowe zamówienie!</h2> ' +
                       '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
@@ -99,8 +99,6 @@ con.connect(err => {
               }
 
               transporter.sendMail(mailOptions, function(error, info) {
-                  console.log(error);
-                  console.log(info);
                   response.send({
                       result
                   });

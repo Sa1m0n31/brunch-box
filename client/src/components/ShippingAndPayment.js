@@ -807,12 +807,11 @@ const ShippingAndPayment = () => {
                             <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
                                 <span className={personal ? "ribbon" : "d-none"}></span>
                             </button>
-                            Odbiór osobisty
-                        </label>
                             <section className="address">
-                                {originStreet} {originBuilding} {originFlat ? "/" + originFlat : ""} <br/>
+                                Odbiór osobisty: {originStreet} {originBuilding} {originFlat ? "/" + originFlat + ";" : ";"} <br/>
                                 {originPostalCode} {originCity}
                             </section>
+                        </label>
                         </div> : ""}
 
                         <label className="ribbonBtnLabel">

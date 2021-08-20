@@ -1995,3 +1995,8 @@ ol {
     position: relative;
     z-index: 10001;
 }
+
+.extraInputs .ribbonBtnLabel .address {
+    margin-left: 0;
+    font-size: 15px;
+}

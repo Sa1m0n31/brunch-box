@@ -5,23 +5,22 @@ const path = require("path");
 
 const app = express();
 
-/* Redirect http to https */
-app.enable('trust proxy');
-app.use (function (req, res, next) {
-    if (req.secure) {
-        // request was via https, so do no special handling
-        next();
-    } else {
-        // request was via http, so redirect to https
-        res.redirect('https://' + req.headers.host + req.url);
-    }
-});
-
-
 /* Middleware */
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
+/* Redirect http to https */
+app.enable('trust proxy');
+// app.use (function (req, res, next) {
+//     if (req.secure) {
+//         // request was via https, so do no special handling
+//         next();
+//     } else {
+//         // request was via http, so redirect to https
+//         res.redirect('https://' + req.headers.host + req.url);
+//     }
+// });
 
 /* Serve static frontend */
 app.use(express.static(path.join(__dirname, '../client/build')));
