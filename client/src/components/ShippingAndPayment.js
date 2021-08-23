@@ -422,8 +422,6 @@ const ShippingAndPayment = () => {
 
     useEffect(() => {
         /* Payment */
-        console.log(formValidate);
-        console.log(deliveryValidate);
         if((formValidate)&&(deliveryValidate)) {
             const sessionId = uuidv4();
             setFormValidate(false);
@@ -437,9 +435,9 @@ const ShippingAndPayment = () => {
             })
                 .then(res => {
                     let insertedUserId = res.data.result;
-
+                    const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
                     /* Add order */
-                    axios.post("https://brunchbox.skylo-test3.pl/order/add", {
+                    axios.post("http://localhost:5000/order/add", {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
@@ -784,23 +782,6 @@ const ShippingAndPayment = () => {
                 </div>
 
                 <section className="afterFormSection">
-                    {/*{!personal ? <section className="routeSection">*/}
-                    {/*    {routeLoader ? <span className="loaderSpan">*/}
-                    {/*        <Loader*/}
-                    {/*            type="puff"*/}
-                    {/*            color="#000"*/}
-                    {/*            width={100}*/}
-                    {/*            height={100}*/}
-                    {/*        />*/}
-                    {/*    </span> : <>*/}
-                    {/*        {routeError !== "" ? <h4 className="route route--error">{routeError}</h4> : ""}*/}
-
-                    {/*        {deliveryPrice !== -1 ? <>*/}
-                    {/*            {routeResult !== "" ? <h4 className="route"><b>Odległość:</b> {routeResult}</h4> : ""}*/}
-                    {/*            {routeResult !== "" ? <h4 className="route"><b>Cena:</b> {deliveryPrice} PLN</h4> : "" }*/}
-                    {/*        </> : <h4 className="route">Wysyłka na podany adres nie jest dostępna</h4> }*/}
-                    {/*    </>}*/}
-                    {/*</section> : ""}*/}
 
                     <section className="extraInputs">
                         {personalAvailable ?  <div><label className="ribbonBtnLabel">
@@ -808,7 +789,7 @@ const ShippingAndPayment = () => {
                                 <span className={personal ? "ribbon" : "d-none"}></span>
                             </button>
                             <section className="address">
-                                Odbiór osobisty: {originStreet} {originBuilding} {originFlat ? "/" + originFlat + ";" : ";"} <br/>
+                                Odbiór osobisty: {originStreet} {originBuilding}{originFlat ? "/" + originFlat + ";" : ";"} <br/>
                                 {originPostalCode} {originCity}
                             </section>
                         </label>

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const con = require("../databaseConnection");
+const got = require("got");
 
 const nodemailer = require("nodemailer");
 const smtpTransport = require('nodemailer-smtp-transport');
@@ -68,42 +69,59 @@ con.connect(err => {
        building = parseInt(building) || 0;
        const values = [paymentMethod, shippingMethod, city, street, building, postalCode, user, comment, delivery, sessionId];
        const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, NULL, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?)';
+
+       let deliveryAddress;
+
+       console.log("steeet");
+       console.log(street);
+       console.log(building);
+        console.log(city);
+
+       if(!parseInt(street)) {
+           deliveryAddress = "Odbiór osobisty";
+       }
+       else {
+           deliveryAddress = street + ' ' + building + ', ' + postalCode + ' ' + city;
+       }
+
        con.query(query, values, (err, res) => {
-          let result = 0;
-          if(res) {
-              if(res.insertId) result = res.insertId;
+           let result = 0;
+           if(res) {
+               if(res.insertId) result = res.insertId;
 
-              /* Nodemailer */
-              let transporter = nodemailer.createTransport(smtpTransport ({
-                  auth: {
-                      user: 'powiadomienia@brunchbox.pl',
-                      pass: 'BrunchboxSkylo@123'
-                  },
-                  host: 's124.cyber-folks.pl',
-                  secureConnection: true,
-                  port: 465,
-                  tls: {
-                      rejectUnauthorized: false
-                  },
-              }));
+               /* Nodemailer */
+               let transporter = nodemailer.createTransport(smtpTransport ({
+                   auth: {
+                       user: 'powiadomienia@brunchbox.pl',
+                       pass: 'BrunchboxSkylo@123'
+                   },
+                   host: 's124.cyber-folks.pl',
+                   secureConnection: true,
+                   port: 465,
+                   tls: {
+                       rejectUnauthorized: false
+                   },
+               }));
 
-              let mailOptions = {
-                  from: 'powiadomienia@brunchbox.pl',
-                  to: "zamowienia@brunchbox.pl",
-                  subject: 'Nowe zamówienie w sklepie Brunchbox',
-                  html: '<h2>Nowe zamówienie!</h2> ' +
-                      '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
-                      '<a href="https://brunchbox.skylo-test3.pl/admin">' +
-                      'Przejdź do panelu administratora' +
-                      ' </a>'
-              }
+               let mailOptions = {
+                   from: 'powiadomienia@brunchbox.pl',
+                   to: "zamowienia@brunchbox.pl",
+                   subject: 'Nowe zamówienie w sklepie Brunchbox',
+                   html: '<h2>Nowe zamówienie!</h2> ' +
+                       '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
+                       `<p><b>Czas dostawy:</b> ` + delivery + `</p>` +
+                       `<p><b>Adres dostawy:</b> ` + deliveryAddress + `</p>` +
+                       '<a href="https://brunchbox.skylo-test3.pl/admin">' +
+                       'Przejdź do panelu administratora' +
+                       ' </a>'
+               }
 
-              transporter.sendMail(mailOptions, function(error, info) {
-                  response.send({
-                      result
-                  });
-              });
-          }
+               transporter.sendMail(mailOptions, function(error, info) {
+                   response.send({
+                       result
+                   });
+               });
+           }
        });
    });
 
