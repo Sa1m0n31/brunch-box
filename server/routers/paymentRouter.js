@@ -9,6 +9,9 @@ const cors = require("cors");
 const crypto = require("crypto");
 const { v4: uuidv4 } = require('uuid');
 
+const nodemailer = require("nodemailer");
+const smtpTransport = require('nodemailer-smtp-transport');
+
 con.connect(err => {
     /* Set Przelewy24 credentials */
     router.post("/change-data", (request, response) => {
@@ -142,37 +145,72 @@ con.connect(err => {
                 }
             })
                 .then(res => {
-                    /* TEST */
-                    const values = [sessionId];
-                    const query = 'UPDATE orders SET payment_status = ? WHERE id = 70';
-                    con.query(query, values, (err, res) => {
-                        console.log("UPDATING PAYMENT STATUS");
-                        console.log(err);
-                    });
-
-
                     if(res.body.data.status === 'success') {
                         /* Change value in databse - payment complete */
                         const values = [sessionId];
                         const query = 'UPDATE orders SET payment_status = "opłacone" WHERE przelewy24_id = ?';
                         con.query(query, values, (err, res) => {
-                            console.log("UPDATING PAYMENT STATUS");
-                            console.log(err);
+                            /* Send email notification */
+                            const values = [sessionId];
+                            const query = 'SELECT * FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id WHERE o.przelewy24_id = ?';
+                            con.query(query, values, (err, res) => {
+                               if(res) {
+                                   const deliveryTime = res[0].delivery;
+                                   const deliveryAddress = res[0].street + " " + res[0].building + ", " + res[0].postal_code + " " + res[0].city;
+                                   let orderItems = "";
+                                   JSON.parse(JSON.stringify(res)).forEach((item, index, array) => {
+                                        orderItems += "<br/>" + item.name.split("/")[0] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ";";
+
+                                        if(index === array.length-1) {
+                                            /* Nodemailer */
+                                            let transporter = nodemailer.createTransport(smtpTransport ({
+                                                auth: {
+                                                    user: 'powiadomienia@skylo-pl.atthost24.pl',
+                                                    pass: '***** ***'
+                                                },
+                                                host: 'skylo-pl.atthost24.pl',
+                                                secureConnection: true,
+                                                port: 465,
+                                                tls: {
+                                                    rejectUnauthorized: false
+                                                },
+                                            }));
+
+                                            let mailOptions = {
+                                                from: 'powiadomienia@skylo-pl.atthost24.pl',
+                                                to: "zamowienia@brunchbox.pl",
+                                                subject: 'Nowe zamówienie w sklepie Brunchbox',
+                                                html: '<h2>Nowe zamówienie!</h2> ' +
+                                                    '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
+                                                    `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
+                                                    `<p><b>Adres dostawy:</b> ` + deliveryAddress + `</p>` +
+                                                    `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
+                                                    '<a href="https://brunchbox.skylo-test3.pl/admin">' +
+                                                    'Przejdź do panelu administratora' +
+                                                    ' </a>'
+                                            }
+
+                                            transporter.sendMail(mailOptions, function(error, info) {
+                                                response.send({
+                                                    status: "OK"
+                                                });
+                                            });
+                                        }
+                                   });
+                               }
+                            });
                         });
                     }
                     else {
                         const values = [sessionId];
                         const query = 'UPDATE orders SET payment_status = "niepowodzenie" WHERE przelewy24_id = ?';
                         con.query(query, values, (err, res) => {
-                            console.log("UPDATING PAYMENT STATUS");
-                            console.log(err);
+                            response.send({
+                                status: "OK"
+                            });
                         });
                     }
                 })
-
-            response.send({
-                status: "OK"
-            });
         });
 
     });

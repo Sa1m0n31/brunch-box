@@ -72,11 +72,6 @@ con.connect(err => {
 
        let deliveryAddress;
 
-       console.log("steeet");
-       console.log(street);
-       console.log(building);
-        console.log(city);
-
        if(!parseInt(street)) {
            deliveryAddress = "Odbiór osobisty";
        }
@@ -89,37 +84,8 @@ con.connect(err => {
            if(res) {
                if(res.insertId) result = res.insertId;
 
-               /* Nodemailer */
-               let transporter = nodemailer.createTransport(smtpTransport ({
-                   auth: {
-                       user: 'powiadomienia@brunchbox.pl',
-                       pass: 'BrunchboxSkylo@123'
-                   },
-                   host: 's124.cyber-folks.pl',
-                   secureConnection: true,
-                   port: 465,
-                   tls: {
-                       rejectUnauthorized: false
-                   },
-               }));
-
-               let mailOptions = {
-                   from: 'powiadomienia@brunchbox.pl',
-                   to: "zamowienia@brunchbox.pl",
-                   subject: 'Nowe zamówienie w sklepie Brunchbox',
-                   html: '<h2>Nowe zamówienie!</h2> ' +
-                       '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
-                       `<p><b>Czas dostawy:</b> ` + delivery + `</p>` +
-                       `<p><b>Adres dostawy:</b> ` + deliveryAddress + `</p>` +
-                       '<a href="https://brunchbox.skylo-test3.pl/admin">' +
-                       'Przejdź do panelu administratora' +
-                       ' </a>'
-               }
-
-               transporter.sendMail(mailOptions, function(error, info) {
-                   response.send({
-                       result
-                   });
+               response.send({
+                   result
                });
            }
        });
