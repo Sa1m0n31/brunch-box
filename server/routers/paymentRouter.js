@@ -152,11 +152,18 @@ con.connect(err => {
                         con.query(query, values, (err, res) => {
                             /* Send email notification */
                             const values = [sessionId];
-                            const query = 'SELECT * FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id WHERE o.przelewy24_id = ?';
+                            const query = 'SELECT p.name, s.size, s.quantity, s.option, o.delivery, o.order_comment, u.phone_number, u.email, r.caption, o.city as orderCity, o.building as orderBuilding, o.postal_code as orderPostalCode, o.street as orderStreet FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.przelewy24_id = ?';
                             con.query(query, values, (err, res) => {
                                if(res) {
                                    const deliveryTime = res[0].delivery;
-                                   const deliveryAddress = res[0].street + " " + res[0].building + ", " + res[0].postal_code + " " + res[0].city;
+                                   const deliveryAddress = res[0].orderStreet + " " + res[0].orderBuilding + ", " + res[0].orderPostalCode + " " + res[0].orderCity;
+                                   const orderComment = res[0].order_comment;
+                                   const phoneNumber = res[0].phone_number;
+                                   const userEmail = res[0].email;
+                                   let orderDedication = res[0].caption;
+
+                                   if(orderDedication === "Od: dla:") orderDedication = null;
+
                                    let orderItems = "";
                                    JSON.parse(JSON.stringify(res)).forEach((item, index, array) => {
                                         orderItems += "<br/>" + item.name.split("/")[0] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ";";
@@ -184,7 +191,11 @@ con.connect(err => {
                                                     '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
                                                     `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
                                                     `<p><b>Adres dostawy:</b> ` + deliveryAddress + `</p>` +
+                                                    `<p><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
+                                                    `<p><b>Adres email:</b> ` + userEmail + `</p>` +
                                                     `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
+                                                    `<p><b>Komentarz do zamówienia:</b> ` + orderComment + `</p>` +
+                                                    `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
                                                     '<a href="https://brunchbox.skylo-test3.pl/admin">' +
                                                     'Przejdź do panelu administratora' +
                                                     ' </a>'

@@ -217,7 +217,7 @@ const OrderDetailsContent = () => {
                         <h3 className="panelContent__data w-50">
                             {cart[0].building}
                         </h3>
-                        {cart[0].order_comment !== null ? <p className="panelContent__data w-100">
+                        {cart[0].order_comment !== null ? <p className={cart[0].order_comment ? "panelContent__data orderComment w-100" : "panelContent__data w-100"}>
                             {cart[0].order_comment ? cart[0].order_comment : "BRAK KOMENTARZA"}
                         </p> : ""}
                     </main>

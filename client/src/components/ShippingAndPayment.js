@@ -362,22 +362,18 @@ const ShippingAndPayment = () => {
         onSubmit: values => {
             if(!submitted) {
                 /* Additional validation for delivery price */
-                if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))) {
-                    console.log("delivery validate");
+                if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))&&(deliveryPrice !== -2)) {
                     setDeliveryValidate(1);
                     /* Additional validation for delivery date and time and delivery price */
                     if(((calendar[dayOfDelivery])&&(hourOfDelivery !== -1))||(fastest)) {
                         setFormValidate(true);
                         setSubmitted(true);
-                        console.log("form valudate");
                     }
                     else {
                         setDateError(true);
-                        console.log("form not validate");
                     }
                 }
                 else {
-                    console.log("delivery not validate");
                     setDeliveryValidate(0);
                 }
             }
@@ -437,7 +433,7 @@ const ShippingAndPayment = () => {
                     let insertedUserId = res.data.result;
                     const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
                     /* Add order */
-                    axios.post("http://localhost:5000/order/add", {
+                    axios.post("https://brunchbox.skylo-test3.pl/order/add", {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
@@ -617,7 +613,7 @@ const ShippingAndPayment = () => {
                    }
 
                    if((!block)&&(index === array.length-1)) {
-                       setDeliveryPrice(111);
+                       setDeliveryPrice(-2);
                    }
                 });
             });
@@ -881,7 +877,7 @@ const ShippingAndPayment = () => {
                             Dostawa:
                         </h3>
                         <h4 className="cart__summary__header__value">
-                            {deliveryPrice} PLN
+                            {deliveryPrice !== -2 ? (deliveryPrice + " PLN") : <span className="noDelivery">Brak możliwości dostawy na podany adres</span>}
                         </h4>
                     </header>
                 </> : ""}
@@ -890,7 +886,7 @@ const ShippingAndPayment = () => {
                         Łącznie do zapłaty:
                     </h3>
                     <h4 className="cart__summary__header__value">
-                        {amount + deliveryPrice} PLN
+                        {deliveryPrice > 0 ? amount + deliveryPrice : amount} PLN
                     </h4>
                 </header>
                 <button className="cart__summary__button cart__summary__button--shippingAndPayment button__link--small" type="submit">

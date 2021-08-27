@@ -155,10 +155,14 @@ const SingleProductContent = () => {
             setPrice(product.price_l_vege);
             switchMainImage(3);
         }
-
-    }, [size, option])
+    }, [size, option]);
 
     const addToCart = (id, option, size) => {
+
+        console.log(size);
+        console.log(option);
+        console.log(product.category_id);
+
         if(product.category_id === 2) {
             /* Check number of half boxes in current cart */
             const currentCart = JSON.parse(localStorage.getItem('sec-cart'));
@@ -172,7 +176,6 @@ const SingleProductContent = () => {
                     if(index === array.length-1) {
                         if((numberOfHalfs % 2 === 0)&&(size === "1/2 boxa")) {
                             setModalHint(true);
-                            console.log(size);
                             editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
                         }
                         else {
@@ -300,11 +303,11 @@ const SingleProductContent = () => {
                         </h3>
                         <div className="singleProduct__options__buttons">
                             <button className={size === "M" || size === "1/2 boxa" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setSize("1/2 boxa")}>
+                                    onClick={() => setSize(product.category_id === 2 ? "1/2 boxa" : "M")}>
                                 {product.category_id === 2 ? "1/2 boxa" : "M"}
                             </button>
-                            <button className={size === "Cały box" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setSize("Cały box")}>
+                            <button className={size === "Cały box" || size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setSize(product.category_id === 2 ? "Cały box" : "L")}>
                                 {product.category_id === 2 ? "Cały box" : "L"}
                             </button>
                         </div>

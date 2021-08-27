@@ -2000,3 +2000,10 @@ ol {
     margin-left: 0;
     font-size: 15px;
 }
+
+.noDelivery {
+    font-size: 14px;
+    line-height: 42px;
+    font-weight: 400;
+    vertical-align: middle;
+}
