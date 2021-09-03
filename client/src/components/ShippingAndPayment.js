@@ -439,7 +439,7 @@ const ShippingAndPayment = () => {
                     let insertedUserId = res.data.result;
                     const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
                     /* Add order */
-                    axios.post("http://localhost:5000/order/add", {
+                    axios.post("https://brunchbox.pl/order/add", {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
@@ -467,7 +467,7 @@ const ShippingAndPayment = () => {
                             const cart = JSON.parse(localStorage.getItem('sec-cart'));
                             cart?.forEach((item, cartIndex) => {
                                 /* Add sells */
-                                axios.post("http://localhost:5000/order/add-sell", {
+                                axios.post("https://brunchbox.pl/order/add-sell", {
                                     orderId,
                                     productId: item.id,
                                     option: item.option,
@@ -504,7 +504,7 @@ const ShippingAndPayment = () => {
                             /* PAYMENT PROCESS */
                             let paymentUri = "https://secure.przelewy24.pl/trnRequest/";
 
-                            axios.post("http://localhost:5000/payment/payment", {
+                            axios.post("https://brunchbox.pl/payment/payment", {
                                 sessionId,
                                 amount: amount + deliveryPrice,
                                 email: formik.values.email

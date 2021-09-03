@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const con = require("./databaseConnection");
 
 const app = express();
 
@@ -22,12 +23,40 @@ app.enable('trust proxy');
 //     }
 // });
 
-/* Serve static frontend */
-app.use(express.static(path.join(__dirname, '../client/build')));
-app.get("/oferta-indywidualna", (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+const convertToURL = (str) => {
+    if(str) return str.toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/ą/g, "a")
+        .replace(/ć/g, "c")
+        .replace(/ę/g, "e")
+        .replace(/ń/g, "n")
+        .replace(/ł/g, "l")
+        .replace(/ó/g, "o")
+        .replace(/ś/g, "s")
+        .replace(/ź/g, "z")
+        .replace(/ż/g, "z")
+    else return "";
+}
+
+/* Categories */
+con.connect(err => {
+    con.query("SELECT * FROM categories", (err, res) => {
+        if(res) {
+            res.forEach(item => {
+                app.get("/" + convertToURL(item.name), (req, res) => {
+                    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+                });
+
+                // app.get("/" + convertToURL(item.name_en), (req, res) => {
+                //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
+                // });
+            });
+        }
+    });
 });
-/* TODO */
+
+/* PL */
+app.use(express.static(path.join(__dirname, '../client/build')));
 app.get("/oferta", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
@@ -49,12 +78,6 @@ app.get("/polityka-prywatnosci", (req, res) => {
 app.get("/wpis/*", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-app.get("/przekaski-dla-grup", (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
-app.get("/przekaski-bankietowe", (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
 app.get("/dziekujemy", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
@@ -70,9 +93,6 @@ app.get("/dostawa-i-platnosc", (req, res) => {
 app.get("/koszyk", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-app.get("/przekaski-tematyczne", (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
 app.get("/admin", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
@@ -80,6 +100,44 @@ app.get("/panel", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 app.get("/panel/*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
+/* EN */
+app.get("/boxes", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/blog", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/about-us", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/contact", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/terms-of-service", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/privacy-policy", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/posts/*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/thank-you", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/products", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/products/*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/shipping-and-payment", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/cart", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 

@@ -49,8 +49,6 @@ con.connect(err => {
         /* Add order to database */
         const { sessionId } = request.body;
 
-        console.log("/payment/payment");
-
         /* Generate SHA-384 checksum */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
         con.query(query, (err, res) => {
@@ -84,11 +82,11 @@ con.connect(err => {
             let responseToClient;
 
             /* FIRST STEP - REGISTER */
-            got.post("https://sandbox.przelewy24.pl/api/v1/transaction/register", {
+            got.post("https://secure.przelewy24.pl/api/v1/transaction/register", {
                 json: postData,
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // test: MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm
+                    'Authorization': 'Basic MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0' // test: MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm
                 }
             })
                 .then(res => {
@@ -125,7 +123,7 @@ con.connect(err => {
             data = hash.update(`{"sessionId":"${sessionId}","orderId":${orderId},"amount":${amount},"currency":"PLN","crc":"${crc}"}`, 'utf-8');
             gen_hash= data.digest('hex');
 
-            got.put("https://sandbox.przelewy24.pl/api/v1/transaction/verify", {
+            got.put("https://secure.przelewy24.pl/api/v1/transaction/verify", {
                 json: {
                     merchantId,
                     posId,
@@ -137,7 +135,7 @@ con.connect(err => {
                 },
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // brunchbox: MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0
+                    'Authorization': 'Basic MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0'
                 }
             })
                 .then(res => {
