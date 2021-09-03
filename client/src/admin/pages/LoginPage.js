@@ -46,10 +46,7 @@ const LoginPage = () => {
                     else {
                         setTried(true);
                     }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+                });
         }
     })
 

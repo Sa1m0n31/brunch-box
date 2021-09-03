@@ -95,7 +95,6 @@ const SingleProductContent = () => {
                 });
             getProductAllergens(id)
                 .then(res => {
-                    console.log(res.data.result);
                     setAllergens(res.data.result);
                 });
         }
@@ -159,10 +158,6 @@ const SingleProductContent = () => {
 
     const addToCart = (id, option, size) => {
 
-        console.log(size);
-        console.log(option);
-        console.log(product.category_id);
-
         if(product.category_id === 2) {
             /* Check number of half boxes in current cart */
             const currentCart = JSON.parse(localStorage.getItem('sec-cart'));
@@ -186,7 +181,6 @@ const SingleProductContent = () => {
                 });
             }
             else {
-                console.log(size);
                 if(size === "M") setModalHint(true);
                 editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
             }
@@ -246,7 +240,7 @@ const SingleProductContent = () => {
                     <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
                         Przejdź do kasy
                     </button>
-                </> : <a href="https://brunchbox.skylo-test3.pl/przekaski-dla-grup" className="modal__btn">
+                </> : <a href="https://brunchbox.pl/przekaski-dla-grup" className="modal__btn">
                     Wybierz drugą połowę
                 </a>}
             </section>

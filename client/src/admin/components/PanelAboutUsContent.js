@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import {deleteCategory, getAllCategories, getCategory} from "../helpers/categoriesFunctions";
 import exit from "../static/img/exit.svg";
 import trash from "../static/img/trash.svg";
 
@@ -36,7 +35,6 @@ const PanelAboutUsContent = () => {
         if(param) {
             getSection(param)
                 .then(res => {
-                    console.log(res.data.result);
                     const result = res.data.result;
                     if(result) {
                         setId(param);
@@ -135,7 +133,7 @@ const PanelAboutUsContent = () => {
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
                                          method="POST"
-                                         action={update ? "https://brunchbox.skylo-test3.pl/about-us/update" : "https://brunchbox.skylo-test3.pl/about-us/add"}
+                                         action={update ? "https://brunchbox.pl/about-us/update" : `https://brunchbox.pl/about-us/add`}
                                          onSubmit={(e) => { handleSubmit(e) }}
                                          encType="multipart/form-data"
                 >

@@ -46,9 +46,6 @@ app.get("/regulamin", (req, res) => {
 app.get("/polityka-prywatnosci", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-// app.get("/blog/*", (req, res) => {
-//     res.sendFile(path.join(__dirname, '../client/build/index.html'));
-// });
 app.get("/wpis/*", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
@@ -119,6 +116,4 @@ app.use("/coupon", couponRouter);
 app.use("/dates", datesRouter);
 app.use("/maps", googleMapsRouter);
 
-app.listen(5000, () => {
-    console.log("Listening on port 5000");
-});
+app.listen(5000);

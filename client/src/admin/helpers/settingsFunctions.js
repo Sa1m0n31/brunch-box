@@ -7,25 +7,27 @@ const getAllAdmins = () => {
     return axios.get(`${API_URL}/user/get-all-admins`);
 }
 
-const addAdmin = ({username, email, password1}) => {
+const addAdmin = ({username, email, password1}, sessionKey) => {
     return axios.post(`${API_URL}/auth/register-admin`, {
        username,
        email,
-       password: password1
+       password: password1,
+       sessionKey
     });
 }
 
-const deleteAdmin = (id) => {
+const deleteAdmin = (id, sessionKey) => {
     return axios.post(`${API_URL}/user/delete-admin`, {
-        id
+        id, sessionKey
     });
 }
 
-const changePassword = ({username, oldPassword, newPassword}) => {
+const changePassword = ({username, oldPassword, newPassword}, sessionKey) => {
     return axios.post(`${API_URL}/user/change-admin-password`, {
         username,
         oldPassword,
-        newPassword
+        newPassword,
+        sessionKey
     });
 }
 

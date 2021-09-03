@@ -37,9 +37,6 @@ con.connect(err => {
    router.post("/add-allergens", (request, response) => {
       const { id, allergens } = request.body;
 
-      console.log(id);
-      console.log(allergens);
-
       /* Remove all allergens for current product */
       const values = [id];
       const query = 'DELETE FROM allergens WHERE product_id = ?';
@@ -48,9 +45,7 @@ con.connect(err => {
             allergens.forEach((item, index, array) => {
                const values = [id, item];
                const query = 'INSERT INTO allergens VALUES (NULL, ?, ?)';
-               con.query(query, values, (err, res) => {
-                  console.log(err);
-               });
+               con.query(query, values);
 
                if(index === array.length-1) {
                   response.send({
@@ -140,10 +135,8 @@ con.connect(err => {
                filesId[0], categoryId, bracketName, vegan, meat, m, l, filesId[1], filesId[2], filesId[3], hidden];
             const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             con.query(query, values, (err, res) => {
-               console.log("Error?");
-               console.log(err);
-               if(res) response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-               else response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
+               if(res) response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=1");
+               else response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=0");
             });
       }
    });
@@ -251,8 +244,6 @@ con.connect(err => {
                else return false;
             });
             if(gallery2Index !== -1) {
-               console.log("Gallery 2 idnex:");
-               console.log(gallery2Index);
                const values = [filesId[gallery2Index], id];
                const query = 'UPDATE products SET gallery_2 = ? WHERE id = ?';
                con.query(query, values);
@@ -265,15 +256,13 @@ con.connect(err => {
                else return false;
             });
             if(gallery3Index !== -1) {
-               console.log("Gallery 3 idnex:");
-               console.log(gallery3Index);
                const values = [filesId[gallery3Index], id];
                const query = 'UPDATE products SET gallery_3 = ? WHERE id = ?';
                con.query(query, values);
             }
 
-            if(res) response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=1");
-            else response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-produkt?add=0");
+            if(res) response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=1");
+            else response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=0");
          });
       }
    });
@@ -283,11 +272,8 @@ con.connect(err => {
       const { id } = request.body;
       const values = [id];
 
-      console.log(values);
-
       const query = 'DELETE FROM products WHERE id = ?';
       con.query(query, values, (err, res) => {
-         console.log(err);
          let result = 0;
          if(res) result = 1;
          response.send({
@@ -375,7 +361,6 @@ con.connect(err => {
           'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, p.m, p.l, i.file_path as file_path ' +
           'FROM products p JOIN images i ON i.id = p.main_image WHERE LOWER(SPLIT_STR(p.name, "/", 1)) = ?';
       con.query(query, values, (err, res) => {
-         console.log(err);
          response.send({
             result: res
          });
@@ -404,7 +389,6 @@ con.connect(err => {
    /* GET SINGLE PRODUCT DETAILS (CLIENT) */
    router.post("/single-product", (request, response) => {
       const { id } = request.body;
-      console.log(request.body);
       const values = [id];
       const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
           'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, ' +
@@ -412,14 +396,11 @@ con.connect(err => {
           'FROM products p JOIN images i ON i.id = p.main_image WHERE p.id = ?';
       con.query(query, values, (err, res) => {
          if(res) {
-            console.log(res);
-            console.log(err);
             response.send({
                result: res
             });
          }
          else {
-            console.log(err);
             response.send({
                result: null
             });
@@ -450,8 +431,7 @@ con.connect(err => {
    router.post("/product-data", (request, response) => {
       const { id } = request.body;
       const values = [id];
-      console.log("CHECKING FOR ID = " + id);
-      const query = 'SELECT * FROM products p LEFT OUTER JOIN allergens a ON p.id = a.product_id WHERE p.id = ?';
+     const query = 'SELECT * FROM products p LEFT OUTER JOIN allergens a ON p.id = a.product_id WHERE p.id = ?';
       con.query(query, values, (err, res) => {
          if(res) {
             response.send({

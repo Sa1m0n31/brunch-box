@@ -32,7 +32,7 @@ const PanelSettingsContent = () => {
     }
 
     const deleteAdminById = () => {
-        deleteAdmin(candidateToDelete)
+        deleteAdmin(candidateToDelete, localStorage.getItem('sec-sessionKey'))
             .then(res => {
                 if(res.data.result === 1) setDeleted(candidateToDelete);
             });

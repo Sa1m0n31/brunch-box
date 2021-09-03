@@ -13,7 +13,6 @@ import Modal from "react-modal";
 const PanelOrdersContent = () => {
     const [orders, setOrders] = useState([]);
     const [sorting, setSorting] = useState(0);
-    const [filter, setFilter] = useState(0);
     const [modal, setModal] = useState(false);
     const [candidate, setCandidate] = useState(0);
     const [deleteMsg, setDeleteMsg] = useState("");
@@ -22,7 +21,7 @@ const PanelOrdersContent = () => {
     const [filterNieoplacone, setFilterNieoplacone] = useState(true);
 
     useEffect(() => {
-        getAllOrders()
+        getAllOrders(localStorage.getItem('sec-sessionKey'))
             .then(res => {
                 const result = res.data.result;
                 setOrders(result.reverse());
@@ -35,12 +34,8 @@ const PanelOrdersContent = () => {
         setOrders(filteredOrders);
     }
 
-    const filterByStatus = (n) => {
-        setFilter(n);
-    }
-
     const deleteOrder = () => {
-        deleteOrderById(candidate)
+        deleteOrderById(candidate, localStorage.getItem('sec-sessionKey'))
             .then(res => {
                 if(res.data.result) setDeleteMsg("Zamówienie zostało usunięte");
                 else setDeleteMsg("Coś poszło nie tak... Prosimy spróbować później");

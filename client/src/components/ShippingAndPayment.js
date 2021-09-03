@@ -181,7 +181,6 @@ const ShippingAndPayment = () => {
 
     useEffect(() => {
         if(block !== 0) {
-            console.log("FUNCTION INVOKED!");
             setExcludedHoursByProductsInCart()
         }
     }, [block]);
@@ -220,7 +219,7 @@ const ShippingAndPayment = () => {
         }));
 
         /* Set unavailable hours from admin panel */
-        axios.get("https://brunchbox.skylo-test3.pl/dates/get-all")
+        axios.get("https://brunchbox.pl/dates/get-all")
             .then(res => {
                 const excludedDaysInfo = res.data.result;
                 let excludedHoursTmp = [];
@@ -263,7 +262,7 @@ const ShippingAndPayment = () => {
         });
 
         /* Get first hours excluded from database */
-        axios.get(`https://brunchbox.skylo-test3.pl/dates/get-first-hours-excluded`)
+        axios.get(`https://brunchbox.pl/dates/get-first-hours-excluded`)
             .then(res => {
                if(res.data.result) {
                    const hoursToBlock = res.data.result;
@@ -364,16 +363,20 @@ const ShippingAndPayment = () => {
                 /* Additional validation for delivery price */
                 if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))&&(deliveryPrice !== -2)) {
                     setDeliveryValidate(1);
+                    console.log("validate delivery");
                     /* Additional validation for delivery date and time and delivery price */
                     if(((calendar[dayOfDelivery])&&(hourOfDelivery !== -1))||(fastest)) {
                         setFormValidate(true);
+                        console.log("validate calendar");
                         setSubmitted(true);
                     }
                     else {
+                        console.log("date error");
                         setDateError(true);
                     }
                 }
                 else {
+                    console.log("delivery error");
                     setDeliveryValidate(0);
                 }
             }
@@ -422,18 +425,21 @@ const ShippingAndPayment = () => {
             const sessionId = uuidv4();
             setFormValidate(false);
 
+            console.log("Start...");
+
             /* Add user */
-            axios.post("https://brunchbox.skylo-test3.pl/auth/add-user", {
+            axios.post("https://brunchbox.pl/auth/add-user", {
                 firstName: formik.values.firstName,
                 lastName: formik.values.lastName,
                 email: formik.values.email,
                 phoneNumber: formik.values.phoneNumber
             })
                 .then(res => {
+                    console.log(res.data);
                     let insertedUserId = res.data.result;
                     const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
                     /* Add order */
-                    axios.post("https://brunchbox.skylo-test3.pl/order/add", {
+                    axios.post("http://localhost:5000/order/add", {
                         paymentMethod: null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
@@ -447,10 +453,11 @@ const ShippingAndPayment = () => {
                     })
                         .then(res => {
                             const orderId = res.data.result;
+                            console.log(res.data.result);
 
                             /* Add ribbon */
                             if(ribbon) {
-                                axios.post("https://brunchbox.skylo-test3.pl/order/add-ribbon", {
+                                axios.post("https://brunchbox.pl/order/add-ribbon", {
                                     orderId: orderId,
                                     caption: "Od: " + formik.values.ribbonFrom + " dla: " + formik.values.ribbonTo
                                 });
@@ -460,7 +467,7 @@ const ShippingAndPayment = () => {
                             const cart = JSON.parse(localStorage.getItem('sec-cart'));
                             cart?.forEach((item, cartIndex) => {
                                 /* Add sells */
-                                axios.post("https://brunchbox.skylo-test3.pl/order/add-sell", {
+                                axios.post("http://localhost:5000/order/add-sell", {
                                     orderId,
                                     productId: item.id,
                                     option: item.option,
@@ -475,7 +482,7 @@ const ShippingAndPayment = () => {
                                 item.forEach(itemChild => {
                                     /* Add banquet sells */
                                     if(itemChild.amount) {
-                                        axios.post("https://brunchbox.skylo-test3.pl/order/add-sell", {
+                                        axios.post("https://brunchbox.pl/order/add-sell", {
                                             orderId,
                                             productId: itemChild.id,
                                             option: itemChild.selected25 ? "25 szt." : "50 szt.",
@@ -489,20 +496,21 @@ const ShippingAndPayment = () => {
                             /* Decrement coupon times_to_use value */
                             if(sessionStorage.getItem('brunchbox-coupon-used') === 'T') {
                                 sessionStorage.removeItem('brunchbox-coupon-used');
-                                axios.post("https://brunchbox.skylo-test3.pl/coupon/decrement", {
+                                axios.post("https://brunchbox.pl/coupon/decrement", {
                                     couponContent
                                 });
                             }
 
                             /* PAYMENT PROCESS */
-                            let paymentUri = "https://sandbox.przelewy24.pl/trnRequest/";
+                            let paymentUri = "https://secure.przelewy24.pl/trnRequest/";
 
-                            axios.post("https://brunchbox.skylo-test3.pl/payment/payment", {
+                            axios.post("http://localhost:5000/payment/payment", {
                                 sessionId,
                                 amount: amount + deliveryPrice,
                                 email: formik.values.email
                             })
                                 .then(res => {
+                                    console.log(res.data);
                                     /* Remove cart from local storage */
                                     localStorage.removeItem('sec-cart');
                                     localStorage.removeItem('sec-amount');
@@ -531,7 +539,7 @@ const ShippingAndPayment = () => {
     const checkCoupon = (e) => {
         e.preventDefault();
 
-        axios.post("https://brunchbox.skylo-test3.pl/coupon/verify", {
+        axios.post("https://brunchbox.pl/coupon/verify", {
             code: couponContent
         })
             .then(res => {
@@ -573,19 +581,13 @@ const ShippingAndPayment = () => {
         if(!building) building = formik.values.street.split(" ")[1];
 
         setRouteLoader(true);
-        console.log(street);
-        console.log(building);
-        console.log(city);
-        console.log(postalCode);
 
         if((street)&&(building)&&(postalCode)&&(city)) {
-            axios.post("https://brunchbox.skylo-test3.pl/maps/get-distance", {
+            axios.post("https://brunchbox.pl/maps/get-distance", {
                 street, building, postalCode, city
             })
                 .then(res => {
                     if(res.data.result) {
-                        console.log("hello!");
-                        console.log(res.data.result);
                         setRouteResult(res.data.result.routes[0].legs[0].distance.text);
                         calculateDeliveryPrice(parseFloat(res.data.result.routes[0].legs[0].distance.text.split(" ")[0]));
                         setRouteLoader(false);

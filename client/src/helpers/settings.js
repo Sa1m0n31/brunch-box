@@ -1,5 +1,5 @@
 const settings = {
-    API_URL: "https://brunchbox.skylo-test3.pl"
+    API_URL: "https://brunchbox.pl"
 }
 
 export default settings;

@@ -12,7 +12,6 @@ const ContactContent = () => {
             .then(res => {
                 if(res.data.result) {
                     const contactText = res.data.result[0].contact;
-                    console.log(contactText.split("---"))
                     setContactSections(contactText.split("---"));
                 }
             })

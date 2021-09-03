@@ -44,8 +44,8 @@ con.connect(err => {
             const values = [title, content, fileId, titleEn, contentEn];
             const query = 'INSERT INTO posts VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)';
             con.query(query, values, (err, res) => {
-               if(res) response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=1");
-               else response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=0");
+               if(res) response.redirect("https://brunchbox.pl/panel/dodaj-wpis?add=1");
+               else response.redirect("https://brunchbox.pl/panel/dodaj-wpis?add=0");
             });
         }
     });
@@ -89,9 +89,8 @@ con.connect(err => {
             const values = [title, content, fileId, titleEn, contentEn, id];
             const query = 'UPDATE posts SET title = ?, content = ?, image = ?, title_en = ?, content_en = ? WHERE id = ?';
             con.query(query, values, (err, res) => {
-                console.log(err);
-                if(res) response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=2");
-                else response.redirect("https://brunchbox.skylo-test3.pl/panel/dodaj-wpis?add=0");
+                if(res) response.redirect("https://brunchbox.pl/panel/dodaj-wpis?add=2");
+                else response.redirect("https://brunchbox.pl/panel/dodaj-wpis?add=0");
             });
         }
     });
@@ -120,7 +119,6 @@ con.connect(err => {
        const query = 'SELECT p.id as id, p.title, p.date, i.file_path as img_path, p.content, p.title_en, p.content_en FROM posts p LEFT OUTER JOIN images i ON p.image = i.id ORDER BY p.date DESC';
        con.query(query, (err, res) => {
 
-           console.log(err);
            if(res) {
                response.send({
                    result: res
@@ -158,12 +156,8 @@ con.connect(err => {
        const { title } = request.body;
        const values = [title];
 
-       console.log(title);
-
        const query = 'SELECT * FROM posts WHERE LOWER(title) = ?';
        con.query(query, values, (err, res) => {
-           console.log(err);
-           console.log(res);
            if(res) {
                response.send({
                    result: res[0]

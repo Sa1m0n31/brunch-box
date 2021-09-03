@@ -115,8 +115,7 @@ con.connect(err => {
        const values = [id];
        const query = 'DELETE FROM delivery_prices WHERE id = ?';
        con.query(query, values, (err, res) => {
-           console.log(err);
-          if(res) {
+           if(res) {
               response.send({
                   result: 1
               });

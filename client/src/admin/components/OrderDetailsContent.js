@@ -27,18 +27,15 @@ const OrderDetailsContent = () => {
         setId(id);
 
         /* Get order info */
-        getOrderDetails(id)
+        getOrderDetails(id, localStorage.getItem('sec-sessionKey'))
             .then(res => {
-                console.log(res.data.result);
                setCart(res.data.result);
-               //setSum(calculateCartSum(res.data.result));
                calculateCartSum();
             });
 
         /* Get ribbons info */
-        getRibbons(id)
+        getRibbons(id, localStorage.getItem('sec-sessionKey'))
             .then(res => {
-                console.log(res.data.result);
                 if(res.data.result.length) setRibbons(res.data.result);
             });
 
@@ -65,15 +62,6 @@ const OrderDetailsContent = () => {
                     setDeleteMsg("Coś poszło nie tak... Spróbuj ponownie później");
                 }
             });
-    }
-
-    const getCartItemPrice = (item) => {
-        const size = item.size;
-        const option = item.option;
-        if((size === "M")&&(option === "Mięsna")) return item.price_m_meat;
-        if((size === "L")&&(option === "Mięsna")) return item.price_l_meat;
-        if((size === "M")&&(option === "Wegetariańska")) return item.price_m_vege;
-        if((size === "L")&&(option === "Wegetariańska")) return item.price_l_vege;
     }
 
     const calculateCartSum = () => {

@@ -19,7 +19,6 @@ const PanelBlogContent = () => {
         getAllPosts()
             .then(res => {
                 if(res.data.result) {
-                    console.log(res.data.result);
                     setPosts(res.data.result);
                     sessionStorage.setItem('sec-posts', JSON.stringify(res.data.result));
                 }

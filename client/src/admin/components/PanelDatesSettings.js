@@ -32,7 +32,7 @@ const PanelDatesSettings = () => {
 
     useEffect(() => {
         /* Get dates excluded */
-        axios.get("https://brunchbox.skylo-test3.pl/dates/get-all")
+        axios.get("https://brunchbox.pl/dates/get-all")
             .then(res => {
                 if(res.data) {
                     setHoursDatabase(res.data.result);
@@ -63,7 +63,7 @@ const PanelDatesSettings = () => {
                         }
                     }));
                 }
-                console.log(new Date().getHours())
+                (new Date().getHours())
             } else {
                 /* For next days */
                 const selectedDay = calendar[dayOfDelivery];
@@ -124,7 +124,7 @@ const PanelDatesSettings = () => {
         });
         const choosenDay = calendar[dayOfDelivery];
         if((hours)&&(choosenDay)) {
-            axios.post("https://brunchbox.skylo-test3.pl/dates/add", {
+            axios.post("https://brunchbox.pl/dates/add", {
                 hours,
                 day: {
                     day: choosenDay.day,
@@ -149,7 +149,7 @@ const PanelDatesSettings = () => {
                 setAdded("");
             }, 3000);
         }
-        axios.get("https://brunchbox.skylo-test3.pl/dates/get-all")
+        axios.get("https://brunchbox.pl/dates/get-all")
             .then(res => {
                 if(res.data) {
                     setHoursDatabase(res.data.result);
@@ -168,7 +168,7 @@ const PanelDatesSettings = () => {
                 setDeleted(-1);
             }, 1000);
         }
-        axios.get("https://brunchbox.skylo-test3.pl/dates/get-all")
+        axios.get("https://brunchbox.pl/dates/get-all")
             .then(res => {
                 if(res.data) {
                     setHoursDatabase(res.data.result);
@@ -177,7 +177,7 @@ const PanelDatesSettings = () => {
     }, [deleted]);
 
     const deleteHourById = () => {
-        axios.post("https://brunchbox.skylo-test3.pl/dates/delete", {
+        axios.post("https://brunchbox.pl/dates/delete", {
             id: candidateToDelete
         })
             .then(res => {

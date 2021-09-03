@@ -49,6 +49,8 @@ con.connect(err => {
         /* Add order to database */
         const { sessionId } = request.body;
 
+        console.log("/payment/payment");
+
         /* Generate SHA-384 checksum */
         const query = 'SELECT * FROM przelewy24 WHERE id = 1';
         con.query(query, (err, res) => {
@@ -59,6 +61,9 @@ con.connect(err => {
             hash = crypto.createHash('sha384');
             data = hash.update(`{"sessionId":"${sessionId}","merchantId":${marchantId},"amount":${parseFloat(request.body.amount)*100},"currency":"PLN","crc":"${crc}"}`, 'utf-8');
             gen_hash = data.digest('hex');
+
+            console.log(sessionId);
+            console.log(marchantId);
 
             /* Dane */
             let postData = {
@@ -71,12 +76,11 @@ con.connect(err => {
                 email: request.body.email,
                 country: "PL",
                 language: "pl",
-                urlReturn: "https://brunchbox.skylo-test3.pl/dziekujemy",
-                urlStatus: "https://brunchbox.skylo-test3.pl/payment/verify",
+                urlReturn: "https://brunchbox.pl/dziekujemy",
+                urlStatus: "https://brunchbox.pl/payment/verify",
                 sign: gen_hash
             };
 
-            // console.log(postData);
             let responseToClient;
 
             /* FIRST STEP - REGISTER */
@@ -84,19 +88,11 @@ con.connect(err => {
                 json: postData,
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // tmp
+                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // test: MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm
                 }
             })
                 .then(res => {
                     responseToClient = res.body.data.token;
-                    // if(res.body.data.token) {
-                        /* TMP */
-                        // const query = 'UPDATE orders SET payment_status = "opłacone" WHERE id = (SELECT id FROM orders ORDER BY date DESC LIMIT 1)';
-                        // con.query(query, (err, res) => {
-                        //     console.log("UPDATING PAYMENT STATUS");
-                        //     console.log(err);
-                        // });
-                    // }
 
                     response.send({
                         result: responseToClient
@@ -141,7 +137,7 @@ con.connect(err => {
                 },
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // tmp
+                    'Authorization': 'Basic MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm' // brunchbox: MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0
                 }
             })
                 .then(res => {
@@ -173,7 +169,7 @@ con.connect(err => {
                                             let transporter = nodemailer.createTransport(smtpTransport ({
                                                 auth: {
                                                     user: 'powiadomienia@skylo-pl.atthost24.pl',
-                                                    pass: '***** ***'
+                                                    pass: 'BrunchboxSkylo@123'
                                                 },
                                                 host: 'skylo-pl.atthost24.pl',
                                                 secureConnection: true,
@@ -196,7 +192,7 @@ con.connect(err => {
                                                     `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
                                                     `<p><b>Komentarz do zamówienia:</b> ` + orderComment + `</p>` +
                                                     `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
-                                                    '<a href="https://brunchbox.skylo-test3.pl/admin">' +
+                                                    '<a href="https://brunchbox.pl/admin">' +
                                                     'Przejdź do panelu administratora' +
                                                     ' </a>'
                                             }

@@ -5,6 +5,15 @@ const multer = require("multer");
 const path = require("path");
 
 con.connect(err => {
+    const auth = (sessionKey) => {
+        return got.post("https://brunchbox.pl/auth/auth", {
+            json: {
+                sessionKey
+            },
+            responseType: 'json'
+        });
+    }
+
     /* Add new section */
     router.post("/add", (request, response) => {
         /* Add images */
@@ -34,8 +43,8 @@ con.connect(err => {
 
                 con.query(query, values, (err, res) => {
                     console.log(err);
-                    if(!err) response.redirect("https://brunchbox.skylo-test3.pl/panel/o-nas?added=1");
-                    else response.redirect("https://brunchbox.skylo-test3.pl/panel/o-nas?added=-1")
+                    if(!err) response.redirect("https://brunchbox.pl/panel/o-nas?added=1");
+                    else response.redirect("https://brunchbox.pl/panel/o-nas?added=-1")
                 });
             });
         }
@@ -49,8 +58,6 @@ con.connect(err => {
                 const values = ["about-us/" + filename];
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    console.log(err);
-                    console.log("images error end");
                     fileId = res.insertId;
                     addSection();
                 });
@@ -87,11 +94,10 @@ con.connect(err => {
                     const query = 'UPDATE about_us SET image = ?, header = ?, content = ?, header_en = ?, content_en = ? WHERE id = ?';
 
                     con.query(query, values, (err, res) => {
-                        console.log(err);
                         let result = 0;
                         if(res) result = 1;
-                        if(!err) response.redirect("https://brunchbox.skylo-test3.pl/panel/o-nas?added=2");
-                        else response.redirect("https://brunchbox.skylo-test3.pl/panel/o-nas?added=-1")
+                        if(!err) response.redirect("https://brunchbox.pl/panel/o-nas?added=2");
+                        else response.redirect("https://brunchbox.pl/panel/o-nas?added=-1")
                     });
                 });
             }
@@ -100,11 +106,10 @@ con.connect(err => {
                 const query = 'UPDATE about_us SET header = ?, content = ?, header_en = ?, content_en = ? WHERE id = ?';
 
                 con.query(query, values, (err, res) => {
-                    console.log(err);
                     let result = 0;
                     if(res) result = 1;
-                    if(!err) response.redirect("https://brunchbox.skylo-test3.pl/panel/o-nas?added=2");
-                    else response.redirect("https://brunchbox.skylo-test3.pl/panel/o-nas?added=-1")
+                    if(!err) response.redirect("https://brunchbox.pl/panel/o-nas?added=2");
+                    else response.redirect("https://brunchbox.pl/panel/o-nas?added=-1")
                 });
             }
         }

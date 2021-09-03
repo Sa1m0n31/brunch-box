@@ -11,8 +11,7 @@ con.connect((err) => {
         const values = [street, building, flat, postalCode, city, personal, apiKey];
         const query = 'UPDATE shipping_methods SET street = ?, building = ?, flat = ?, postal_code = ?, city = ?, is_on = ?, google_maps_api_key = ? WHERE id = 1';
         con.query(query, values, (err, res) => {
-            console.log(err);
-           if(res) {
+            if(res) {
                response.send({
                    result: 1
                });

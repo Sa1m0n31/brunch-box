@@ -70,9 +70,8 @@ const CustomMenuContent = () => {
 
     useEffect(() => {
         /* Get all products from 'Menu bankietowe' */
-        axios.get("https://brunchbox.skylo-test3.pl/product/get-banquet-products")
+        axios.get("https://brunchbox.pl/product/get-banquet-products")
             .then(res => {
-                console.log(res.data.result);
                 if(res.data) {
                     const result = res.data.result;
                     setProducts(result);
@@ -94,8 +93,6 @@ const CustomMenuContent = () => {
 
     const addToCart = (id) => {
         if((snacksChoosen % 50 === 0)&&(snacksChoosen !== 0)) {
-           console.log(products);
-           console.log(productInfo);
            const cartInfo = productInfo.map((item, index) => {
                return {
                    uuid: uuidv4(),
@@ -140,9 +137,7 @@ const CustomMenuContent = () => {
         const numberOf25Selected = productInfo.filter(item => {
             return item.selected25;
         }).length;
-        console.log("NUMBER: " + numberOf25Selected);
         if(numberOf25Selected % 2 === 0) {
-            console.log("hello!!!");
             setProductInfo(productInfo.map((item, index) => {
                 return {
                     selected25: item.selected25,

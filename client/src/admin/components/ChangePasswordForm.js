@@ -30,7 +30,7 @@ const ChangePasswordForm = () => {
                oldPassword: values.oldPassword,
                newPassword: values.newPassword1
            }
-           changePassword(newValues)
+           changePassword(newValues, localStorage.getItem('sec-sessionKey'))
                .then(res => {
                    const result = res.data.result;
                     if(result === 1) {

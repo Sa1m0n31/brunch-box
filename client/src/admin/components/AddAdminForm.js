@@ -30,7 +30,7 @@ const AddAdminForm = () => {
         },
         validationSchema,
         onSubmit: values => {
-            addAdmin(values)
+            addAdmin(values, localStorage.getItem('sec-sessionKey'))
                 .then(res => {
                     const result = res.data.result;
                     if(result === 1) {

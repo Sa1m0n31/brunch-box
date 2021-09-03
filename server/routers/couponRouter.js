@@ -10,8 +10,7 @@ con.connect(err => {
         const values = [code, from, to, percent, amount, timesToUse];
         const query = 'INSERT INTO coupons VALUES (NULL, ?, STR_TO_DATE(?, "%Y-%m-%d") + INTERVAL 1 DAY, STR_TO_DATE(?, "%Y-%m-%d") + INTERVAL 1 DAY, ?, ?, ?)';
         con.query(query, values, (err, res) => {
-            console.log(err);
-           if(res) {
+            if(res) {
                response.send({
                    result: 1
                });

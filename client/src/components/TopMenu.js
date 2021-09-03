@@ -102,8 +102,8 @@ const TopMenu = () => {
                     Telefon:
                 </h5>
                 <h5 className="footer__header">
-                    <a className="footer__header__link" href="tel:+48575868872">
-                        575 868 872
+                    <a className="footer__header__link" href="tel:+48696696995">
+                        696 696 995
                     </a>
                 </h5>
             </section>
@@ -170,7 +170,7 @@ const TopMenu = () => {
                 <a className="topMenu__languages__btn" href={settings.API_URL}>
                     <img className="topMenu__languages__img" src={poland} alt="polski" />
                 </a>
-                <a className="topMenu__languages__btn" href="http://en.brunchbox.skylo-test3.pl">
+                <a className="topMenu__languages__btn" href="http://en.brunchbox.pl">
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
                 </a>
             </div>
@@ -195,10 +195,7 @@ const TopMenu = () => {
             <img className="mobileMenu__logo" src={logoImg} alt="brunch-box-logo" ref={mobileMenuLogo} />
 
             <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
-                {/*<a className="topMenu__languages__btn" href={settings.API_URL}>*/}
-                {/*    <img className="topMenu__languages__img" src={poland} alt="polski" />*/}
-                {/*</a>*/}
-                <a className="topMenu__languages__btn" href="http://en.brunchbox.skylo-test3.pl">
+                <a className="topMenu__languages__btn" href="http://en.brunchbox.pl">
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
                 </a>
             </div>

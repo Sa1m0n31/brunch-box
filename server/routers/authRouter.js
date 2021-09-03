@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const con = require("../databaseConnection");
+const got = require("got");
 
 con.connect(function(err) {
    const addSessionRow = () => {
@@ -10,7 +11,10 @@ con.connect(function(err) {
        const sessionKey = uuidv4();
        const values = [sessionKey];
        const query = 'INSERT INTO sessions VALUES (NULL, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 30 MINUTE))';
-       con.query(query, values);
+       con.query(query, values, (err, res) => {
+           console.log(err);
+           console.log("INSERT ROW INTO sessions");
+       });
        return sessionKey;
    }
 
@@ -22,19 +26,18 @@ con.connect(function(err) {
 
     /* ADD USER */
     router.post("/add-user", (request, response) => {
-       const { firstName, lastName, email, phoneNumber } = request.body;
+       const { sessionKey, firstName, lastName, email, phoneNumber } = request.body;
        const randomUser = uuidv4();
 
-       const values = [firstName, lastName, email, randomUser, phoneNumber];
-       const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, "abc", NULL, NULL, NULL, NULL, NULL, ?)'
-       con.query(query, values, (err, res) => {
-          let result = 0;
-          console.log(err);
-          if(res) result = res.insertId;
-          response.send({
-              result
-          });
-       });
+        const values = [firstName, lastName, email, randomUser, phoneNumber];
+        const query = 'INSERT INTO users VALUES (NULL, ?, ?, ?, ?, "abc", NULL, NULL, NULL, NULL, NULL, ?)'
+        con.query(query, values, (err, res) => {
+            let result = 0;
+            if(res) result = res.insertId;
+            response.send({
+                result
+            });
+        });
     });
 
    /* REGISTER USER */
@@ -69,9 +72,8 @@ con.connect(function(err) {
 
    /* REGISTER ADMIN */
    router.post("/register-admin", (request, response) => {
-       const username = request.body.username;
-       const email = request.body.email;
-       const password = request.body.password;
+       const { username, email, password, sessionKey } = request.body;
+
        const hash = crypto.createHash('md5').update(password).digest('hex');
 
        const values = [username, hash, email];
@@ -161,10 +163,13 @@ con.connect(function(err) {
     router.post("/auth", (request, response) => {
         const sessionKey = request.body.sessionKey;
 
+        console.log("Hello from AUTH");
+
         const values = [sessionKey];
         const query = 'SELECT id, expire_date FROM sessions WHERE session_key = ? ORDER BY id DESC LIMIT 1';
 
         con.query(query, values, (err, res) => {
+            console.log(err);
             let result;
             if((err)||(!res.length)) result = 0;
             else {

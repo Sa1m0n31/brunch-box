@@ -32,7 +32,6 @@ const PanelCouponsContent = () => {
         if(param) {
             getCouponDetails(param)
                 .then(res => {
-                    console.log(res.data.result);
                     const result = res.data.result[0];
                     if(result) {
                         setId(param);

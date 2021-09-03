@@ -11,7 +11,6 @@ const BlogContent = () => {
     useEffect(() => {
         getAllPosts()
             .then(res => {
-                console.log(res.data.result);
                 setPosts(res.data.result);
             });
     }, []);

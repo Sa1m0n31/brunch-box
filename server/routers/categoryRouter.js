@@ -32,8 +32,6 @@ con.connect(err => {
                 const values = ["categories/" + filename];
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    console.log(err);
-                    console.log("images error end");
                     fileId = res.insertId;
                     addCategory();
                 });
@@ -47,7 +45,7 @@ con.connect(err => {
             if(parentId === "0") parentId = null;
 
             if(name === "") {
-                response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=0");
+                response.redirect("https://brunchbox.pl/panel/kategorie?added=0");
                 return 0;
             }
 
@@ -58,9 +56,8 @@ con.connect(err => {
                 const query = 'INSERT INTO categories VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
                 con.query(query, values, (err, res) => {
-                    console.log(err);
-                    if(!err) response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=1");
-                    else response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
+                    if(!err) response.redirect("https://brunchbox.pl/panel/kategorie?added=1");
+                    else response.redirect("https://brunchbox.pl/panel/kategorie?added=-1")
                 });
             });
         }
@@ -158,8 +155,6 @@ con.connect(err => {
                 const values = ["categories/" + filename];
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    console.log(err);
-                    console.log("images error end");
                     fileId = res.insertId;
                     updateCategory();
                 });
@@ -173,18 +168,17 @@ con.connect(err => {
             parentId = parseInt(parentId);
             if(!parentId) parentId = null;
             if(filename) {
-                const values = [filename];
+                const values = ["categories/" + filename];
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
                     const values = [name, parentId, res.insertId, header, subheader, hidden, nameEn, headerEn, subheaderEn, id];
                     const query = 'UPDATE categories SET name = ?, parent_id = ?, image_id = ?, header = ?, subheader = ?, hidden = ?, name_en = ?, header_en = ?, subheader_en = ? WHERE id = ?';
 
                     con.query(query, values, (err, res) => {
-                        console.log(err);
                         let result = 0;
                         if(res) result = 1;
-                        if(!err) response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=2");
-                        else response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
+                        if(!err) response.redirect("https://brunchbox.pl/panel/kategorie?added=2");
+                        else response.redirect("https://brunchbox.pl/panel/kategorie?added=-1")
                     });
                 });
             }
@@ -195,8 +189,8 @@ con.connect(err => {
                 con.query(query, values, (err, res) => {
                     let result = 0;
                     if(res) result = 1;
-                    if(!err) response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=2");
-                    else response.redirect("https://brunchbox.skylo-test3.pl/panel/kategorie?added=-1")
+                    if(!err) response.redirect("https://brunchbox.pl/panel/kategorie?added=2");
+                    else response.redirect("https://brunchbox.pl/panel/kategorie?added=-1")
                 });
             }
         }

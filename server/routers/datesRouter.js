@@ -46,11 +46,9 @@ con.connect(err => {
        const { hours, day } = request.body;
 
        const values = [`${day.year}-${day.month}-${day.day}`];
-       console.log(values[0]);
        const query = 'INSERT INTO dates_excluded VALUES (NULL, STR_TO_DATE(?, "%Y-%m-%d"))';
        con.query(query, values, (err, res) => {
-           console.log("FIRST ERROR: " + err);
-          if(res) {
+           if(res) {
               const insertedId = res.insertId;
               hours.forEach((item, index, array) => {
                  const values = [insertedId, item];

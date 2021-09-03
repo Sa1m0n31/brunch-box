@@ -81,7 +81,6 @@ const AddProductContent = () => {
                 /* Add allergens */
                 addAllergens(parseInt(localStorage.getItem('sec-product-id')), JSON.parse(localStorage.getItem('sec-allergens-to-add')))
                     .then(res => {
-                        console.log(res.data.result);
                         localStorage.removeItem('sec-product-id');
                         localStorage.removeItem('sec-allergens-to-add');
                     });
@@ -108,7 +107,6 @@ const AddProductContent = () => {
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
                     setInitialAllergens(res.data.result);
-                    console.log(res.data.result);
                 });
         }
         else {
@@ -194,7 +192,7 @@ const AddProductContent = () => {
         {addMsg === "" ? <form className="addProduct__form addProduct__form--addProduct"
                                encType="multipart/form-data"
                                onSubmit={(e) => { handleSubmit(e) }}
-                               action={update ? "https://brunchbox.skylo-test3.pl/product/update-product" : "https://brunchbox.skylo-test3.pl/product/add-product"}
+                               action={update ? "https://brunchbox.pl/product/update-product" : "https://brunchbox.pl/product/add-product"}
                                method="POST"
         >
             <section className="addProduct__form__section">

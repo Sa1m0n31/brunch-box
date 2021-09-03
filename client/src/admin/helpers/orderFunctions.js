@@ -3,12 +3,12 @@ import settings from "./settings";
 
 const { API_URL } = settings;
 
-const getAllOrders = () => {
-    return axios.get(`${API_URL}/order/get-orders`);
+const getAllOrders = (sessionKey) => {
+    return axios.get(`${API_URL}/order/get-orders?key=${sessionKey}`);
 }
 
-const getOrderDetails = (id) => {
-    return axios.post(`${API_URL}/order/get-order`, { id });
+const getOrderDetails = (id, sessionKey) => {
+    return axios.post(`${API_URL}/order/get-order`, { id, sessionKey });
 }
 
 const calculateCartSum = (cart) => {
@@ -21,12 +21,12 @@ const calculateCartSum = (cart) => {
     return sum;
 }
 
-const deleteOrderById = (id) => {
-    return axios.post(`${API_URL}/order/delete`, { id });
+const deleteOrderById = (id, sessionKey) => {
+    return axios.post(`${API_URL}/order/delete`, { id, sessionKey });
 }
 
-const getRibbons = (id) => {
-    return axios.post(`${API_URL}/order/get-ribbons`, { id });
+const getRibbons = (id, sessionKey) => {
+    return axios.post(`${API_URL}/order/get-ribbons`, { id, sessionKey });
 }
 
 export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById, getRibbons };
