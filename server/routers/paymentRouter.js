@@ -169,7 +169,7 @@ con.connect(err => {
                                             let transporter = nodemailer.createTransport(smtpTransport ({
                                                 auth: {
                                                     user: 'powiadomienia@skylo-pl.atthost24.pl',
-                                                    pass: 'BrunchboxSkylo@123'
+                                                    pass: '***** ***'
                                                 },
                                                 host: 'skylo-pl.atthost24.pl',
                                                 secureConnection: true,
