@@ -86,7 +86,7 @@ con.connect(err => {
                 json: postData,
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0' // test: MTM4MzU0OjU0Nzg2ZGJiOWZmYTY2MzgwOGZmNGExNWRiMzI3MTNm
+                    'Authorization': 'Basic BASE64'
                 }
             })
                 .then(res => {
@@ -135,7 +135,7 @@ con.connect(err => {
                 },
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0'
+                    'Authorization': 'Basic BASE 64'
                 }
             })
                 .then(res => {
@@ -167,7 +167,7 @@ con.connect(err => {
                                             let transporter = nodemailer.createTransport(smtpTransport ({
                                                 auth: {
                                                     user: 'powiadomienia@skylo-pl.atthost24.pl',
-                                                    pass: '***** ***'
+                                                    pass: '**** ***'
                                                 },
                                                 host: 'skylo-pl.atthost24.pl',
                                                 secureConnection: true,

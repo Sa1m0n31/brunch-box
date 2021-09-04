@@ -104,8 +104,14 @@ app.get("/panel/*", (req, res) => {
 });
 
 /* EN */
-app.get("/boxes", (req, res) => {
+app.get("/en", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/en/*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../en/client/build/index.html'));
+});
+app.get("/boxes", (req, res) => {
+    res.sendFile(path.join(__dirname, '../en/client/build/index.html'));
 });
 app.get("/blog", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
