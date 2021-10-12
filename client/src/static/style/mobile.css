@@ -995,6 +995,10 @@
     .cart__summary--shippingAndPayment {
         padding: 0;
     }
+
+    .calendarMonth {
+        font-size: 9px;
+    }
 }
 
 @media(max-width: 576px) {
@@ -1025,8 +1029,8 @@
     }
 
     .landing {
-        background: url("../img/landingMobile.png");
-        background-size: cover;
+        /*background: url("../img/landingMobile.png");*/
+        /*background-size: cover;*/
     }
 
     .button--landing__link {

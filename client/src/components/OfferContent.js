@@ -11,8 +11,6 @@ import Loader from "react-loader-spinner";
 import HomePageSection from "./HomePageSection";
 
 const OfferContent = ({type}) => {
-    const [title, setTitle] = useState("");
-    const [deliveryTime, setDeliveryTime] = useState("");
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState("");
     const [header, setHeader] = useState("");
@@ -33,9 +31,15 @@ const OfferContent = ({type}) => {
                }
             });
 
+        const sortByPriority = (a, b) => {
+            if(a.priority < b.priority) return 1;
+            else return -1;
+        }
+
         getAllProducts()
             .then(res => {
-                setProducts(res.data.result);
+                console.log(res.data.result);
+                setProducts(res.data.result?.sort(sortByPriority));
                 setLoaded(true);
             });
 
@@ -49,6 +53,10 @@ const OfferContent = ({type}) => {
         </h1> : <h1 className="offerContent__header">
             Nasza oferta
         </h1>}
+
+        <h1 className="offerContent__header">
+            Wybierz idealny zestaw dla siebie
+        </h1>
 
         {loaded ? <section className="offerContent__grid">
             {products.map((item, index) => {

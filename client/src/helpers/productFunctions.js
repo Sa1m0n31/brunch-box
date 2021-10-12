@@ -27,4 +27,8 @@ const getImageById = (id) => {
     return axios.post(`${API_URL}/product/get-image`, { id });
 }
 
-export { getAllProducts, getSingleProduct, getProductByName, getProductAllergens, getImageById, getProductById };
+const getProductGallery = (id) => {
+    return axios.post(`${API_URL}/product/get-gallery`, { id });
+}
+
+export { getAllProducts, getSingleProduct, getProductByName, getProductAllergens, getImageById, getProductById, getProductGallery };

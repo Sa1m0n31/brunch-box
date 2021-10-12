@@ -23,6 +23,8 @@ import soja from '../static/img/allergens/soja.png'
 
 import JoditEditor from 'jodit-react';
 import ReactTooltip from "react-tooltip";
+import {getProductGallery} from "../../helpers/productFunctions";
+import settings from "../helpers/settings";
 
 const AddProductContent = () => {
     const editorR = useRef(null);
@@ -42,6 +44,8 @@ const AddProductContent = () => {
     const [categories, setCategories] = useState([]);
     const [allergies, setAllergies] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [hidden, setHidden] = useState(false);
+    const [gallery, setGallery] = useState([0, 0, 0, 0]);
+    const [priority, setPriority] = useState(0);
 
     /* Prices */
     const [priceMMeat, setPriceMMeat] = useState("");
@@ -90,7 +94,6 @@ const AddProductContent = () => {
             }
         }
 
-        /* Get all categories */
         getAllCategories()
             .then(res => {
                 setCategories(res.data.result);
@@ -107,6 +110,12 @@ const AddProductContent = () => {
                     await setProduct(res.data.result[0]);
                     await setInitialValues(res.data.result[0]);
                     setInitialAllergens(res.data.result);
+                });
+
+            getProductGallery(param)
+                .then(res => {
+                    console.log(res.data.result);
+                    setGallery(res.data?.result);
                 });
         }
         else {
@@ -148,6 +157,7 @@ const AddProductContent = () => {
 
         setCategoryId(productData.category_id);
         setHidden(productData.hidden);
+        setPriority(productData.priority);
 
         setShortDescription(productData.short_description);
         setLongDescription(productData.long_description);
@@ -224,7 +234,7 @@ const AddProductContent = () => {
                                step={0.01}
                                value={priceMMeat}
                                onChange={(e) => { setPriceMMeat(e.target.value) }}
-                               placeholder="Cena dla rozmiaru M - opcja mięsna (domyślna)" />
+                               placeholder="Cena dla rozmiaru M - opcja Mieszana (domyślna)" />
                     </label>
                     <label className={sizeL && optionMeat ? "addProduct__label" : "addProduct__input--invisible"}>
                         <input className={sizeL && optionMeat ? "addProduct__input" : "addProduct__input--invisible"}
@@ -233,7 +243,7 @@ const AddProductContent = () => {
                                step={0.01}
                                value={priceLMeat}
                                onChange={(e) => { setPriceLMeat(e.target.value) }}
-                               placeholder="Cena dla rozmiaru L - opcja mięsna (domyślna)" />
+                               placeholder="Cena dla rozmiaru L - opcja Mieszana (domyślna)" />
                     </label>
 
                     <label className={sizeM && optionWege ? "addProduct__label" : "addProduct__input--invisible"}>
@@ -313,16 +323,22 @@ const AddProductContent = () => {
 
 
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja mięsna M)" : ""}</span>
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana M)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="mainImage" />
+                    {gallery.length && gallery[0] ? <section className="miniature">
+                        <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[0]}`} alt="zdjecie-produktu" />
+                    </section> : ""}
                 </label>
                 <label className="fileInputLabel">
-                    <span>Galeria - 1 {categoryId === 1 ? "(opcja mięsna L)" : ""}</span>
+                    <span>Galeria - 1 {categoryId === 1 ? "(opcja Mieszana L)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery1" />
+                    {gallery.length && gallery[1] ? <section className="miniature">
+                        <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[1]}`} alt="zdjecie-produktu" />
+                    </section> : ""}
                 </label>
 
                 <label className="fileInputLabel">
@@ -330,6 +346,9 @@ const AddProductContent = () => {
                     <input type="file"
                            className="product__fileInput"
                            name="gallery2" />
+                    {gallery.length && gallery[2] ? <section className="miniature">
+                        <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[2]}`} alt="zdjecie-produktu" />
+                    </section> : ""}
                 </label>
 
                 <label className="fileInputLabel">
@@ -337,6 +356,9 @@ const AddProductContent = () => {
                     <input type="file"
                            className="product__fileInput"
                            name="gallery3" />
+                    {gallery.length && gallery[3] ? <section className="miniature">
+                        <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[3]}`} alt="zdjecie-produktu" />
+                    </section> : ""}
                 </label>
             </section>
 
@@ -347,10 +369,10 @@ const AddProductContent = () => {
                         Dostępne opcje
                     </h4>
                     <label className="panelContent__filters__btnWrapper">
-                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); }}>
+                        <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setOptionMeat(!optionMeat); }}>
                             <span className={optionMeat ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>
-                        Mięsna (domyślna)
+                        Mieszana (domyślna)
                     </label>
                     <label>
                         <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setOptionWege(!optionWege) }}>
@@ -418,7 +440,7 @@ const AddProductContent = () => {
 
                 {categoryId !== 3 ? <>
                     <label className="jodit--label">
-                        <span>Składniki produktu w wersji mięsnej (domyślne)</span>
+                        <span>Składniki produktu w wersji mieszanej (domyślne)</span>
                         <JoditEditor
                             name="meatDescription"
                             value={meatDescription}
@@ -445,6 +467,16 @@ const AddProductContent = () => {
                         <span className={hidden ? "panelContent__filters__btn--active" : "d-none"} />
                     </button>
                     Ukryj produkt
+                </label>
+
+                <label className="label--priority">
+                    Priorytet wyświetlania
+                    <input className="input input--priority"
+                           name="priority"
+                           type="number"
+                           value={priority}
+                           onChange={(e) => { setPriority(e.target.value); }}
+                           placeholder="Priorytet wyświetlania" />
                 </label>
 
                 <input className="invisibleInput"

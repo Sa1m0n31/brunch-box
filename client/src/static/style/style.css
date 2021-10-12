@@ -522,7 +522,7 @@ ol {
 
 .offerContent__header {
     text-align: center;
-    margin: 20px 0;
+    margin: 20px 0 150px;
     font-family: 'Courgette', cursive;
     font-size: 36px;
 }
@@ -688,12 +688,7 @@ ol {
 .singleProduct__img {
     height: 100%;
     cursor: pointer;
-    filter: brightness(0.7);
     transition: .3s all ease-in-out;
-}
-
-.singleProduct__img:hover {
-    filter: brightness(1);
 }
 
 .singleProduct__images .singleProduct__img {
@@ -1684,42 +1679,6 @@ ol {
     margin: 50px 0 80px;
 }
 
-/* Windows scaling */
-@media (-webkit-device-pixel-ratio: 1.25) {
-    * {
-        zoom: .98;
-    }
-
-    @media(min-width: 1200px) {
-        /* Landing */
-        .landing {
-            height: 100vh;
-        }
-
-        .landing__logo {
-            width: 350px !important;
-        }
-
-        .landing__header {
-            font-size: 36px !important;
-            margin: 40px 0 !important;
-        }
-
-        .landing .button--landing {
-            width: 360px !important;
-            height: 65px !important;
-        }
-
-        .landing .button--landing__link {
-            font-size: 18px !important;
-        }
-
-        .landing__content {
-            right: 15%;
-        }
-    }
-}
-
 /* Banquet section */
 .section--banquet {
     margin: 20px 0;
@@ -2006,4 +1965,73 @@ ol {
     line-height: 42px;
     font-weight: 400;
     vertical-align: middle;
+}
+
+/* SCALING */
+* {
+    zoom: .98;
+}
+
+@media(min-width: 1200px) {
+    /* Landing */
+    .landing {
+        height: 100vh;
+    }
+
+    .landing__logo {
+        width: 350px !important;
+    }
+
+    .landing__header {
+        font-size: 36px !important;
+        margin: 40px 0 !important;
+    }
+
+    .landing .button--landing {
+        width: 360px !important;
+        height: 65px !important;
+    }
+
+    .landing .button--landing__link {
+        font-size: 18px !important;
+    }
+
+    .landing__content {
+        right: 15%;
+    }
+}
+
+@media(-webkit-max-device-pixel-ratio: 1.05) {
+    * {
+        zoom: 1;
+    }
+
+    @media(min-width: 1200px) {
+        /* Landing */
+        .landing {
+            height: calc(100vh - 120px);
+        }
+
+        .landing__logo {
+            width: 380px !important;
+        }
+
+        .landing__header {
+            font-size: 52px !important;
+            margin: 40px 0 !important;
+        }
+
+        .landing .button--landing {
+            width: 400px !important;
+            height: 65px !important;
+        }
+
+        .landing .button--landing__link {
+            font-size: 18px !important;
+        }
+
+        .landing__content {
+            right: 10%;
+        }
+    }
 }

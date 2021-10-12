@@ -156,7 +156,7 @@ con.connect(err => {
        const { id } = request.body;
 
        const values = [id];
-       const query = 'SELECT * FROM about_us WHERE id = ?';
+       const query = 'SELECT a.id, a.header, a.header_en, a.content, a.content_en, i.file_path FROM about_us a JOIN images i ON a.image = i.id WHERE a.id = ?';
        con.query(query, values, (err, res) => {
           if(res) {
               response.send({

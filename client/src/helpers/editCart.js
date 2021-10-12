@@ -70,11 +70,11 @@ const deleteFromCart = ({ uuid, id, size, option, banquet }) => {
 const calculatePrice = (size, option, quantity, prices) => {
     let price;
     if(size === "M") {
-        if(option === "Mięsna") price = prices.mMeat;
+        if(option === "Mieszana") price = prices.mMeat;
         else price = prices.mVege;
     }
     else {
-        if(option === "Mięsna") price = prices.lMeat;
+        if(option === "Mieszana") price = prices.lMeat;
         else price = prices.lVege;
     }
 

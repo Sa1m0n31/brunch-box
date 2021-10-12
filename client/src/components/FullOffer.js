@@ -19,10 +19,11 @@ const FullOffer = () => {
         /* Check number of categories available */
         getAllCategories()
             .then(res => {
+                console.log(res);
                 if(res.data) {
                     const cats = res.data.result;
                     setCategories(res.data.result);
-                    const availableCats = cats.filter(item => {
+                    const availableCats = cats?.filter(item => {
                         return !item.hidden;
                     });
                     if(availableCats.length > 1) {
@@ -36,20 +37,23 @@ const FullOffer = () => {
                 }
             });
 
+        const sortByPriority = (a, b) => {
+            if(a.priority < b.priority) return 1;
+            else return -1;
+        }
+
         getAllProducts()
             .then(res => {
-                setProducts(res.data.result);
+                console.log(res.data.result);
+                setProducts(res.data.result.sort(sortByPriority));
                 setLoaded(true);
             });
     }, []);
 
     return <main className="offerContent">
-        {/*{category ? <h1 className="offerContent__header">*/}
-        {/*    {header}*/}
-        {/*    <span className="thin marginLeft15">({subheader})</span>*/}
-        {/*</h1> : <h1 className="offerContent__header">*/}
-        {/*    Nasza oferta*/}
-        {/*</h1>}*/}
+        <h1 className="offerContent__header">
+            Wybierz idealny zestaw dla siebie
+        </h1>
 
         {productsMode !== 0 ? (loaded ? <section className="offerContent__grid">
                 {products.map((item, index) => {
@@ -75,7 +79,7 @@ const FullOffer = () => {
                                 </h3>
                                 <section className="offerContent__imgWrapper">
                                     <img className="offerContent__item__img"
-                                         src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt"/>
+                                         src={/*settings.API_URL + */"https://brunchbox.pl/image?url=/media/" + item.image} alt="produkt"/>
                                 </section>
                             </div>
                             <button className="offerContent__item__btn">

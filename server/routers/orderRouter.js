@@ -15,7 +15,7 @@ con.connect(err => {
 
    /* GET ALL ORDERS */
    router.get("/get-orders", (request, response) => {
-       const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, o2.payment_status, o2.order_status, o2.date ' +
+       const query = 'SELECT o1.id as id, u.first_name, u.last_name, u.email, pm.name, o2.payment_status, o2.order_status, DATE_ADD(o2.date, INTERVAL 2 HOUR) as date, ' +
            'FROM (SELECT o.id, SUM(s.quantity * p.price_m_meat) price FROM orders o ' +
            'JOIN sells s ON o.id = s.order_id ' +
            'JOIN products p ON p.id = s.product_id GROUP BY o.id) o1 ' +
@@ -68,10 +68,10 @@ con.connect(err => {
 
    /* ADD ORDER */
    router.post("/add", (request, response) => {
-       let { paymentMethod, shippingMethod, city, street, building, postalCode, sessionId, user, comment, delivery } = request.body;
+       let { paymentMethod, shippingMethod, city, street, building, postalCode, sessionId, user, comment, delivery, companyName, nip } = request.body;
        building = parseInt(building) || 0;
-       const values = [paymentMethod, shippingMethod, city, street, building, postalCode, user, comment, delivery, sessionId];
-       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, NULL, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?)';
+       const values = [paymentMethod, shippingMethod, city, street, building, postalCode, user, comment, delivery, sessionId, companyName, nip];
+       const query = 'INSERT INTO orders VALUES (NULL, ?, ?, ?, ?, ?, NULL, ?, ?, "nieopłacone", "przyjęte do realizacji", CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)';
 
        let deliveryAddress;
 
@@ -139,11 +139,11 @@ con.connect(err => {
 
     /* GET ORDER DETAILS */
     router.post("/get-order", (request, response) => {
-       const { id, sessionKey } = request.body;
+       const { id } = request.body;
 
         const values = [id];
         const query = 'SELECT o.id, o.order_comment, o.delivery, o.payment_method, o.shipping_method, o.city, o.street, o.building, o.postal_code, ' +
-            'o.payment_status, o.date, p.name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, s.quantity, s.option, s.size, ' +
+            'o.payment_status, DATE_ADD(o.date, INTERVAL 2 HOUR) as date, o.company_name, o.nip, p.name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, s.quantity, s.option, s.size, ' +
             'u.first_name, u.last_name, u.phone_number, u.email FROM sells s JOIN orders o ON o.id = s.order_id JOIN products p ' +
             'ON s.product_id = p.id JOIN users u ON u.id = o.user WHERE order_id = ?';
         con.query(query, values, (err, res) => {

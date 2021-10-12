@@ -186,6 +186,22 @@ const OrderDetailsContent = () => {
                             <img className="panelContent__orderStatus__img" src={cart[0].payment_status?.toLowerCase() === "opłacone" ? tick : x} alt="oplacone" />
                         </h2>
                     </section>
+
+                    <section className="panelContent__orderStatus">
+                        <h2 className="panelContent__orderStatus__header">
+                            Faktura:
+                            <img className="panelContent__orderStatus__img" src={cart[0].company_name ? tick : x} alt="faktura-vat" />
+                        </h2>
+
+                        {cart[0].company_name ? <section className="panelContent__vatData">
+                            <h3 className="panelContent__vatData__header">
+                                Nazwa firmy: <b>{cart[0].company_name}</b>
+                            </h3>
+                            <h3 className="panelContent__vatData__header">
+                                NIP: <b>{cart[0].nip}</b>
+                            </h3>
+                        </section> : ""}
+                    </section>
                 </section>
 
                 <section className="panelContent__shipping">

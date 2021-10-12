@@ -83,8 +83,11 @@ con.connect(err => {
 
     /* GET ALL CATEGORIES */
     router.get("/get-all", (request, response) => {
+        console.log("/get-all");
         con.query('SELECT c1.id as id, c1.name as name, c1.header as header, c1.subheader as subheader, c2.name as parent_name, i.file_path as img_path, c1.hidden as hidden, c1.name_en, c1.header_en, c1.subheader_en FROM categories c2 RIGHT OUTER JOIN categories c1 ON c1.parent_id = c2.id LEFT OUTER JOIN images i ON c1.image_id = i.id', (err, res) => {
-           response.send({
+           console.log(err);
+           console.log(res);
+            response.send({
                result: res
            });
         });

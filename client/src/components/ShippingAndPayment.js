@@ -51,6 +51,8 @@ const ShippingAndPayment = () => {
     const [deliveryPriceSettled, setDeliveryPriceSettled] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
+    const [vat, setVat] = useState(false);
+
     const fillRibbonsArray = () => {
         let arr = [];
         cart?.forEach((item, index, array) => {
@@ -355,7 +357,10 @@ const ShippingAndPayment = () => {
             flat: null,
             ribbonFrom: "",
             ribbonTo: "",
-            comment: ""
+            comment: "",
+            vat: "",
+            companyName: "",
+            nip: ""
         },
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
@@ -425,8 +430,6 @@ const ShippingAndPayment = () => {
             const sessionId = uuidv4();
             setFormValidate(false);
 
-            console.log("Start...");
-
             /* Add user */
             axios.post("https://brunchbox.pl/auth/add-user", {
                 firstName: formik.values.firstName,
@@ -449,6 +452,8 @@ const ShippingAndPayment = () => {
                         user: insertedUserId,
                         comment: formik.values.comment,
                         sessionId,
+                        companyName: vat ? formik.values.companyName : null,
+                        nip: vat ? formik.values.nip : null,
                         delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + hourOfDelivery + ":00 - " + (hourOfDelivery+1) + ":00"
                     })
                         .then(res => {
@@ -697,6 +702,10 @@ const ShippingAndPayment = () => {
                 </h2>
 
                 <div className="shippingAndPayment__form">
+                    <input className="invisibleInput"
+                           name="vat"
+                           value={vat ? "vat" : ""} />
+
                     <label className="shippingAndPayment__label label-100">
                         <input className={formik.errors.firstName ? "shippingAndPayment__input shippingAndPayment--error" : "shippingAndPayment__input"}
                                name="firstName"
@@ -844,6 +853,32 @@ const ShippingAndPayment = () => {
                                        value={formik.values.ribbonTo}
                                        onChange={formik.handleChange}
                                        placeholder="Dla kogo" />
+                            </label>
+                        </section>
+
+                        <label className="ribbonBtnLabel">
+                            <button type="button" className="ribbonBtn" onClick={(e) => { setVat(!vat); }}>
+                                <span className={vat ? "ribbon" : "d-none"}></span>
+                            </button>
+                            Chcę otrzymać fakturę
+                        </label>
+
+                        <section className={vat ? "ribbonDedication" : "o-none"}>
+                            <label className="ribbonLabel">
+                                <input className="shippingAndPayment__input"
+                                       name="companyName"
+                                       type="text"
+                                       value={formik.values.companyName}
+                                       onChange={formik.handleChange}
+                                       placeholder="Nazwa firmy" />
+                            </label>
+                            <label className="ribbonLabel">
+                                <input className="shippingAndPayment__input"
+                                       name="nip"
+                                       type="text"
+                                       value={formik.values.nip}
+                                       onChange={formik.handleChange}
+                                       placeholder="NIP" />
                             </label>
                         </section>
                     </section>

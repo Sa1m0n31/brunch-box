@@ -26,6 +26,7 @@ const PanelAboutUsContent = () => {
     const [addedMsg, setAddedMsg] = useState("");
     const [update, setUpdate] = useState(false);
     const [id, setId] = useState(0);
+    const [image, setImage] = useState("");
 
     const location = useLocation();
 
@@ -39,6 +40,7 @@ const PanelAboutUsContent = () => {
                     if(result) {
                         setId(param);
                         setUpdate(true);
+                        setImage(result.file_path);
                         setHeader(result.header);
                         setHeaderEn(result.header_en);
                         setContent(result.content);
@@ -184,6 +186,10 @@ const PanelAboutUsContent = () => {
                         Zdjęcie sekcji
                         <input type="file"
                                name="aboutUsImage" />
+
+                        {image.length ? <section className="miniature marginTop20">
+                            <img className="miniature__img" src={`https:/brunchbox.pl/image?url=/media/${image}`} alt="zdjecie-produktu" />
+                        </section> : ""}
                     </label>
 
                     <button className="addProduct__btn" type="submit">

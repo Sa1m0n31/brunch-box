@@ -914,7 +914,7 @@ input[type=file] {
 }
 
 .product__fileInput {
-    margin-bottom: 50px !important;
+    margin-bottom: 20px !important;
 }
 
 .text-center {
@@ -1122,4 +1122,38 @@ label {
 
 .orderComment {
     border: 2px solid red;
+}
+
+/* Update - 11.10.21 */
+.miniature {
+    margin-bottom: 40px;
+}
+
+.miniature__img {
+    width: 150px;
+    height: auto;
+}
+
+.input--priority {
+    width: 100%;
+    height: 40px;
+}
+
+.label--priority {
+    text-align: center;
+    font-size: 13px;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.panelContent__vatData {
+    margin-top: 20px;
+}
+
+.panelContent__vatData__header {
+    font-weight: 400;
+    font-size: 15px;
 }

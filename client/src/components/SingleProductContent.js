@@ -16,15 +16,10 @@ import {allergensImg, allergensList} from "../helpers/allergens";
 import ReactTooltip from 'react-tooltip'
 import Loader from "react-loader-spinner";
 
-import bb1 from '../static/img/brunchbox-1.png';
-import bb2 from '../static/img/brunchbox-2.png';
-import bb3 from '../static/img/brunchbox-3.png';
-import bb4 from '../static/img/brunchbox-4.png';
-
 const SingleProductContent = () => {
-    const [size, setSize] = useState("M");
+    const [size, setSize] = useState("L");
     const [product, setProduct] = useState({});
-    const [option, setOption] = useState("Mięsna");
+    const [option, setOption] = useState("Mieszana");
     const [photoIndex, setPhotoIndex] = useState(0);
     const [galleryOpen, setGalleryOpen] = useState(false);
     const [price, setPrice] = useState(0);
@@ -74,23 +69,27 @@ const SingleProductContent = () => {
             id = location.state.id;
             getSingleProduct(id)
                 .then(res => {
-                    setProduct(res.data.result[0]);
-                    setMainImage(res.data.result[0].file_path);
-                    setPrice(res.data.result[0].price_m_meat);
-                    setCurrentDesc(res.data.result[0].meat_description);
-                    /* Get gallery */
-                    getImageById(res.data.result[0].gallery_1)
-                        .then(res => {
-                            setGallery1(res.data.result.file_path);
-                        });
-                    getImageById(res.data.result[0].gallery_2)
-                        .then(res => {
-                            setGallery2(res.data.result.file_path);
-                        });
-                    getImageById(res.data.result[0].gallery_3)
-                        .then(res => {
-                            setGallery3(res.data.result.file_path);
-                        });
+                    console.log(res);
+                    if(res?.data?.result) {
+                        setProduct(res.data.result[0]);
+                        setOption(res.data.result[0].meat ? "Mieszana" : "Wegetariańska");
+                        setMainImage(res.data.result[0].file_path);
+                        setPrice(res.data.result[0].meat ? res.data.result[0].price_l_meat : res.data.result[0].price_l_vege);
+                        setCurrentDesc(res.data.result[0].meat_description);
+                        /* Get gallery */
+                        getImageById(res.data.result[0].gallery_1)
+                            .then(res => {
+                                setGallery1(res.data.result.file_path);
+                            });
+                        getImageById(res.data.result[0].gallery_2)
+                            .then(res => {
+                                setGallery2(res.data.result.file_path);
+                            });
+                        getImageById(res.data.result[0].gallery_3)
+                            .then(res => {
+                                setGallery3(res.data.result.file_path);
+                            });
+                    }
                     setLoaded(true);
                 });
             getProductAllergens(id)
@@ -108,8 +107,9 @@ const SingleProductContent = () => {
                     getSingleProduct(id)
                         .then(res => {
                             setProduct(res.data.result[0]);
+                            setOption(res.data.result[0].meat ? "Mieszana" : "Wegetariańska");
                             setMainImage(res.data.result[0].file_path);
-                            setPrice(res.data.result[0].price_m_meat);
+                            setPrice(res.data.result[0].meat ? res.data.result[0].price_l_meat : res.data.result[0].price_l_vege);
                             setCurrentDesc(res.data.result[0].meat_description);
                             /* Get gallery */
                             getImageById(res.data.result[0].gallery_1)
@@ -135,24 +135,24 @@ const SingleProductContent = () => {
     }, []);
 
     useEffect(() => {
-        if(option === "Mięsna") setCurrentDesc(product.meat_description);
+        if(option === "Mieszana") setCurrentDesc(product.meat_description);
         else setCurrentDesc(product.vege_description);
 
-        if((size === "M")&&(option === "Mięsna")) {
+        if((size === "M")&&(option === "Mieszana")) {
             setPrice(product.price_m_meat);
-            switchMainImage(0);
+            // switchMainImage(0);
         }
-        else if((size === "L")&&(option === "Mięsna")) {
+        else if((size === "L")&&(option === "Mieszana")) {
             setPrice(product.price_l_meat);
-            switchMainImage(1);
+            // switchMainImage(1);
         }
         else if((size === "M")&&(option === "Wegetariańska")) {
             setPrice(product.price_m_vege);
-            switchMainImage(2);
+            // switchMainImage(2);
         }
         else if((size === "L")&&(option === "Wegetariańska")) {
             setPrice(product.price_l_vege);
-            switchMainImage(3);
+            // switchMainImage(3);
         }
     }, [size, option]);
 
@@ -212,12 +212,6 @@ const SingleProductContent = () => {
 
     return <>
         <main className="singleProduct">
-
-        <img className="singleProduct--img singleProduct--img--1" src={bb1} alt="brunch-box" />
-        <img className="singleProduct--img singleProduct--img--2" src={bb2} alt="brunch-box" />
-        <img className="singleProduct--img singleProduct--img--3" src={bb3} alt="brunch-box" />
-        <img className="singleProduct--img singleProduct--img--4" src={bb4} alt="brunch-box" />
-
         <Modal
             isOpen={modal}
             portalClassName="smallModal"
@@ -252,12 +246,12 @@ const SingleProductContent = () => {
                         <img className="singleProduct__img" src={images[indexAtMain]} alt="produkt" />
                     </button>
 
-                    <section className="singleProduct__images">
-                        <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />
-                        <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />
-                        <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />
+                    {/*<section className="singleProduct__images">*/}
+                    {/*    <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />*/}
+                    {/*    <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />*/}
+                    {/*    <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />*/}
 
-                    </section>
+                    {/*</section>*/}
 
                 </section>
                 <section className="singleProduct__right">
@@ -306,15 +300,15 @@ const SingleProductContent = () => {
                             </button>
                         </div>
                     </div> : ""}
-                    {product.vege ? <div className="singleProduct__options">
+                    {product.vege && product.meat ? <div className="singleProduct__options">
                         <h3 className="singleProduct__options__header">
                             Dostępne opcje:
                         </h3>
                         <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
-                            <button className={option === "Mięsna" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setOption("Mięsna")}
+                            <button className={option === "Mieszana" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                    onClick={() => setOption("Mieszana")}
                             >
-                                Mięsna
+                                Mieszana
                             </button>
                             <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
                                     onClick={() => setOption("Wegetariańska")}
@@ -324,7 +318,7 @@ const SingleProductContent = () => {
                         </section>
                     </div> : ""}
 
-                    {allergens ? <div className="singleProduct__options singleProduct__options--allergens">
+                    {allergens.length ? <div className="singleProduct__options singleProduct__options--allergens">
                         <h3 className="singleProduct__options__header marginRight15">
                             Alergeny:
                         </h3>
@@ -347,7 +341,7 @@ const SingleProductContent = () => {
                         })}
                     </div> : ""}
 
-                    <section className="singleProduct__options marginTop10">
+                    <section className="singleProduct__options marginTop20">
                         <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id, option, size) }}>
                             Dodaj do koszyka
                         </button>
