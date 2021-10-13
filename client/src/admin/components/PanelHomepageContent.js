@@ -11,7 +11,7 @@ import {useLocation} from "react-router";
 import JoditEditor from 'jodit-react';
 import {deleteSection, getAllSections, getSection} from "../helpers/aboutUsFunctions";
 
-const PanelAboutUsContent = () => {
+const PanelHomepageContent = () => {
     const [sections, setSections] = useState([]);
 
     const [header, setHeader] = useState("");
@@ -53,8 +53,8 @@ const PanelAboutUsContent = () => {
     useEffect(() => {
         getAllSections()
             .then(res => {
-                setSections(res.data.result?.filter((item) => {
-                    return item.content;
+                setSections(res.data.result.filter((item) => {
+                    return !item.content && !item.content_en;
                 }));
             });
 
@@ -132,7 +132,7 @@ const PanelAboutUsContent = () => {
         <section className="panelContent__frame">
             <section className="panelContent__frame__section">
                 <h1 className="panelContent__frame__header">
-                    Dodawanie sekcji na podstronie "O nas"
+                    Dodawanie sekcji na stronie głównej
                 </h1>
 
                 {addedMsg === "" ? <form className="panelContent__frame__form categoriesForm"
@@ -153,16 +153,6 @@ const PanelAboutUsContent = () => {
                                type="text"
                                placeholder="Nagłówek sekcji" />
                     </label>
-                    <label className="jodit--label">
-                        <span>Treść sekcji</span>
-                        <JoditEditor
-                            name="content"
-                            value={content}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => { setContent(newContent) }}
-                        />
-                    </label>
 
 
                     <label className="addProduct__label addProduct__label--frame">
@@ -172,16 +162,6 @@ const PanelAboutUsContent = () => {
                                onChange={(e) => { setHeaderEn(e.target.value) }}
                                type="text"
                                placeholder="Nagłówek sekcji (angielski)" />
-                    </label>
-                    <label className="jodit--label">
-                        <span>Treść sekcji (angielski)</span>
-                        <JoditEditor
-                            name="content_en"
-                            value={contentEn}
-                            tabIndex={1} // tabIndex of textarea
-                            onBlur={newContent => {}} // preferred to use only this option to update the content for performance reasons
-                            onChange={newContent => { setContentEn(newContent) }}
-                        />
                     </label>
 
                     <label className="addProduct__label addProduct__label--frame">
@@ -250,4 +230,4 @@ const PanelAboutUsContent = () => {
     </main>
 }
 
-export default PanelAboutUsContent;
+export default PanelHomepageContent;

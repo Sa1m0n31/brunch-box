@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Loader from "react-loader-spinner";
 import {getAllDeliveryPrices} from "../admin/helpers/deliveryFunctions";
 import deliverySchedule from "../helpers/deliverySchedule";
+import {areShopOpen} from "../helpers/openCloseAlgorithm";
 
 const ShippingAndPayment = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
@@ -50,8 +51,31 @@ const ShippingAndPayment = () => {
     const [deliveryValidate, setDeliveryValidate] = useState(-1);
     const [deliveryPriceSettled, setDeliveryPriceSettled] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [shopOpen, setShopOpen] = useState(false);
 
     const [vat, setVat] = useState(false);
+
+    useEffect(() => {
+        const currentDate = new Date();
+        const currentHour = currentDate.getHours();
+        const currentDayOfTheWeek = currentDate.getDay();
+
+        const shopOpenAlgorithm = areShopOpen();
+        if(shopOpenAlgorithm) {
+            shopOpenAlgorithm
+                .then((res) => {
+                    const result = res.data.result;
+                    result.findIndex((item) => {
+                        if((new Date(item.day).getDay() === currentDayOfTheWeek)&&(item.hour_start === currentHour)) {
+                            setShopOpen(false);
+                        }
+                    })
+                });
+        }
+        else {
+            setShopOpen(false);
+        }
+    }, []);
 
     const fillRibbonsArray = () => {
         let arr = [];
@@ -117,7 +141,7 @@ const ShippingAndPayment = () => {
                     return {
                         day: scheduleItem.day,
                         hours: scheduleItem.hours.map((hoursItem) => {
-                            return { start: hoursItem.start, end: hoursItem.end, available: hour >= 12 ? hoursItem.available : 0 }
+                            return { start: hoursItem.start, end: hoursItem.end, available: hoursItem.start >= 12 ? hoursItem.available : 0 }
                         })
                     }
                 }
@@ -694,6 +718,12 @@ const ShippingAndPayment = () => {
                         </label>
                     })}
                 </section>
+
+                {!shopOpen ? <p className="shopClosedText">
+                    Przepraszamy. Jesteśmy teraz zamknięci.
+                    Zapraszamy do zakładki "Kontakt" po więcej informacji
+                    lub pod tel. 696-696-995.
+                </p> : ""}
             </section>
 
             <section className="shippingAndPayment__section">
@@ -768,24 +798,6 @@ const ShippingAndPayment = () => {
                                disabled={personal}
                                type="text" />
                     </label>
-                    {/*<label className="shippingAndPayment__label label-20">*/}
-                    {/*    <input className={formik.errors.building ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}*/}
-                    {/*           name="building"*/}
-                    {/*           value={formik.values.building}*/}
-                    {/*           onChange={formik.handleChange}*/}
-                    {/*           placeholder="Numer domu"*/}
-                    {/*           disabled={personal}*/}
-                    {/*           type="text" />*/}
-                    {/*</label>*/}
-                    {/*<label className="shippingAndPayment__label label-20">*/}
-                    {/*    <input className="shippingAndPayment__input input--address"*/}
-                    {/*           name="flat"*/}
-                    {/*           value={formik.values.flat}*/}
-                    {/*           onChange={formik.handleChange}*/}
-                    {/*           placeholder="Numer mieszkania"*/}
-                    {/*           disabled={personal}*/}
-                    {/*           type="text" />*/}
-                    {/*</label>*/}
                 </div>
 
                 <section className="afterFormSection">

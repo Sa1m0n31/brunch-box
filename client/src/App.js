@@ -5,7 +5,7 @@ import './static/style/admin.css'
 import './static/style/mobile.css'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import HomePage from "./pages/HomePage";
-
+import ReactGA from 'react-ga';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Offer from "./pages/Offer";
 import SingleProduct from "./pages/SingleProduct";
@@ -40,6 +40,10 @@ import PanelOthers from "./admin/pages/PanelOthers";
 import PanelCoupons from "./admin/pages/PanelCoupons";
 import CustomMenu from "./pages/CustomMenu";
 import PanelDelivery from "./admin/pages/PanelDelivery";
+import PanelHomepage from "./admin/pages/PanelHomepage";
+
+ReactGA.initialize('G-2YV1L21QB9');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 function App() {
     const [categories, setCategories] = useState([]);
@@ -163,6 +167,9 @@ function App() {
                 </Route>
                 <Route path="/panel/pozostale">
                     <PanelOthers />
+                </Route>
+                <Route path="/panel/strona-glowna">
+                    <PanelHomepage />
                 </Route>
 
                 {/* Add content pages */}

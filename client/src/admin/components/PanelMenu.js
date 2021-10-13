@@ -155,6 +155,12 @@ const PanelMenu = ({active, submenu}) => {
                         </a>
                     </li>
                     <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 12 ? "menuItem--active" : ""} href="/panel/strona-glowna">
+                            <img className="panelMenu__list__item__img" src={others} alt="strona-glowna" />
+                            Strona główna
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
                         <a className="panelMenu__list__item__link" id={active === 9 ? "menuItem--active" : ""} href="/panel/kupony">
                             <img className="panelMenu__list__item__img" src={discount} alt="kupony" />
                             Kupony rabatowe

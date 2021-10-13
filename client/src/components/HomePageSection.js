@@ -1,45 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import productImg from '../static/img/pudelko.png'
-import {getAllCategories} from "../helpers/categoryFunctions";
-import settings from "../admin/helpers/settings";
-import convertToURL from "../helpers/convertToURL";
+import example from '../static/img/o-pomysle.png'
+import {getAllSections} from "../admin/helpers/aboutUsFunctions";
+import settings from "../helpers/settings";
 
 const HomePageSection = () => {
-    const [categories, setCategories] = useState([]);
+    const [sections, setSections] = useState([]);
 
     useEffect(() => {
-        getAllCategories()
+        getAllSections()
             .then((res) => {
-                setCategories(res.data.result);
+                setSections(res?.data?.result.filter((item) => {
+                    return !item.content && !item.content_en;
+                }));
             });
     }, []);
 
     return <section className="homePageSection">
-        <span id="zestawy"></span>
-        {/*<h2 className="homePageSection__header">*/}
-        {/*    Oferta*/}
-        {/*</h2>*/}
-        <div className="homePageSection__menu">
-            {categories.map((item, index) => {
-                if(!item.hidden) {
-                    return <a key={index} className="homePageSection__item" href={convertToURL(item.name)}>
-                        <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path}
-                             alt="produkt"/>
-                        <h3 className="homePageSection__item__header">
-                            {item.name}
-                        </h3>
-                        <button className="button button--landing button--homePageSection">
-                            <a className="button--landing__link button--homePageSection__link">
-                                Więcej informacji
-                            </a>
-                        </button>
-                    </a>
-                }
-                else {
-                    return "";
-                }
-            })}
-        </div>
+        {sections?.map((item, index) => {
+            return  <section className={index % 2 ? "homePageSection__item homePageSection__item--odd" : "homePageSection__item"}>
+                <p className="homePageSection__text" data-aos="fade-right">
+                    {item.header}
+                </p>
+
+                <figure className="homePageSection__imgWrapper" data-aos="fade-left">
+                    <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="pasja-do-gotowania" />
+                </figure>
+            </section>
+        })}
     </section>
 }
 

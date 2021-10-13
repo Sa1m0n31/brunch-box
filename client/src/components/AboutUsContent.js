@@ -11,7 +11,9 @@ const AboutUsContent = () => {
     useEffect(() => {
         getAllSections()
             .then(res => {
-                setSections(res.data.result);
+                setSections(res.data.result.filter((item) => {
+                    return item.content;
+                }));
             });
     }, []);
 

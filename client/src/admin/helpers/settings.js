@@ -1,9 +1,9 @@
 import logo from '../static/external/img/logo.png'
 
 const settings = {
-    API_URL: "http://localhost:5000",
+    API_URL: "https://brunchbox.pl",
     logo: logo,
-    homepage: "http://localhost:5000"
+    homepage: "https://brunchbox.pl"
 }
 
 export default settings;

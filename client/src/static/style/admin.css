@@ -1127,6 +1127,18 @@ label {
 /* Update - 11.10.21 */
 .miniature {
     margin-bottom: 40px;
+    position: relative;
+}
+
+.miniature__deleteBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    position: absolute;
+    top: -5px;
+    right: -15px;
+    background: #9c4543;
+    color: #fff;
 }
 
 .miniature__img {

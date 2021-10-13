@@ -3,6 +3,7 @@ const router = express.Router();
 const con = require("../databaseConnection");
 const multer = require("multer");
 const path = require("path");
+const got = require("got");
 
 con.connect(err => {
     const auth = (sessionKey) => {
@@ -16,6 +17,8 @@ con.connect(err => {
 
     /* Add new section */
     router.post("/add", (request, response) => {
+        console.log("add section");
+
         /* Add images */
         let fileId = null;
         let filename = null;
@@ -35,16 +38,25 @@ con.connect(err => {
         const addSection = () => {
             let { header, content, header_en, content_en } = request.body;
 
+            console.log(content);
+
             const values = [`about-us/${filename}`];
             const query = 'INSERT INTO images VALUES (NULL, ?)';
             con.query(query, values, (err, res) => {
-                const values = [fileId, header, content, header_en, content_en];
+                console.log(err);
+                const values = [fileId, header, content || content === "" ? content : null, header_en, content_en || content_en === "" ? content_en : null];
                 const query = 'INSERT INTO about_us VALUES (NULL, ?, ?, ?, ?, ?)';
 
                 con.query(query, values, (err, res) => {
                     console.log(err);
-                    if(!err) response.redirect("https://brunchbox.pl/panel/o-nas?added=1");
-                    else response.redirect("https://brunchbox.pl/panel/o-nas?added=-1")
+                    if(!err) {
+                        if(content) response.redirect("https://brunchbox.pl/panel/o-nas?added=1");
+                        else response.redirect("https://brunchbox.pl/panel/strona-glowna?added=1");
+                    }
+                    else {
+                        if(content) response.redirect("https://brunchbox.pl/panel/o-nas?added=-1");
+                        else response.redirect("https://brunchbox.pl/panel/strona-glowna?added=-1");
+                    }
                 });
             });
         }
@@ -59,6 +71,7 @@ con.connect(err => {
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
                     fileId = res.insertId;
+                    console.log(err);
                     addSection();
                 });
             }
@@ -67,6 +80,8 @@ con.connect(err => {
 
     /* Update section */
     router.post("/update", (request, response) => {
+        console.log("update");
+
         /* Add images */
         let fileId = null;
         let filename = null;
@@ -90,14 +105,20 @@ con.connect(err => {
                 const values = [filename];
                 const query = 'INSERT INTO images VALUES (NULL, ?)';
                 con.query(query, values, (err, res) => {
-                    const values = [fileId, header, content, header_en, content_en, id];
+                    const values = [fileId, header, content || content === "" ? content : null, header_en, content_en || content_en === "" ? content_en : null, id];
                     const query = 'UPDATE about_us SET image = ?, header = ?, content = ?, header_en = ?, content_en = ? WHERE id = ?';
 
                     con.query(query, values, (err, res) => {
                         let result = 0;
                         if(res) result = 1;
-                        if(!err) response.redirect("https://brunchbox.pl/panel/o-nas?added=2");
-                        else response.redirect("https://brunchbox.pl/panel/o-nas?added=-1")
+                        if(!err) {
+                            if(content) response.redirect("https://brunchbox.pl/panel/o-nas?added=2");
+                            else response.redirect("https://brunchbox.pl/panel/strona-glowna?added=2");
+                        }
+                        else {
+                            if(content) response.redirect("https://brunchbox.pl/panel/o-nas?added=-1");
+                            else response.redirect("https://brunchbox.pl/panel/strona-glowna?added=-1");
+                        }
                     });
                 });
             }
@@ -108,8 +129,14 @@ con.connect(err => {
                 con.query(query, values, (err, res) => {
                     let result = 0;
                     if(res) result = 1;
-                    if(!err) response.redirect("https://brunchbox.pl/panel/o-nas?added=2");
-                    else response.redirect("https://brunchbox.pl/panel/o-nas?added=-1")
+                    if(!err) {
+                        if(content) response.redirect("https://brunchbox.pl/panel/o-nas?added=2");
+                        else response.redirect("https://brunchbox.pl/panel/strona-glowna?added=2");
+                    }
+                    else {
+                        if(content) response.redirect("https://brunchbox.pl/panel/o-nas?added=-1");
+                        else response.redirect("https://brunchbox.pl/panel/strona-glowna?added=-1");
+                    }
                 });
             }
         }

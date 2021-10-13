@@ -1,5 +1,5 @@
 const settings = {
-    API_URL: "http://localhost:5000"
+    API_URL: "https://brunchbox.pl"
 }
 
 export default settings;

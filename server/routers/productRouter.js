@@ -180,7 +180,7 @@ con.connect(err => {
       });
 
       const updateProduct = () => {
-         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat, hidden, priority } = request.body;
+         let { id, deleteImg0, deleteImg1, deleteImg2, deleteImg3, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat, hidden, priority } = request.body;
          if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
          else priceL_meat = null;
          if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
@@ -189,8 +189,6 @@ con.connect(err => {
          else priceL_vege = null;
          if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
          else priceM_vege = null;
-
-         console.log(priority);
 
          m = m === 'true' || m == 1;
          l = l === 'true' || l == 1;
@@ -204,6 +202,28 @@ con.connect(err => {
          if(isNaN(priceL_meat)) priceL_meat = null;
 
          categoryId = parseInt(categoryId);
+
+         /* Delete images */
+         if(deleteImg0) {
+            const query = 'UPDATE products SET main_image = NULL WHERE id = ?';
+            const values = [id];
+            con.query(query, values);
+         }
+         if(deleteImg1) {
+            const query = 'UPDATE products SET gallery_1 = NULL WHERE id = ?';
+            const values = [id];
+            con.query(query, values);
+         }
+         if(deleteImg2) {
+            const query = 'UPDATE products SET gallery_2 = NULL WHERE id = ?';
+            const values = [id];
+            con.query(query, values);
+         }
+         if(deleteImg3) {
+            const query = 'UPDATE products SET gallery_3 = NULL WHERE id = ?';
+            const values = [id];
+            con.query(query, values);
+         }
 
          /* Add product without main image */
          const values = [name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,

@@ -15,6 +15,7 @@ import settings from "../admin/helpers/settings";
 import {allergensImg, allergensList} from "../helpers/allergens";
 import ReactTooltip from 'react-tooltip'
 import Loader from "react-loader-spinner";
+import {areShopOpen} from "../helpers/openCloseAlgorithm";
 
 const SingleProductContent = () => {
     const [size, setSize] = useState("L");
@@ -40,6 +41,8 @@ const SingleProductContent = () => {
     const [loaded, setLoaded] = useState(false);
     const [modal, setModal] = useState(false);
     const [modalHint, setModalHint] = useState(false);
+
+    const [shopOpen, setShopOpen] = useState(true);
 
     const location = useLocation();
 
@@ -157,6 +160,25 @@ const SingleProductContent = () => {
     }, [size, option]);
 
     const addToCart = (id, option, size) => {
+        const currentDate = new Date();
+        const currentHour = currentDate.getHours();
+        const currentDayOfTheWeek = currentDate.getDay();
+
+        const shopOpenAlgorithm = areShopOpen();
+        if(shopOpenAlgorithm) {
+            shopOpenAlgorithm
+                .then((res) => {
+                    const result = res.data.result;
+                    result.findIndex((item) => {
+                        if((new Date(item.day).getDay() === currentDayOfTheWeek)&&(item.hour_start === currentHour)) {
+                            setShopOpen(false);
+                        }
+                    })
+                });
+        }
+        else {
+            setShopOpen(false);
+        }
 
         if(product.category_id === 2) {
             /* Check number of half boxes in current cart */
@@ -238,6 +260,12 @@ const SingleProductContent = () => {
                     Wybierz drugą połowę
                 </a>}
             </section>
+
+            {!shopOpen ? <p className="shopClosedText">
+                Przepraszamy. Jesteśmy teraz zamknięci.
+                Zapraszamy do zakładki "Kontakt" po więcej informacji
+                lub pod tel. 696-696-995.
+            </p> : ""}
         </Modal>
 
 

@@ -238,7 +238,7 @@ ol {
     justify-content: center;
     align-items: center;
     background: url("./../img/landing.png");
-    background-attachment: fixed;
+    /*background-attachment: fixed;*/
     background-position-x: center;
     background-size: cover;
     margin-top: 120px;
@@ -342,6 +342,41 @@ ol {
 .homePageSection {
     padding-bottom: 50px;
     position: relative;
+    width: 100%;
+    background: url("../img/marmur.jpg");
+    background-size: 100%;
+    padding-top: 60px;
+    overflow: hidden;
+}
+
+.homePageSection .homePageSection__text {
+    order: 2;
+}
+
+.homePageSection .homePageSection__imgWrapper {
+    order: 1;
+}
+
+.homePageSection__item--odd .homePageSection__text {
+    order: 1;
+}
+
+.homePageSection__item--odd .homePageSection__imgWrapper {
+    order: 2;
+}
+
+.homePageSection__item .homePageSection__text {
+    margin-right: 50px;
+    margin-left: 0;
+}
+
+.homePageSection__item--odd .homePageSection__text {
+    margin-right: 50px;
+    margin-left: 0;
+}
+
+.homePageSection__item:not(.homePageSection__item--odd) .homePageSection__text {
+    text-align: right;
 }
 
 #zestawy {
@@ -350,63 +385,32 @@ ol {
     left: 0;
 }
 
-.homePageSection__header {
-    font-size: 36px;
-    font-family: 'Courgette', cursive;
-    text-align: center;
-    margin: 10px 0;
-}
-
-.homePageSection__menu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: clamp(800px, 90%, 1300px);
-    margin: 30px auto 50px;
-}
-
 .homePageSection__item {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 30%;
+    padding: 50px 0;
 }
 
-@media(min-width: 968px) {
-    .homePageSection__menu {
-        justify-content: space-around;
-    }
-
-    .homePageSection__item {
-        /*margin: 0 clamp(30px, 10%, 100px);*/
-    }
+.homePageSection__text {
+    font-family: 'Courgette', cursive;
+    font-size: 28px;
+    width: 40%;
 }
 
-.homePageSection__img {
-    width: 80%;
+.homePageSection__text--marginLeft {
+    margin-right: 0;
+    margin-left: 50px;
+}
+
+.homePageSection__imgWrapper {
+    width: 35%;
     height: auto;
 }
 
-.homePageSection__item__header {
-    font-size: 22px;
-    font-family: 'Open-sans', sans-serif;
-    font-style: italic;
-    margin-top: 25px;
-    text-align: center;
-}
-
-.button--homePageSection {
-    width: 320px;
-    height: 60px;
-    margin-top: 30px;
-    transition: .4s all;
-    background: #000;
-}
-
-.button--homePageSection__link {
-    font-size: 15px;
+.homePageSection__img {
+    width: 100%;
+    height: auto;
 }
 
 /* Footer */
@@ -647,6 +651,7 @@ ol {
 .singleProduct__left {
     width: 400px;
     margin-right: 50px;
+    margin-top: 100px;
 }
 
 .marginRight15 {
@@ -676,13 +681,12 @@ ol {
 
 .singleProduct__mainImage {
     width: 100%;
-    height: 350px;
+    height: 400px;
     overflow: hidden;
     display: flex;
     background: transparent;
     justify-content: center;
     align-items: flex-start;
-    border: 3px solid #E2E2E2;
 }
 
 .singleProduct__img {
@@ -2034,4 +2038,17 @@ ol {
             right: 10%;
         }
     }
+}
+
+.shopClosedText {
+    text-align: center;
+    font-style: italic;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.shippingAndPayment .shopClosedText {
+    margin-top: 40px;
+    max-width: 80%;
+    text-align: left;
 }

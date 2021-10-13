@@ -67,6 +67,11 @@ const AddProductContent = () => {
 
     const [addMsg, setAddMsg] = useState("");
 
+    const [deleteImg0, setDeleteImg0] = useState(false);
+    const [deleteImg1, setDeleteImg1] = useState(false);
+    const [deleteImg2, setDeleteImg2] = useState(false);
+    const [deleteImg3, setDeleteImg3] = useState(false);
+
     const allergensList = ["gluten/gluten", "grzyby/mushrooms", "jajka/eggs",
         "kukurydza/corn", "łubin/lupin", "mięczaki/mollusca",
         "mleko/milk", "musztarda/mustard", "orzechy/nuts",
@@ -192,6 +197,10 @@ const AddProductContent = () => {
             setSizeL(true);
         }
     }, [categoryId]);
+
+    const deleteImg = (n) => {
+
+    }
 
     return <main className="panelContent addProduct">
         <header className="addProduct__header">
@@ -327,7 +336,10 @@ const AddProductContent = () => {
                     <input type="file"
                            className="product__fileInput"
                            name="mainImage" />
-                    {gallery.length && gallery[0] ? <section className="miniature">
+                    {gallery.length && gallery[0] && !deleteImg0 ? <section className="miniature">
+                        <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg0(true); }}>
+                            x
+                        </button>
                         <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[0]}`} alt="zdjecie-produktu" />
                     </section> : ""}
                 </label>
@@ -336,7 +348,10 @@ const AddProductContent = () => {
                     <input type="file"
                            className="product__fileInput"
                            name="gallery1" />
-                    {gallery.length && gallery[1] ? <section className="miniature">
+                    {gallery.length && gallery[1] && !deleteImg1 ? <section className="miniature">
+                        <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg1(true); }}>
+                            x
+                        </button>
                         <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[1]}`} alt="zdjecie-produktu" />
                     </section> : ""}
                 </label>
@@ -346,7 +361,10 @@ const AddProductContent = () => {
                     <input type="file"
                            className="product__fileInput"
                            name="gallery2" />
-                    {gallery.length && gallery[2] ? <section className="miniature">
+                    {gallery.length && gallery[2] && !deleteImg2 ? <section className="miniature">
+                        <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg2(true); }}>
+                            x
+                        </button>
                         <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[2]}`} alt="zdjecie-produktu" />
                     </section> : ""}
                 </label>
@@ -356,10 +374,26 @@ const AddProductContent = () => {
                     <input type="file"
                            className="product__fileInput"
                            name="gallery3" />
-                    {gallery.length && gallery[3] ? <section className="miniature">
+                    {gallery.length && gallery[3] && !deleteImg3 ? <section className="miniature">
+                        <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg3(true); }}>
+                            x
+                        </button>
                         <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[3]}`} alt="zdjecie-produktu" />
                     </section> : ""}
                 </label>
+
+                <input className="invisibleInput"
+                       name="deleteImg0"
+                       value={deleteImg0 ? "true" : ""} />
+                <input className="invisibleInput"
+                       name="deleteImg1"
+                       value={deleteImg1 ? "true" : ""} />
+                <input className="invisibleInput"
+                       name="deleteImg2"
+                       value={deleteImg2 ? "true" : ""} />
+                <input className="invisibleInput"
+                       name="deleteImg3"
+                       value={deleteImg3 ? "true" : ""} />
             </section>
 
             <section className="addProduct__form__section">
@@ -393,7 +427,7 @@ const AddProductContent = () => {
                         }}>
                             <span className={sizeM ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>
-                        {categoryId === 3 ? "25 szt." : "M (domyślna)"}
+                        {categoryId === 3 ? "25 szt." : "M"}
                     </label>
                     <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
                         <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => { e.preventDefault(); setSizeL(!sizeL); }}>

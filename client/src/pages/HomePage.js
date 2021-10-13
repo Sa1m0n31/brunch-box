@@ -8,7 +8,7 @@ const HomePage = () => {
     return <>
         <TopMenu />
         <Landing />
-        {/*<HomePageSection />*/}
+        <HomePageSection />
         <Footer />
     </>
 }

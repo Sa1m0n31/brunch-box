@@ -161,6 +161,10 @@
         height: 60px;
     }
 
+    .homePageSection__text {
+        font-size: 18px;
+    }
+
     /* Footer */
     .footer__menu, .footer__list {
         padding-left: 10px;
@@ -312,8 +316,23 @@
     }
 
     .homePageSection__item {
-        margin-bottom: 50px;
-        width: 50%;
+        flex-direction: column;
+        padding: 20px 0;
+    }
+
+    .homePageSection__imgWrapper {
+        width: 90%;
+        max-width: 400px;
+        margin: 20px 0;
+        order: 2 !important;
+    }
+
+    .homePageSection__text {
+        text-align: center;
+        order: 1 !important;
+        width: 80%;
+        margin: 0 !important;
+        text-align: center !important;
     }
 
     /* Footer */
@@ -661,15 +680,6 @@
     /* Home page section */
     .homePageSection__header {
         font-size: 26px;
-    }
-
-    .homePageSection__item {
-        width: 80%;
-    }
-
-    .homePageSection__item__header {
-        font-size: 15px;
-        margin: 15px 0;
     }
 
     .button--homePageSection {
