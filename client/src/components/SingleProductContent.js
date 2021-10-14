@@ -104,9 +104,11 @@ const SingleProductContent = () => {
             /* Get there by link */
             getProductIdByURL(window.location.pathname.split("/"))
                 .then(res => {
+                    console.log(res.data);
                     id = res.data.result[0]?.id
                 })
                 .then(() => {
+                    console.log(id);
                     getSingleProduct(id)
                         .then(res => {
                             setProduct(res.data.result[0]);
@@ -262,9 +264,8 @@ const SingleProductContent = () => {
             </section>
 
             {!shopOpen ? <p className="shopClosedText">
-                Przepraszamy. Jesteśmy teraz zamknięci.
-                Zapraszamy do zakładki "Kontakt" po więcej informacji
-                lub pod tel. 696-696-995.
+                Przepraszamy. Nie prowadzimy w tej chwili dostaw. Wciąż możesz zaplanować dostawę w trakcie godzin naszej pracy.
+                Zapraszamy do zakładki <a href="/kontakt">Kontakt</a> po więcej informacji lub pod tel. 696-696-995.
             </p> : ""}
         </Modal>
 
@@ -313,7 +314,7 @@ const SingleProductContent = () => {
                         </main>
                     </section>
 
-                    {product.l ? <div className="singleProduct__options">
+                    {product.l && product.m ? <div className="singleProduct__options">
                         <h3 className="singleProduct__options__header">
                             Dostępne rozmiary:
                         </h3>

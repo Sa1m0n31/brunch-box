@@ -237,7 +237,7 @@ ol {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url("./../img/landing.png");
+    background: url("./../img/landing.jpg");
     /*background-attachment: fixed;*/
     background-position-x: center;
     background-size: cover;
@@ -349,7 +349,7 @@ ol {
     overflow: hidden;
 }
 
-.homePageSection .homePageSection__text {
+.homePageSection .homePageSection__item__content {
     order: 2;
 }
 
@@ -357,7 +357,7 @@ ol {
     order: 1;
 }
 
-.homePageSection__item--odd .homePageSection__text {
+.homePageSection__item--odd .homePageSection__item__content {
     order: 1;
 }
 
@@ -365,18 +365,22 @@ ol {
     order: 2;
 }
 
-.homePageSection__item .homePageSection__text {
+.homePageSection__item .homePageSection__item__content {
     margin-right: 50px;
     margin-left: 0;
 }
 
-.homePageSection__item--odd .homePageSection__text {
+.homePageSection__item--odd .homePageSection__item__content {
     margin-right: 50px;
     margin-left: 0;
 }
 
 .homePageSection__item:not(.homePageSection__item--odd) .homePageSection__text {
-    text-align: right;
+    margin-left: 50px;
+}
+
+.homePageSection__item:not(.homePageSection__item--odd) .button--landing {
+    margin-left: 50px;
 }
 
 #zestawy {
@@ -395,6 +399,9 @@ ol {
 .homePageSection__text {
     font-family: 'Courgette', cursive;
     font-size: 28px;
+}
+
+.homePageSection__item__content {
     width: 40%;
 }
 
@@ -614,7 +621,7 @@ ol {
 /* Single product */
 .singleProduct {
     margin: 0 auto 70px;
-    padding: 220px clamp(5%, calc((100vw - 1200px) / 2), 20%) 10px;
+    padding: 220px clamp(5%, calc((100vw - 1300px) / 2), 20%) 10px;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
@@ -649,7 +656,7 @@ ol {
 }
 
 .singleProduct__left {
-    width: 400px;
+    width: 500px;
     margin-right: 50px;
     margin-top: 100px;
 }
@@ -681,7 +688,7 @@ ol {
 
 .singleProduct__mainImage {
     width: 100%;
-    height: 400px;
+    height: 500px;
     overflow: hidden;
     display: flex;
     background: transparent;
@@ -2045,10 +2052,20 @@ ol {
     font-style: italic;
     font-size: 14px;
     margin-top: 20px;
+    color: #941212;
+}
+
+.shopClosedText a {
+    font-weight: 700;
 }
 
 .shippingAndPayment .shopClosedText {
     margin-top: 40px;
     max-width: 80%;
     text-align: left;
+    font-size: 18px;
+}
+
+.homePageSection .button--landing {
+    margin-top: 50px;
 }

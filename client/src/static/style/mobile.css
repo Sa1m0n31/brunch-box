@@ -328,11 +328,23 @@
     }
 
     .homePageSection__text {
-        text-align: center;
         order: 1 !important;
-        width: 80%;
+        width: 100%;
         margin: 0 !important;
         text-align: center !important;
+    }
+
+    .homePageSection .button--landing {
+        display: block;
+        margin-top: 20px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .homePageSection__item__content {
+        margin: 0 0 10px !important;
+        width: 90%;
+        max-width: 450px;
     }
 
     /* Footer */
@@ -672,9 +684,11 @@
 @media(max-width: 768px) {
     /* Landing */
     .landing__content {
-        left: 50%;
+        left: unset;
         right: 0;
-        transform: translate(-50%, -50%);
+        transform: translate(0, -50%);
+        top: unset;
+        bottom: 0%;
     }
 
     /* Home page section */

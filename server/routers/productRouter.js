@@ -418,7 +418,7 @@ con.connect(err => {
       /* Query uses custom MySQL function - SPLIT_STR */
       const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
           'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, p.m, p.l, i.file_path as file_path ' +
-          'FROM products p JOIN images i ON i.id = p.main_image WHERE LOWER(SPLIT_STR(p.name, "/", 1)) = ?';
+          'FROM products p LEFT OUTER JOIN images i ON i.id = p.main_image WHERE LOWER(SPLIT_STR(p.name, "/", 1)) = ?';
       con.query(query, values, (err, res) => {
          response.send({
             result: res

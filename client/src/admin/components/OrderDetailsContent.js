@@ -200,6 +200,10 @@ const OrderDetailsContent = () => {
                             <h3 className="panelContent__vatData__header">
                                 NIP: <b>{cart[0].nip}</b>
                             </h3>
+                            <h3 className="panelContent__vatData__header">
+                                Adres: <b>{cart[0].company_address}</b>
+                                <b>{cart[0].company_postal_code} {cart[0].company_city}</b>
+                            </h3>
                         </section> : ""}
                     </section>
                 </section>

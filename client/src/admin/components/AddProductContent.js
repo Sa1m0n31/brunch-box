@@ -423,7 +423,7 @@ const AddProductContent = () => {
                     <label className="panelContent__filters__btnWrapper panelContent__filters__btn--options">
                         <button className="panelContent__filters__btn panelContent__filters__btn--options" onClick={(e) => {
                             e.preventDefault();
-                            if(categoryId === 3) setSizeM(!sizeM);
+                            setSizeM(!sizeM);
                         }}>
                             <span className={sizeM ? "panelContent__filters__btn--active" : "d-none"} />
                         </button>

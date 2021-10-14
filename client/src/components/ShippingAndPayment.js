@@ -51,7 +51,7 @@ const ShippingAndPayment = () => {
     const [deliveryValidate, setDeliveryValidate] = useState(-1);
     const [deliveryPriceSettled, setDeliveryPriceSettled] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [shopOpen, setShopOpen] = useState(false);
+    const [shopOpen, setShopOpen] = useState(true);
 
     const [vat, setVat] = useState(false);
 
@@ -384,7 +384,10 @@ const ShippingAndPayment = () => {
             comment: "",
             vat: "",
             companyName: "",
-            nip: ""
+            nip: "",
+            companyCity: "",
+            companyPostalCode: "",
+            companyStreet: ""
         },
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
@@ -478,6 +481,9 @@ const ShippingAndPayment = () => {
                         sessionId,
                         companyName: vat ? formik.values.companyName : null,
                         nip: vat ? formik.values.nip : null,
+                        companyCity: vat ? formik.values.companyCity : null,
+                        companyPostalCode: vat ? formik.values.postalCode : null,
+                        companyStreet: vat ? formik.values.companyStreet : null,
                         delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + hourOfDelivery + ":00 - " + (hourOfDelivery+1) + ":00"
                     })
                         .then(res => {
@@ -720,9 +726,8 @@ const ShippingAndPayment = () => {
                 </section>
 
                 {!shopOpen ? <p className="shopClosedText">
-                    Przepraszamy. Jesteśmy teraz zamknięci.
-                    Zapraszamy do zakładki "Kontakt" po więcej informacji
-                    lub pod tel. 696-696-995.
+                    Przepraszamy. Nie prowadzimy w tej chwili dostaw. Wciąż możesz zaplanować dostawę w trakcie godzin naszej pracy.
+                    Zapraszamy do zakładki <a href="/kontakt">Kontakt</a> po więcej informacji lub pod tel. 696-696-995.
                 </p> : ""}
             </section>
 
@@ -891,6 +896,31 @@ const ShippingAndPayment = () => {
                                        value={formik.values.nip}
                                        onChange={formik.handleChange}
                                        placeholder="NIP" />
+                            </label>
+                            <label className="shippingAndPayment__label label-70">
+                                <input className={formik.errors.companyCity ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
+                                       name="companyCity"
+                                       value={formik.values.companyCity}
+                                       onChange={formik.handleChange}
+                                       placeholder="Miejscowość"
+                                       type="text" />
+                            </label>
+                            <label className="shippingAndPayment__label label-30">
+                                <input className={formik.errors.companyPostalCode ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
+                                       name="companyPostalCode"
+                                       value={formik.values.companyPostalCode}
+                                       onChange={formik.handleChange}
+                                       placeholder="Kod pocztowy"
+                                       type="text" />
+                            </label>
+
+                            <label className="shippingAndPayment__label label-100">
+                                <input className={formik.errors.companyStreet ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
+                                       name="companyStreet"
+                                       value={formik.values.companyStreet}
+                                       onChange={formik.handleChange}
+                                       placeholder="Ulica, numer domu, numer mieszkania"
+                                       type="text" />
                             </label>
                         </section>
                     </section>

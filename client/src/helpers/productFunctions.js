@@ -16,6 +16,7 @@ const getProductById = (id) => {
 }
 
 const getProductByName = (name) => {
+    console.log(name);
     return axios.post(`${API_URL}/product/get-product-by-name`, { name });
 }
 

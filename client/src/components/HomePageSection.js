@@ -18,11 +18,19 @@ const HomePageSection = () => {
     return <section className="homePageSection">
         {sections?.map((item, index) => {
             return  <section className={index % 2 ? "homePageSection__item homePageSection__item--odd" : "homePageSection__item"}>
-                <p className="homePageSection__text" data-aos="fade-right">
-                    {item.header}
-                </p>
+                <section className="homePageSection__item__content" data-aos={index % 2 ? "fade-right" : "fade-left"}>
+                    <p className="homePageSection__text">
+                        {item.header}
+                    </p>
 
-                <figure className="homePageSection__imgWrapper" data-aos="fade-left">
+                    <button className="button button--landing">
+                        <a className="button--landing__link" href="/oferta">
+                            Zobacz dostępne zestawy
+                        </a>
+                    </button>
+                </section>
+
+                <figure className="homePageSection__imgWrapper" data-aos={index % 2 ? "fade-left" : "fade-right"}>
                     <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="pasja-do-gotowania" />
                 </figure>
             </section>
