@@ -23,7 +23,7 @@ const HomePageSection = () => {
                         {item.header}
                     </p>
 
-                    <button className="button button--landing">
+                    <button className="button button--landing d-desktop-important">
                         <a className="button--landing__link" href="/oferta">
                             Zobacz dostępne zestawy
                         </a>
@@ -33,6 +33,11 @@ const HomePageSection = () => {
                 <figure className="homePageSection__imgWrapper" data-aos={index % 2 ? "fade-left" : "fade-right"}>
                     <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="pasja-do-gotowania" />
                 </figure>
+                <button className="button button--landing d-mobile d-mobile-important">
+                    <a className="button--landing__link" href="/oferta">
+                        Zobacz dostępne zestawy
+                    </a>
+                </button>
             </section>
         })}
     </section>

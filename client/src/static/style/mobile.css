@@ -283,6 +283,16 @@
         display: none;
     }
 
+    .d-desktop-important {
+        display: none !important;
+    }
+
+    .d-mobile-important {
+        order: 3;
+        display: block !important;
+        margin-bottom: 30px;
+    }
+
     /* Top menu */
     .topMenu {
         padding: 0 5%;
@@ -323,7 +333,7 @@
     .homePageSection__imgWrapper {
         width: 90%;
         max-width: 400px;
-        margin: 20px 0;
+        margin: 20px 0 0;
         order: 2 !important;
     }
 

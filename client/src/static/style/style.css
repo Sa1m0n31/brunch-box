@@ -43,6 +43,10 @@ ol {
     display: none;
 }
 
+.d-mobile-important {
+    display: none !important;
+}
+
 .thin {
     font-weight: 400 !important;
 }

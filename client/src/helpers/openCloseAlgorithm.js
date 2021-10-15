@@ -12,10 +12,10 @@ const areShopOpen = () => {
 
     /* Check if shop closed becouse of the time */
     if(isShorterDay(currentDayOfTheWeek)) {
-        if((currentHour < 9)||(currentHour > 18)) return false;
+        if((currentHour < 9)||(currentHour >= 18)) return false;
     }
     else {
-        if((currentHour < 9)||(currentHour > 19)) return false;
+        if((currentHour < 9)||(currentHour >= 19)) return false;
     }
 
     /* Check if shop closed becouse of admin settings */
