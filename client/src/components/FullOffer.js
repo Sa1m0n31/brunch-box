@@ -59,7 +59,6 @@ const FullOffer = () => {
                 {products.map((item, index) => {
                     if(!item.hidden) {
                         return <Link className="offerContent__item"
-                                     data-aos="zoom-in"
                                      key={index}
                                      to={{
                                          pathname: `/produkt/${convertToURL(item.product_name.split("/")[0])}`,

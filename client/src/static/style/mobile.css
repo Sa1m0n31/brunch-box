@@ -305,8 +305,14 @@
 
     .button--hamburger {
         background: transparent;
+        position: relative;
+        z-index: 3;
+        display: block;
         width: 30px;
-        height: auto;
+        height: 30px;
+        background-image: url("../img/hamburger.png");
+        background-size: 100% 100%;
+        cursor: pointer;
     }
 
     .hamburgerBtn__img {
@@ -395,6 +401,8 @@
 
     /* Single product */
     .singleProduct {
+        padding-left: 20px;
+        padding-right: 20px;
         padding-top: 150px;
     }
 
@@ -408,6 +416,10 @@
 
     .singleProduct__description, .singleProduct__list {
         font-size: 14px;
+    }
+
+    .singleProduct__mainImage {
+        height: 400px;
     }
 
     /* Cart */
@@ -511,6 +523,10 @@
 
     .footer__menu--topBar {
         right: 5vw;
+    }
+
+    .offerContent__imgWrapper {
+        margin-top: 20px;
     }
 
     /* Admin */
@@ -688,6 +704,10 @@
 
     .footer {
         height: 140px;
+    }
+
+    .textAlignRight * {
+        text-align: left;
     }
 }
 

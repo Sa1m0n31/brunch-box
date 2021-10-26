@@ -63,7 +63,6 @@ const OfferContent = ({type}) => {
                 if(category !== "") {
                     if((item.category_name === category)&&(!item.hidden)) {
                         return <Link className="offerContent__item"
-                                     data-aos="zoom-in"
                                      key={index}
                                      to={{
                                          pathname: `/produkt/${convertToURL(item.product_name.split("/")[0])}`,

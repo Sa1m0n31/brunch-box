@@ -63,7 +63,7 @@ function App() {
   return (<>
           <Helmet>
               <title>BrunchBox - przekąski na każdą okazję</title>
-              <meta name="description" content="Doświadczenie, pasja do gotowania i poczucie estetyki. BrunchBox- pyszne dopełnienie niejednego spotkania. Think green! Eco friendly- pudełka z możliwością recyklingu lub do wtórnego wykorzystania." />
+              <meta name="description" content="Nowy koncept- wyselekcjonowane  zestawy fingerfood w eleganckim pudełku. Zamów z 2 godzinnym wyprzedzeniem i ciesz się pysznym jedzeniem z bliskimi." />
               <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Helmet>
     <div className="App">

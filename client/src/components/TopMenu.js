@@ -184,12 +184,10 @@ const TopMenu = () => {
                         </span>
         </a>
         <button className="button--hamburger d-mobile" onClick={() => openMobileMenu()}>
-            <img className="hamburgerBtn__img" src={hamburgerMenu} alt="menu" />
         </button>
 
         <menu className="mobileMenu d-mobile" ref={mobileMenu}>
             <button className="mobileMenu__closeBtn" onClick={() => closeMobileMenu()} ref={mobileMenuCloseBtn}>
-                <img className="mobileMenu__closeImg" src={closeImg} alt="wyjdz" />
             </button>
 
             <img className="mobileMenu__logo" src={logoImg} alt="brunch-box-logo" ref={mobileMenuLogo} />
