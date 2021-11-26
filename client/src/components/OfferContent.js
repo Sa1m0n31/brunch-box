@@ -38,7 +38,6 @@ const OfferContent = ({type}) => {
 
         getAllProducts()
             .then(res => {
-                console.log(res.data.result);
                 setProducts(res.data.result?.sort(sortByPriority));
                 setLoaded(true);
             });

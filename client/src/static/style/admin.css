@@ -412,6 +412,7 @@ ul {
 .addProduct__label {
     display: block;
     margin: 25px 0;
+    font-size: 13px;
 }
 
 .fileInputLabel {

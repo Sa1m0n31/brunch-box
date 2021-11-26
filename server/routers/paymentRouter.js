@@ -44,6 +44,127 @@ con.connect(err => {
         next();
     });
 
+    router.post("/send-notification", (request, response) => {
+        const { orderId } = request.body;
+
+        sendEmailNotification(orderId, response, true);
+    });
+
+    const sendEmailNotification = (sessionId, response = null, byOrderId = false) => {
+        /* Send email notification */
+        const values = [sessionId];
+        let query
+        if(byOrderId) {
+            query = 'SELECT p.name, s.size, s.quantity, s.option, o.payment_method, o.delivery, o.order_comment, o.order_price, u.phone_number, u.email, r.caption, o.city as orderCity, o.postal_code as orderPostalCode, o.street as orderStreet, o.nip, o.company_name, o.company_city, o.company_postal_code, o.company_address FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.id = ?';
+        }
+        else {
+            query = 'SELECT p.name, s.size, s.quantity, s.option, o.payment_method, o.delivery, o.order_comment, o.order_price, u.phone_number, u.email, r.caption, o.city as orderCity, o.postal_code as orderPostalCode, o.street as orderStreet, o.nip, o.company_name, o.company_city, o.company_postal_code, o.company_address FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.przelewy24_id = ?';
+        }
+
+            con.query(query, values, (err, res) => {
+            if(res) {
+                const deliveryTime = res[0].delivery;
+                const deliveryAddress = res[0].orderStreet ? res[0].orderStreet : "" + ", " + res[0].orderPostalCode ? res[0].orderPostalCode : "" + " " + res[0].orderCity ? res[0].orderCity : "";
+                const orderComment = res[0].order_comment;
+                const phoneNumber = res[0].phone_number;
+                const userEmail = res[0].email;
+                const orderPrice = res[0].order_price;
+                const paymentMethod = res[0].payment_method;
+                let orderDedication = res[0].caption;
+                let nip = null, companyName, companyPostalCode, companyCity, companyAddress;
+                let vat = "Brak";
+
+                if(res[0].nip) {
+                    nip = res[0].nip;
+                    companyName = res[0].company_name;
+                    companyPostalCode = res[0].company_postal_code;
+                    companyAddress = res[0].company_address;
+                }
+
+                if(orderDedication === "Od: dla:") orderDedication = null;
+
+                let orderItems = "";
+                JSON.parse(JSON.stringify(res)).forEach((item, index, array) => {
+                    orderItems += "<br/>" + item.name.split("/")[0] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ";";
+
+                    if(index === array.length-1) {
+                        if(nip) {
+                            vat = "Faktura VAT: " + companyName + ", NIP: " + nip + "<br/>" + companyAddress + "<br/>" + companyPostalCode + " " + companyCity;
+                        }
+
+                        /* Nodemailer */
+                        let transporter = nodemailer.createTransport(smtpTransport ({
+                            auth: {
+                                user: 'brunchbox@skylo-pl.atthost24.pl',
+                                pass: 'BrunchboxSkylo@123'
+                            },
+                            host: 'skylo-pl.atthost24.pl',
+                            secureConnection: true,
+                            port: 465,
+                            tls: {
+                                rejectUnauthorized: false
+                            },
+                        }));
+
+                        let mailOptions = {
+                            from: 'brunchbox@skylo-pl.atthost24.pl',
+                            to: ["zamowienia@brunchbox.pl"],
+                            subject: 'Nowe zamówienie w sklepie Brunchbox',
+                            html: '<h2>Nowe zamówienie!</h2> ' +
+                                '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
+                                `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
+                                `<p><b>Adres dostawy:</b> ` + (deliveryAddress ? deliveryAddress : "Odbiór osobisty") + `</p>` +
+                                `<p><b>Płatność:</b> ` + (!paymentMethod ? "Przelewy24" : (paymentMethod === 1 ? "Gotówką przy odbiorze" : "Kartą przy odbiorze")) + `</p>` +
+                                `<p><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
+                                `<p><b>Adres email:</b> ` + userEmail + `</p>` +
+                                `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
+                                `<p><b>Łączny koszt zamówienia:</b> ` + orderPrice + `PLN </p>` +
+                                `<p><b>Komentarz do zamówienia:</b> ` + (orderComment ? orderComment : "Brak") + `</p>` +
+                                `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
+                                `<p><b>Faktura VAT:</b> ` + vat + `</p>` +
+                                '<a href="https://brunchbox.pl/admin">' +
+                                'Przejdź do panelu administratora' +
+                                ' </a>'
+                        }
+
+                        let mailOptionsForUser = {
+                            from: 'brunchbox@skylo-pl.atthost24.pl',
+                            to: userEmail,
+                            subject: 'Przyjęliśmy Twoje zamówienie',
+                            html: `<h3>Dziękujemy. Przyjęliśmy Twoje zamówienie.</h3>` +
+                                `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
+                                `<p><b>Adres dostawy:</b> ` + (deliveryAddress ? deliveryAddress : "Odbiór osobisty") + `</p>` +
+                                `<p><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
+                                `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
+                                `<p><b>Łączny koszt zamówienia:</b> ` + orderPrice + `PLN </p>` +
+                                `<p><b>Komentarz do zamówienia:</b> ` + (orderComment ? orderComment : "Brak") + `</p>` +
+                                `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
+                                `<p><b>Faktura VAT:</b> ` + vat + `</p>` +
+                                `<p></p>` +
+                                `<p></p>` +
+                                `<p></p>` +
+                                `<p>-----------------------</p>` +
+                                `<p></p>` +
+                                `<p></p>` +
+                                `<img style="max-width: 600px;" src="https://brunchbox.pl/image?url=/media/posts/stopka.png" />`
+
+                        }
+
+                        transporter.sendMail(mailOptions, function(error, info) {
+                            transporter.sendMail(mailOptionsForUser, function(error, info) {
+                                if(response) {
+                                    response.send({
+                                        status: "OK"
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        });
+    }
+
     /* PAYMENT */
     router.post("/payment", cors(), async (request, response) => {
         /* Add order to database */
@@ -59,9 +180,6 @@ con.connect(err => {
             hash = crypto.createHash('sha384');
             data = hash.update(`{"sessionId":"${sessionId}","merchantId":${marchantId},"amount":${parseFloat(request.body.amount)*100},"currency":"PLN","crc":"${crc}"}`, 'utf-8');
             gen_hash = data.digest('hex');
-
-            console.log(sessionId);
-            console.log(marchantId);
 
             /* Dane */
             let postData = {
@@ -86,7 +204,7 @@ con.connect(err => {
                 json: postData,
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic BASE64'
+                    'Authorization': 'Basic MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0'
                 }
             })
                 .then(res => {
@@ -100,7 +218,6 @@ con.connect(err => {
                     console.log(err);
                 })
         });
-
     });
 
     /* Payment - verify */
@@ -135,7 +252,7 @@ con.connect(err => {
                 },
                 responseType: 'json',
                 headers: {
-                    'Authorization': 'Basic BASE 64'
+                    'Authorization': 'Basic MTQ3MTcwOjVmNGEzNTlhNDJjYzI0NjZlZDI4YWQzNTFlYWIwMjA0'
                 }
             })
                 .then(res => {
@@ -144,66 +261,7 @@ con.connect(err => {
                         const values = [sessionId];
                         const query = 'UPDATE orders SET payment_status = "opłacone" WHERE przelewy24_id = ?';
                         con.query(query, values, (err, res) => {
-                            /* Send email notification */
-                            const values = [sessionId];
-                            const query = 'SELECT p.name, s.size, s.quantity, s.option, o.delivery, o.order_comment, u.phone_number, u.email, r.caption, o.city as orderCity, o.building as orderBuilding, o.postal_code as orderPostalCode, o.street as orderStreet FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.przelewy24_id = ?';
-                            con.query(query, values, (err, res) => {
-                               if(res) {
-                                   const deliveryTime = res[0].delivery;
-                                   const deliveryAddress = res[0].orderStreet + " " + res[0].orderBuilding + ", " + res[0].orderPostalCode + " " + res[0].orderCity;
-                                   const orderComment = res[0].order_comment;
-                                   const phoneNumber = res[0].phone_number;
-                                   const userEmail = res[0].email;
-                                   let orderDedication = res[0].caption;
-
-                                   if(orderDedication === "Od: dla:") orderDedication = null;
-
-                                   let orderItems = "";
-                                   JSON.parse(JSON.stringify(res)).forEach((item, index, array) => {
-                                        orderItems += "<br/>" + item.name.split("/")[0] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ";";
-
-                                        if(index === array.length-1) {
-                                            /* Nodemailer */
-                                            let transporter = nodemailer.createTransport(smtpTransport ({
-                                                auth: {
-                                                    user: 'powiadomienia@skylo-pl.atthost24.pl',
-                                                    pass: '**** ***'
-                                                },
-                                                host: 'skylo-pl.atthost24.pl',
-                                                secureConnection: true,
-                                                port: 465,
-                                                tls: {
-                                                    rejectUnauthorized: false
-                                                },
-                                            }));
-
-                                            let mailOptions = {
-                                                from: 'powiadomienia@skylo-pl.atthost24.pl',
-                                                to: "zamowienia@brunchbox.pl",
-                                                subject: 'Nowe zamówienie w sklepie Brunchbox',
-                                                html: '<h2>Nowe zamówienie!</h2> ' +
-                                                    '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
-                                                    `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
-                                                    `<p><b>Adres dostawy:</b> ` + deliveryAddress + `</p>` +
-                                                    `<p><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
-                                                    `<p><b>Adres email:</b> ` + userEmail + `</p>` +
-                                                    `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
-                                                    `<p><b>Komentarz do zamówienia:</b> ` + orderComment + `</p>` +
-                                                    `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
-                                                    '<a href="https://brunchbox.pl/admin">' +
-                                                    'Przejdź do panelu administratora' +
-                                                    ' </a>'
-                                            }
-
-                                            transporter.sendMail(mailOptions, function(error, info) {
-                                                response.send({
-                                                    status: "OK"
-                                                });
-                                            });
-                                        }
-                                   });
-                               }
-                            });
+                            sendEmailNotification(sessionId, response);
                         });
                     }
                     else {

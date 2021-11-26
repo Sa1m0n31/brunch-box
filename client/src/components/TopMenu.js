@@ -170,7 +170,7 @@ const TopMenu = () => {
                 <a className="topMenu__languages__btn" href={settings.API_URL}>
                     <img className="topMenu__languages__img" src={poland} alt="polski" />
                 </a>
-                <a className="topMenu__languages__btn" href="http://en.brunchbox.pl">
+                <a className="topMenu__languages__btn" href="https://en.brunchbox.pl">
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
                 </a>
             </div>
@@ -193,7 +193,7 @@ const TopMenu = () => {
             <img className="mobileMenu__logo" src={logoImg} alt="brunch-box-logo" ref={mobileMenuLogo} />
 
             <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
-                <a className="topMenu__languages__btn" href="http://en.brunchbox.pl">
+                <a className="topMenu__languages__btn" href="https://en.brunchbox.pl">
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
                 </a>
             </div>

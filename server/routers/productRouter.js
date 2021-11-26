@@ -79,7 +79,7 @@ con.connect(err => {
 
       const upload = multer({
          storage: storage
-      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}]);
+      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}, {name: "gallery4"}, {name: "gallery5"}]);
 
       upload(request, response, (err, res) => {
          if (err) throw err;
@@ -103,10 +103,10 @@ con.connect(err => {
       const addProduct = () => {
          /* Fill images array */
          const len = filesId.length;
-         for(let i=len; i<4; i++) filesId.push(null);
+         for(let i=len; i<6; i++) filesId.push(null);
 
          /* Add product to database */
-         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat, hidden, priority } = request.body;
+         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS, priceM_meat, priceL_meat, priceM_vege, priceL_vege, priceS_meat, priceS_vege, m, l, s, vegan, meat, hidden, priority } = request.body;
          if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
          else priceL_meat = null;
          if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
@@ -115,9 +115,14 @@ con.connect(err => {
          else priceL_vege = null;
          if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
          else priceM_vege = null;
+         if(priceS_meat !== '') priceS_meat = parseFloat(priceS_meat);
+         else priceS_meat = null;
+         if(priceS_vege !== '') priceS_vege = parseFloat(priceS_vege);
+         else priceS_vege = null;
 
          m = m === 'true' || m == 1;
          l = l === 'true' || l == 1;
+         s = s === 'true' || s == 1;
          vegan = vegan === 'true' || vegan == 1;
          meat = meat === 'true' || meat == 1;
          hidden = hidden === "hidden";
@@ -128,12 +133,14 @@ con.connect(err => {
          if(isNaN(priceL_vege)) priceL_vege = null;
          if(isNaN(priceM_meat)) priceM_meat = null;
          if(isNaN(priceL_meat)) priceL_meat = null;
+         if(isNaN(priceS_vege)) priceS_vege = null;
+         if(isNaN(priceS_meat)) priceS_vege = null;
 
             /* Add image to database */
-            const values = [id, name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
-               shortDescription, longDescription, meatDescription, vegeDescription,
-               filesId[0], categoryId, bracketName, vegan, meat, m, l, filesId[1], filesId[2], filesId[3], hidden, priority];
-            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            const values = [id, name, priceM_meat, priceL_meat, priceS_meat, priceM_vege, priceL_vege, priceS_vege,
+               shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS,
+               filesId[0], categoryId, bracketName, vegan, meat, m, l, s, filesId[1], filesId[2], filesId[3], filesId[4], filesId[5], hidden, priority];
+            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             con.query(query, values, (err, res) => {
                if(res) response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=1");
                else response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=0");
@@ -159,7 +166,7 @@ con.connect(err => {
 
       const upload = multer({
          storage: storage
-      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}]);
+      }).fields([{name: "mainImage"}, {name: "gallery1"}, {name: "gallery2"}, {name: "gallery3"}, {name: "gallery4"}, {name: "gallery5"}]);
 
       upload(request, response, (err, res) => {
          if(err) throw err;
@@ -180,7 +187,7 @@ con.connect(err => {
       });
 
       const updateProduct = () => {
-         let { id, deleteImg0, deleteImg1, deleteImg2, deleteImg3, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, priceM_meat, priceL_meat, priceM_vege, priceL_vege, m, l, vegan, meat, hidden, priority } = request.body;
+         let { id, deleteImg0, deleteImg1, deleteImg2, deleteImg3, deleteImg4, deleteImg5, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS, priceM_meat, priceL_meat, priceM_vege, priceL_vege, priceS_meat, priceS_vege, m, l, s, vegan, meat, hidden, priority } = request.body;
          if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
          else priceL_meat = null;
          if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
@@ -189,9 +196,14 @@ con.connect(err => {
          else priceL_vege = null;
          if(priceM_vege !== '') priceM_vege = parseFloat(priceM_vege);
          else priceM_vege = null;
+         if(priceS_meat !== '') priceS_meat = parseFloat(priceS_meat);
+         else priceS_meat = null;
+         if(priceS_vege !== '') priceS_vege = parseFloat(priceS_vege);
+         else priceS_vege = null;
 
          m = m === 'true' || m == 1;
          l = l === 'true' || l == 1;
+         s = s === 'true' || s == 1;
          vegan = vegan === 'true' || vegan == 1;
          meat = meat === 'true' || meat == 1;
          hidden = hidden === "hidden";
@@ -200,6 +212,8 @@ con.connect(err => {
          if(isNaN(priceL_vege)) priceL_vege = null;
          if(isNaN(priceM_meat)) priceM_meat = null;
          if(isNaN(priceL_meat)) priceL_meat = null;
+         if(isNaN(priceS_vege)) priceS_vege = null;
+         if(isNaN(priceS_meat)) priceS_vege = null;
 
          categoryId = parseInt(categoryId);
 
@@ -224,14 +238,24 @@ con.connect(err => {
             const values = [id];
             con.query(query, values);
          }
+         if(deleteImg4) {
+            const query = 'UPDATE products SET gallery_4 = NULL WHERE id = ?';
+            const values = [id];
+            con.query(query, values);
+         }
+         if(deleteImg5) {
+            const query = 'UPDATE products SET gallery_5 = NULL WHERE id = ?';
+            const values = [id];
+            con.query(query, values);
+         }
 
          /* Add product without main image */
-         const values = [name, priceM_meat, priceL_meat, priceM_vege, priceL_vege,
-            shortDescription, longDescription, meatDescription, vegeDescription,
-            categoryId, bracketName, vegan, meat, m, l, hidden, priority, id];
-         const query = 'UPDATE products SET name = ?, price_m_meat = ?, price_l_meat = ?, price_m_vege = ?, price_l_vege = ?, ' +
-             'short_description = ?, long_description = ?, meat_description = ?, vege_description = ?, category_id = ?, bracket_name = ?, ' +
-             'vege = ?, meat = ?, m = ?, l = ?, hidden = ?, priority = ? ' +
+         const values = [name, priceM_meat, priceL_meat, priceS_meat, priceM_vege, priceL_vege, priceS_vege,
+            shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS,
+            categoryId, bracketName, vegan, meat, m, l, s, hidden, priority, id];
+         const query = 'UPDATE products SET name = ?, price_m_meat = ?, price_l_meat = ?, price_s_meat = ?, price_m_vege = ?, price_l_vege = ?, price_s_vege = ?, ' +
+             'short_description = ?, long_description = ?, meat_description = ?, vege_description = ?, meat_description_m = ?, vege_description_m = ?, meat_description_s = ?, vege_description_s = ?, category_id = ?, bracket_name = ?, ' +
+             'vege = ?, meat = ?, m = ?, l = ?, s = ?, hidden = ?, priority = ? ' +
              'WHERE id = ?';
          con.query(query, values, (err, res) => {
             /* Update images id in product row */
@@ -283,6 +307,30 @@ con.connect(err => {
                con.query(query, values);
             }
 
+            const gallery4Index = filenames.findIndex((item) => {
+               if(item) {
+                  return item.search(/gallery4.*/g, "i") !== -1
+               }
+               else return false;
+            });
+            if(gallery4Index !== -1) {
+               const values = [filesId[gallery4Index], id];
+               const query = 'UPDATE products SET gallery_4 = ? WHERE id = ?';
+               con.query(query, values);
+            }
+
+            const gallery5Index = filenames.findIndex((item) => {
+               if(item) {
+                  return item.search(/gallery5.*/g, "i") !== -1
+               }
+               else return false;
+            });
+            if(gallery5Index !== -1) {
+               const values = [filesId[gallery3Index], id];
+               const query = 'UPDATE products SET gallery_5 = ? WHERE id = ?';
+               con.query(query, values);
+            }
+
             if(res) response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=1");
             else response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=0");
          });
@@ -315,7 +363,7 @@ con.connect(err => {
    router.get("/get-all-products", (request, response) => {
       const query = 'SELECT p.id, p.name as product_name, p.bracket_name, i.file_path as image, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, p.date, COALESCE(c.name, "Brak") as category_name, p.hidden, p.priority FROM products p ' +
       'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
-      'LEFT OUTER JOIN images i ON p.main_image = i.id ORDER BY p.date DESC';
+      'LEFT OUTER JOIN images i ON p.gallery_1 = i.id ORDER BY p.date DESC';
 
       con.query(query, (err, res) => {
          if(res) {
@@ -383,6 +431,9 @@ con.connect(err => {
       const query2 = 'SELECT i.file_path FROM images i JOIN products p ON i.id = p.gallery_1 WHERE p.id = ?';
       const query3 = 'SELECT i.file_path FROM images i JOIN products p ON i.id = p.gallery_2 WHERE p.id = ?';
       const query4 = 'SELECT i.file_path FROM images i JOIN products p ON i.id = p.gallery_3 WHERE p.id = ?';
+      const query5 = 'SELECT i.file_path FROM images i JOIN products p ON i.id = p.gallery_4 WHERE p.id = ?';
+      const query6 = 'SELECT i.file_path FROM images i JOIN products p ON i.id = p.gallery_5 WHERE p.id = ?';
+
       con.query(query1, values, (err, res) => {
          if(res) if(res[0]) { gallery.push(res[0].file_path) } else { gallery.push(null) }
          else gallery.push(null);
@@ -395,16 +446,27 @@ con.connect(err => {
                con.query(query4, values, (err, res) => {
                   if(res) if(res[0]) { gallery.push(res[0].file_path) } else { gallery.push(null) }
                   else gallery.push(null);
-                  if(res) {
-                     response.send({
-                        result: gallery
-                     });
-                  }
-                  else {
-                     response.send({
-                        result: 0
-                     });
-                  }
+                  con.query(query5, values, (err, res) => {
+                     if(res) if(res[0]) { gallery.push(res[0].file_path) } else { gallery.push(null) }
+                     else gallery.push(null);
+                     con.query(query6, values, (err, res) => {
+                        if (res) if (res[0]) {
+                           gallery.push(res[0].file_path)
+                        } else {
+                           gallery.push(null)
+                        }
+                        else gallery.push(null);
+                        if (res) {
+                           response.send({
+                              result: gallery
+                           });
+                        } else {
+                           response.send({
+                              result: 0
+                           });
+                        }
+                     })
+                  })
                })
             })
          })
@@ -417,7 +479,7 @@ con.connect(err => {
       const values = [name];
       /* Query uses custom MySQL function - SPLIT_STR */
       const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
-          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, p.m, p.l, i.file_path as file_path ' +
+          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.meat_description_m, p.vege_description_m, p.category_id, p.date, p.vege, p.meat, p.m, p.l, i.file_path as file_path ' +
           'FROM products p LEFT OUTER JOIN images i ON i.id = p.main_image WHERE LOWER(SPLIT_STR(p.name, "/", 1)) = ?';
       con.query(query, values, (err, res) => {
          response.send({
@@ -450,8 +512,8 @@ con.connect(err => {
       const { id } = request.body;
       const values = [id];
       const query = 'SELECT p.id as id, p.name, p.bracket_name, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, ' +
-          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.category_id, p.date, p.vege, p.meat, ' +
-          'p.m, p.l, i.file_path as file_path, p.gallery_1, p.gallery_2, p.gallery_3 ' +
+          'p.short_description, p.long_description, p.meat_description, p.vege_description, p.meat_description_m, p.vege_description_m, p.category_id, p.date, p.vege, p.meat, ' +
+          'p.m, p.l, i.file_path as file_path, p.gallery_1, p.gallery_2, p.gallery_3, p.gallery_4, p.gallery_5 ' +
           'FROM products p LEFT OUTER JOIN images i ON i.id = p.main_image WHERE p.id = ?';
       con.query(query, values, (err, res) => {
          if(res) {

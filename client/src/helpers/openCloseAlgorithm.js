@@ -11,12 +11,15 @@ const areShopOpen = () => {
     const currentDayOfTheWeek = currentDate.getDay();
 
     /* Check if shop closed becouse of the time */
-    if(isShorterDay(currentDayOfTheWeek)) {
+    if((isShorterDay(currentDayOfTheWeek))||(currentDate.getDay() === 1)) {
         if((currentHour < 9)||(currentHour >= 18)) return false;
     }
     else {
         if((currentHour < 9)||(currentHour >= 19)) return false;
     }
+
+    /* Check if shop closed bacouse of the day (Monday) */
+    if(currentDate.getDay() === 1) return false;
 
     /* Check if shop closed becouse of admin settings */
     return axios.get(`${settings.API_URL}/dates/get-all`);

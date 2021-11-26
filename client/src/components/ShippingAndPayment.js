@@ -52,13 +52,15 @@ const ShippingAndPayment = () => {
     const [deliveryPriceSettled, setDeliveryPriceSettled] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [shopOpen, setShopOpen] = useState(true);
+    const [calculate, setCalculate] = useState(false);
+    const [paymentAtDelivery, setPaymentAtDelivery] = useState(false);
+    const [paymentAtDeliveryMethod, setPaymentAtDeliveryMethod] = useState(-1);
 
     const [vat, setVat] = useState(false);
 
     useEffect(() => {
         const currentDate = new Date();
         const currentHour = currentDate.getHours();
-        const currentDayOfTheWeek = currentDate.getDay();
 
         const shopOpenAlgorithm = areShopOpen();
         if(shopOpenAlgorithm) {
@@ -66,7 +68,7 @@ const ShippingAndPayment = () => {
                 .then((res) => {
                     const result = res.data.result;
                     result.findIndex((item) => {
-                        if((new Date(item.day).getDay() === currentDayOfTheWeek)&&(item.hour_start === currentHour)) {
+                        if((new Date(item.day).getDate() === new Date().getDate()+1)&&(new Date(item.day).getMonth() === new Date().getMonth())&&(item.hour_start === currentHour)) {
                             setShopOpen(false);
                         }
                     })
@@ -315,25 +317,6 @@ const ShippingAndPayment = () => {
                    else setBlock(0);
                }
             });
-
-        document.querySelectorAll(".input--address").forEach(item => {
-            item.addEventListener("change", (event) => {
-                event.preventDefault();
-                setDeliveryPriceSettled(false);
-                /* Check if should send request to Google Maps API */
-                const allAddressInputs = Array.prototype.slice.call(document.querySelectorAll(".input--address"));
-                if(allAddressInputs?.findIndex(item => {
-                    return item.value === "" || (item.value.length !== 6 && item.name === "postalCode");
-                }) === -1) {
-                    const city = allAddressInputs[0].attributes.value.value;
-                    const postalCode = allAddressInputs[1].attributes.value.value;
-                    const street = allAddressInputs[2].attributes.value.value.split(" ")[0];
-                    const building = allAddressInputs[2].attributes.value.value.split(" ")[1];
-                    calculateRoute(city, postalCode, street, building);
-                }
-            });
-        });
-
     }, []);
 
     const validationSchema = Yup.object({
@@ -377,7 +360,6 @@ const ShippingAndPayment = () => {
             city: "",
             postalCode: "",
             street: "",
-            building: "",
             flat: null,
             ribbonFrom: "",
             ribbonTo: "",
@@ -395,15 +377,12 @@ const ShippingAndPayment = () => {
                 /* Additional validation for delivery price */
                 if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))&&(deliveryPrice !== -2)) {
                     setDeliveryValidate(1);
-                    console.log("validate delivery");
                     /* Additional validation for delivery date and time and delivery price */
                     if(((calendar[dayOfDelivery])&&(hourOfDelivery !== -1))||(fastest)) {
                         setFormValidate(true);
-                        console.log("validate calendar");
                         setSubmitted(true);
                     }
                     else {
-                        console.log("date error");
                         setDateError(true);
                     }
                 }
@@ -414,6 +393,10 @@ const ShippingAndPayment = () => {
             }
         }
     });
+
+    useEffect(() => {
+        calculateRoute();
+    }, [calculate]);
 
     useEffect(() => {
         setHourOfDelivery(-1);
@@ -453,9 +436,11 @@ const ShippingAndPayment = () => {
 
     useEffect(() => {
         /* Payment */
+        console.log(formValidate);
+        console.log(deliveryValidate);
         if((formValidate)&&(deliveryValidate)) {
             const sessionId = uuidv4();
-            setFormValidate(false);
+            // setFormValidate(false);
 
             /* Add user */
             axios.post("https://brunchbox.pl/auth/add-user", {
@@ -465,16 +450,13 @@ const ShippingAndPayment = () => {
                 phoneNumber: formik.values.phoneNumber
             })
                 .then(res => {
-                    console.log(res.data);
                     let insertedUserId = res.data.result;
-                    const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
                     /* Add order */
                     axios.post("https://brunchbox.pl/order/add", {
-                        paymentMethod: null,
+                        paymentMethod: paymentAtDelivery ? paymentAtDeliveryMethod : null,
                         shippingMethod: null,
                         city: personal ? "Odbiór osobisty" : formik.values.city,
-                        street: personal ? "0" : formik.values.street.split(" ")[0],
-                        building: personal ? "0" : formik.values.street.split(" ")[1],
+                        street: personal ? "0" : formik.values.street,
                         postalCode: personal ? "0" : formik.values.postalCode,
                         user: insertedUserId,
                         comment: formik.values.comment,
@@ -484,11 +466,11 @@ const ShippingAndPayment = () => {
                         companyCity: vat ? formik.values.companyCity : null,
                         companyPostalCode: vat ? formik.values.postalCode : null,
                         companyStreet: vat ? formik.values.companyStreet : null,
+                        orderPrice: amount + deliveryPrice,
                         delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + hourOfDelivery + ":00 - " + (hourOfDelivery+1) + ":00"
                     })
                         .then(res => {
                             const orderId = res.data.result;
-                            console.log(res.data.result);
 
                             /* Add ribbon */
                             if(ribbon) {
@@ -498,36 +480,6 @@ const ShippingAndPayment = () => {
                                 });
                             }
 
-                            /* Add sells - normal products */
-                            const cart = JSON.parse(localStorage.getItem('sec-cart'));
-                            cart?.forEach((item, cartIndex) => {
-                                /* Add sells */
-                                axios.post("https://brunchbox.pl/order/add-sell", {
-                                    orderId,
-                                    productId: item.id,
-                                    option: item.option,
-                                    quantity: item.quantity,
-                                    size: item.size
-                                });
-                            });
-
-                            /* Add sells - banquet products */
-                            const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
-                            banquetCart?.forEach((item) => {
-                                item.forEach(itemChild => {
-                                    /* Add banquet sells */
-                                    if(itemChild.amount) {
-                                        axios.post("https://brunchbox.pl/order/add-sell", {
-                                            orderId,
-                                            productId: itemChild.id,
-                                            option: itemChild.selected25 ? "25 szt." : "50 szt.",
-                                            quantity: itemChild.amount,
-                                            size: null
-                                        });
-                                    }
-                                });
-                            });
-
                             /* Decrement coupon times_to_use value */
                             if(sessionStorage.getItem('brunchbox-coupon-used') === 'T') {
                                 sessionStorage.removeItem('brunchbox-coupon-used');
@@ -536,24 +488,77 @@ const ShippingAndPayment = () => {
                                 });
                             }
 
-                            /* PAYMENT PROCESS */
-                            let paymentUri = "https://secure.przelewy24.pl/trnRequest/";
+                            /* Add sells - normal products */
+                            const cart = JSON.parse(localStorage.getItem('sec-cart'));
+                            const banquetCart = JSON.parse(localStorage.getItem('sec-cart-banquet'));
 
-                            axios.post("https://brunchbox.pl/payment/payment", {
-                                sessionId,
-                                amount: amount + deliveryPrice,
-                                email: formik.values.email
-                            })
-                                .then(res => {
-                                    console.log(res.data);
-                                    /* Remove cart from local storage */
-                                    localStorage.removeItem('sec-cart');
-                                    localStorage.removeItem('sec-amount');
-                                    localStorage.removeItem('sec-cart-banquet');
+                            cart?.forEach((item, index, array) => {
+                                /* Add sells */
+                                axios.post("https://brunchbox.pl/order/add-sell", {
+                                    orderId,
+                                    productId: item.id,
+                                    option: item.option,
+                                    quantity: item.quantity,
+                                    size: item.size
+                                })
+                                    .then((res) => {
+                                        if((index === array.length-1) && (!banquetCart) && (paymentAtDelivery)) {
+                                            axios.post("http://localhost:5000/payment/send-notification", {
+                                                orderId
+                                            })
+                                                .then((res) => {
+                                                    window.location = "/dziekujemy";
+                                                });
+                                        }
+                                    })
+                            });
 
-                                    const token = res.data.result;
-                                    window.location.href = `${paymentUri}${token}`;
+                            /* Add sells - banquet products */
+                            banquetCart?.forEach((item, index, array) => {
+                                item.forEach((itemChild, indexChild, arrayChild) => {
+                                    /* Add banquet sells */
+                                    if(itemChild.amount) {
+                                        axios.post("https://brunchbox.pl/order/add-sell", {
+                                            orderId,
+                                            productId: itemChild.id,
+                                            option: itemChild.selected25 ? "25 szt." : "50 szt.",
+                                            quantity: itemChild.amount,
+                                            size: null
+                                        })
+                                            .then((res) => {
+                                                if(index === array.length-1 && indexChild === arrayChild.length-1 && paymentAtDelivery) {
+                                                    axios.post('https://brunchbox.pl/payment/send-notification', {
+                                                        orderId
+                                                    })
+                                                        .then((res) => {
+                                                            window.location = "/dziekujemy";
+                                                        });
+                                                }
+                                            });
+                                    }
                                 });
+                            });
+
+                            /* PAYMENT PROCESS */
+                            if(!paymentAtDelivery) {
+                                let paymentUri = "https://secure.przelewy24.pl/trnRequest/";
+
+                                axios.post("https://brunchbox.pl/payment/payment", {
+                                    sessionId,
+                                    amount: amount + deliveryPrice,
+                                    email: formik.values.email
+                                })
+                                    .then(res => {
+                                        console.log(res.data);
+                                        /* Remove cart from local storage */
+                                        localStorage.removeItem('sec-cart');
+                                        localStorage.removeItem('sec-amount');
+                                        localStorage.removeItem('sec-cart-banquet');
+
+                                        const token = res.data.result;
+                                        window.location.href = `${paymentUri}${token}`;
+                                    });
+                            }
                         });
                 });
         }
@@ -591,7 +596,7 @@ const ShippingAndPayment = () => {
                     else {
                         /* Discount by amount */
                         setDiscount(res.data.amount.toString() + " PLN");
-                        setAmount(amount - res.data.amount);
+                        setAmount(amount - parseInt(res.data.amount));
                     }
                 }
                 else if(!res.data.result) {
@@ -633,6 +638,36 @@ const ShippingAndPayment = () => {
         else {
             setRouteError("Wpisz adres dostawy");
             setRouteLoader(false);
+        }
+    }
+
+    const changeAddress = (e, n) => {
+        const value = e.target.value;
+        switch(n) {
+            case 0:
+                formik.setFieldValue('city', value);
+                break;
+            case 1:
+                formik.setFieldValue('postalCode', value);
+                break;
+            case 2:
+                formik.setFieldValue('street', value);
+                break;
+            default:
+                break;
+        }
+
+        setDeliveryPriceSettled(false);
+        /* Check if should send request to Google Maps API */
+        const allAddressInputs = Array.prototype.slice.call(document.querySelectorAll(".input--address"));
+        if(allAddressInputs?.findIndex(item => {
+            return item.value === "" || (item.value.length !== 6 && item.name === "postalCode");
+        }) === -1) {
+            const city = allAddressInputs[0].attributes.value.value;
+            const postalCode = allAddressInputs[1].attributes.value.value;
+            const street = allAddressInputs[2].attributes.value.value.split(" ")[0];
+            const building = allAddressInputs[2].attributes.value.value.split(" ")[1];
+            calculateRoute(city, postalCode, street, building);
         }
     }
 
@@ -778,8 +813,9 @@ const ShippingAndPayment = () => {
                     <label className="shippingAndPayment__label label-70">
                         <input className={formik.errors.city ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="city"
+                               autoComplete="new-password"
                                value={formik.values.city}
-                               onChange={formik.handleChange}
+                               onChange={(e) => { changeAddress(e, 0); }}
                                disabled={personal}
                                placeholder="Miejscowość"
                                type="text" />
@@ -787,8 +823,9 @@ const ShippingAndPayment = () => {
                     <label className="shippingAndPayment__label label-30">
                         <input className={formik.errors.postalCode ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="postalCode"
+                               autoComplete="new-password"
                                value={formik.values.postalCode}
-                               onChange={formik.handleChange}
+                               onChange={(e) => { changeAddress(e, 1); }}
                                disabled={personal}
                                placeholder="Kod pocztowy"
                                type="text" />
@@ -797,8 +834,9 @@ const ShippingAndPayment = () => {
                     <label className="shippingAndPayment__label label-100">
                         <input className={formik.errors.street ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
                                name="street"
+                               autoComplete="new-password"
                                value={formik.values.street}
-                               onChange={formik.handleChange}
+                               onChange={(e) => { changeAddress(e, 2); }}
                                placeholder="Ulica, numer domu, numer mieszkania"
                                disabled={personal}
                                type="text" />
@@ -818,6 +856,28 @@ const ShippingAndPayment = () => {
                             </section>
                         </label>
                         </div> : ""}
+
+                        <label className="ribbonBtnLabel">
+                            <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPaymentAtDelivery(!paymentAtDelivery); }}>
+                                <span className={paymentAtDelivery ? "ribbon" : "d-none"}></span>
+                            </button>
+                            Płatność przy odbiorze
+                        </label>
+                        {paymentAtDelivery ? <div className="paymentAtDelivery">
+                            <label className="ribbonBtnLabel">
+                                <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPaymentAtDeliveryMethod(1); }}>
+                                    <span className={paymentAtDeliveryMethod === 1 ? "ribbon" : "d-none"}></span>
+                                </button>
+                                Płatność gotówką
+                            </label>
+                            <label className="ribbonBtnLabel">
+                                <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPaymentAtDeliveryMethod(2); }}>
+                                    <span className={paymentAtDeliveryMethod === 2 ? "ribbon" : "d-none"}></span>
+                                </button>
+                                Płatność kartą
+                            </label>
+                        </div> : ""}
+
 
                         <label className="ribbonBtnLabel">
                             <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setCoupon(!coupon); }}>
@@ -898,7 +958,7 @@ const ShippingAndPayment = () => {
                                        placeholder="NIP" />
                             </label>
                             <label className="shippingAndPayment__label label-70">
-                                <input className={formik.errors.companyCity ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
+                                <input className={formik.errors.companyCity ? "shippingAndPayment__input input--addressCompany shippingAndPayment--error" : "shippingAndPayment__input input--addressCompany"}
                                        name="companyCity"
                                        value={formik.values.companyCity}
                                        onChange={formik.handleChange}
@@ -906,7 +966,7 @@ const ShippingAndPayment = () => {
                                        type="text" />
                             </label>
                             <label className="shippingAndPayment__label label-30">
-                                <input className={formik.errors.companyPostalCode ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
+                                <input className={formik.errors.companyPostalCode ? "shippingAndPayment__input input--addressCompany shippingAndPayment--error" : "shippingAndPayment__input input--addressCompany"}
                                        name="companyPostalCode"
                                        value={formik.values.companyPostalCode}
                                        onChange={formik.handleChange}
@@ -915,7 +975,7 @@ const ShippingAndPayment = () => {
                             </label>
 
                             <label className="shippingAndPayment__label label-100">
-                                <input className={formik.errors.companyStreet ? "shippingAndPayment__input input--address shippingAndPayment--error" : "shippingAndPayment__input input--address"}
+                                <input className={formik.errors.companyStreet ? "shippingAndPayment__input input--addressCompany shippingAndPayment--error" : "shippingAndPayment__input input--addressCompany"}
                                        name="companyStreet"
                                        value={formik.values.companyStreet}
                                        onChange={formik.handleChange}

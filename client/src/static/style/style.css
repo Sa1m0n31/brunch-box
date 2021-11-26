@@ -696,8 +696,8 @@ ol {
 }
 
 .singleProduct__img {
-    width: auto;
-    height: 100%;
+    width: 100%;
+    height: auto;
     cursor: pointer;
     transition: .3s all ease-in-out;
 }
@@ -2070,4 +2070,8 @@ ol {
 
 .homePageSection .button--landing {
     margin-top: 50px;
+}
+
+.paymentAtDelivery {
+    margin-left: 30px;
 }

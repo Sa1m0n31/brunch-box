@@ -709,6 +709,10 @@
     .textAlignRight * {
         text-align: left;
     }
+
+    .singleProduct__mainImage {
+        height: auto;
+    }
 }
 
 @media(max-width: 768px) {

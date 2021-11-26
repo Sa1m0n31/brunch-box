@@ -282,40 +282,42 @@ const PanelDatesSettings = () => {
                     Godziny wyłączone z dostawy
                 </h1>
                 {hoursDatabase.length ? hoursDatabase.map((item, index) => {
-                    return <section className="panelContent__item productItem" key={index}>
-                        <section className="panelContent__column">
-                            <h4 className="panelContent__column__label">
-                                Dzień
-                            </h4>
-                            <h3 className="panelContent__column__value">
-                                {item.day.substring(0, 10)}
-                            </h3>
-                        </section>
+                    if(new Date() < new Date(item.day)) {
+                        return <section className="panelContent__item productItem" key={index}>
+                            <section className="panelContent__column">
+                                <h4 className="panelContent__column__label">
+                                    Dzień
+                                </h4>
+                                <h3 className="panelContent__column__value">
+                                    {item.day.substring(0, 10)}
+                                </h3>
+                            </section>
 
-                        <section className="panelContent__column">
-                            <h4 className="panelContent__column__label">
-                                Godzina
-                            </h4>
-                            <h3 className="panelContent__column__value">
-                                {item.hour_start + ":00 - " + parseInt(parseInt(item.hour_start)+1) + ":00" }
-                            </h3>
-                        </section>
+                            <section className="panelContent__column">
+                                <h4 className="panelContent__column__label">
+                                    Godzina
+                                </h4>
+                                <h3 className="panelContent__column__value">
+                                    {item.hour_start + ":00 - " + parseInt(parseInt(item.hour_start)+1) + ":00" }
+                                </h3>
+                            </section>
 
-                        <section className="panelContent__column">
-                            <h4 className="panelContent__column__label">
-                                Działania
-                            </h4>
-                            <div className="panelContent__column__value">
-                                <div className="panelContent__column__value panelContent__column__value--buttons">
-                                    <button className="panelContent__column__btn" onClick={() => { openModal(item.id) }}>
-                                        <a className="panelContent__column__link" href="#">
-                                            <img className="panelContent__column__icon" src={trash} alt="usuń"/>
-                                        </a>
-                                    </button>
+                            <section className="panelContent__column">
+                                <h4 className="panelContent__column__label">
+                                    Działania
+                                </h4>
+                                <div className="panelContent__column__value">
+                                    <div className="panelContent__column__value panelContent__column__value--buttons">
+                                        <button className="panelContent__column__btn" onClick={() => { openModal(item.id) }}>
+                                            <a className="panelContent__column__link" href="#">
+                                                <img className="panelContent__column__icon" src={trash} alt="usuń"/>
+                                            </a>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </section>
                         </section>
-                    </section>
+                    }
 
                 }) : <label className="marginTop20">Brak</label>}
             </section>

@@ -140,24 +140,30 @@ const SingleProductContent = () => {
     }, []);
 
     useEffect(() => {
-        if(option === "Mieszana") setCurrentDesc(product.meat_description);
-        else setCurrentDesc(product.vege_description);
+        if(option === "Mieszana") {
+            if(size === "M") setCurrentDesc(product.meat_description_m);
+            else setCurrentDesc(product.meat_description);
+        }
+        else {
+            if(size === "M") setCurrentDesc(product.vege_description_m);
+            else setCurrentDesc(product.vege_description);
+        }
 
         if((size === "M")&&(option === "Mieszana")) {
             setPrice(product.price_m_meat);
-            // switchMainImage(0);
+            switchMainImage(0);
         }
         else if((size === "L")&&(option === "Mieszana")) {
             setPrice(product.price_l_meat);
-            // switchMainImage(1);
+            switchMainImage(1);
         }
         else if((size === "M")&&(option === "Wegetariańska")) {
             setPrice(product.price_m_vege);
-            // switchMainImage(2);
+            switchMainImage(2);
         }
         else if((size === "L")&&(option === "Wegetariańska")) {
             setPrice(product.price_l_vege);
-            // switchMainImage(3);
+            switchMainImage(3);
         }
     }, [size, option]);
 
@@ -172,7 +178,7 @@ const SingleProductContent = () => {
                 .then((res) => {
                     const result = res.data.result;
                     result.findIndex((item) => {
-                        if((new Date(item.day).getDay() === currentDayOfTheWeek)&&(item.hour_start === currentHour)) {
+                        if((new Date(item.day).getDate() === new Date().getDate()+1)&&(item.hour_start === currentHour)) {
                             setShopOpen(false);
                         }
                     })
@@ -275,12 +281,11 @@ const SingleProductContent = () => {
                         <img className="singleProduct__img" src={images[indexAtMain]} alt="produkt" />
                     </button>
 
-                    {/*<section className="singleProduct__images">*/}
-                    {/*    <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />*/}
-                    {/*    <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />*/}
-                    {/*    <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />*/}
-
-                    {/*</section>*/}
+                    <section className="singleProduct__images">
+                        <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />
+                        <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />
+                        <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />
+                    </section>
 
                 </section>
                 <section className="singleProduct__right">

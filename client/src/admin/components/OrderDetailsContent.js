@@ -201,7 +201,7 @@ const OrderDetailsContent = () => {
                                 NIP: <b>{cart[0].nip}</b>
                             </h3>
                             <h3 className="panelContent__vatData__header">
-                                Adres: <b>{cart[0].company_address}</b>
+                                Adres: <b>{cart[0].company_address}</b><br/>
                                 <b>{cart[0].company_postal_code} {cart[0].company_city}</b>
                             </h3>
                         </section> : ""}
@@ -219,11 +219,8 @@ const OrderDetailsContent = () => {
                         <h3 className="panelContent__data w-30">
                             {cart[0].postal_code}
                         </h3>
-                        <h3 className="panelContent__data w-50">
+                        <h3 className="panelContent__data w-100">
                             {cart[0].street}
-                        </h3>
-                        <h3 className="panelContent__data w-50">
-                            {cart[0].building}
                         </h3>
                         {cart[0].order_comment !== null ? <p className={cart[0].order_comment ? "panelContent__data orderComment w-100" : "panelContent__data w-100"}>
                             {cart[0].order_comment ? cart[0].order_comment : "BRAK KOMENTARZA"}

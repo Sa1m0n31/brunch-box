@@ -38,6 +38,12 @@
               'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '270056535014462');
       fbq('track', 'PageView');
+      fbq('track', 'AddToCart');
+      fbq('track', 'AddToWishlist');
+      fbq('track', 'Purchase', {
+        value: 0.00,
+        currency: 'PLN'
+      });
     </script>
     <noscript><img height="1" width="1" style="display:none"
                    src="https://www.facebook.com/tr?id=270056535014462&ev=PageView&noscript=1"
