@@ -45,20 +45,25 @@ con.connect(err => {
     });
 
     router.post("/send-notification", (request, response) => {
-        const { orderId } = request.body;
+        const { orderId, en } = request.body;
 
-        sendEmailNotification(orderId, response, true);
+        if(en) sendEmailNotification(orderId, response, true, true);
+        else sendEmailNotification(orderId, response, true, false);
     });
 
-    const sendEmailNotification = (sessionId, response = null, byOrderId = false) => {
+    const sendEmailNotification = (sessionId, response = null, byOrderId = false, english = false) => {
         /* Send email notification */
         const values = [sessionId];
-        let query
+        let query, splitIndex;
+
+        if(english) splitIndex = 1;
+        else splitIndex = 0;
+
         if(byOrderId) {
-            query = 'SELECT p.name, s.size, s.quantity, s.option, o.payment_method, o.delivery, o.order_comment, o.order_price, u.phone_number, u.email, r.caption, o.city as orderCity, o.postal_code as orderPostalCode, o.street as orderStreet, o.nip, o.company_name, o.company_city, o.company_postal_code, o.company_address FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.id = ?';
+            query = 'SELECT p.name, p.price_l_vege, p.price_m_vege, p.price_m_meat, p.price_l_meat, s.size, s.quantity, s.option, o.payment_method, o.delivery, o.order_comment, o.order_price, u.phone_number, u.email, r.caption, o.city as orderCity, o.postal_code as orderPostalCode, o.street as orderStreet, o.nip, o.company_name, o.company_city, o.company_postal_code, o.company_address FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.id = ?';
         }
         else {
-            query = 'SELECT p.name, s.size, s.quantity, s.option, o.payment_method, o.delivery, o.order_comment, o.order_price, u.phone_number, u.email, r.caption, o.city as orderCity, o.postal_code as orderPostalCode, o.street as orderStreet, o.nip, o.company_name, o.company_city, o.company_postal_code, o.company_address FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.przelewy24_id = ?';
+            query = 'SELECT p.name, p.price_l_vege, p.price_m_vege, p.price_m_meat, p.price_l_meat, s.size, s.quantity, s.option, o.payment_method, o.delivery, o.order_comment, o.order_price, u.phone_number, u.email, r.caption, o.city as orderCity, o.postal_code as orderPostalCode, o.street as orderStreet, o.nip, o.company_name, o.company_city, o.company_postal_code, o.company_address FROM orders o JOIN sells s ON o.id = s.order_id JOIN products p ON s.product_id = p.id LEFT OUTER JOIN ribbons r ON r.order_id = o.id JOIN users u ON u.id = o.user WHERE o.przelewy24_id = ?';
         }
 
             con.query(query, values, (err, res) => {
@@ -73,6 +78,7 @@ con.connect(err => {
                 let orderDedication = res[0].caption;
                 let nip = null, companyName, companyPostalCode, companyCity, companyAddress;
                 let vat = "Brak";
+                let price = 0;
 
                 if(res[0].nip) {
                     nip = res[0].nip;
@@ -85,11 +91,23 @@ con.connect(err => {
 
                 let orderItems = "";
                 JSON.parse(JSON.stringify(res)).forEach((item, index, array) => {
-                    orderItems += "<br/>" + item.name.split("/")[0] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ";";
+                    if(item.size === 'M' && item.option === 'Mieszana') {
+                        price = item.price_m_meat;
+                    }
+                    if(item.size === 'M' && item.option === 'Wegetariańska') {
+                        price = item.price_m_vege;
+                    }
+                    if(item.size === 'L' && item.option === 'Mieszana') {
+                        price = item.price_l_meat;
+                    }
+                    if(item.size === 'L' && item.option === 'Wegetariańska') {
+                        price = item.price_l_vege;
+                    }
+                    orderItems += "<br/>" + item.name.split("/")[splitIndex] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ' - ' + price + " PLN" + ";";
 
                     if(index === array.length-1) {
                         if(nip) {
-                            vat = "Faktura VAT: " + companyName + ", NIP: " + nip + "<br/>" + companyAddress + "<br/>" + companyPostalCode + " " + companyCity;
+                            vat = companyName + ", NIP: " + nip + "<br/>" + companyAddress + "<br/>" + companyPostalCode + " " + companyCity;
                         }
 
                         /* Nodemailer */
@@ -108,46 +126,73 @@ con.connect(err => {
 
                         let mailOptions = {
                             from: 'brunchbox@skylo-pl.atthost24.pl',
-                            to: ["zamowienia@brunchbox.pl"],
+                            to: ["zamowienia@brunchbox.pl", "zamowienia.brunchbox@gmail.com"],
                             subject: 'Nowe zamówienie w sklepie Brunchbox',
                             html: '<h2>Nowe zamówienie!</h2> ' +
-                                '<p>Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
-                                `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
-                                `<p><b>Adres dostawy:</b> ` + (deliveryAddress ? deliveryAddress : "Odbiór osobisty") + `</p>` +
-                                `<p><b>Płatność:</b> ` + (!paymentMethod ? "Przelewy24" : (paymentMethod === 1 ? "Gotówką przy odbiorze" : "Kartą przy odbiorze")) + `</p>` +
-                                `<p><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
-                                `<p><b>Adres email:</b> ` + userEmail + `</p>` +
-                                `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
-                                `<p><b>Łączny koszt zamówienia:</b> ` + orderPrice + `PLN </p>` +
-                                `<p><b>Komentarz do zamówienia:</b> ` + (orderComment ? orderComment : "Brak") + `</p>` +
-                                `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
-                                `<p><b>Faktura VAT:</b> ` + vat + `</p>` +
+                                '<p style="color: #000;">Ktoś właśnie złożył zamówienie w sklepie Brunchbox. W celu obsługi zamówienia, zaloguj się do panelu administratora: </p> ' +
+                                `<p style="color: #000;"><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
+                                `<p style="color: #000;"><b>Adres dostawy:</b> ` + (deliveryAddress !== "0" ? deliveryAddress : "Odbiór osobisty") + `</p>` +
+                                `<p style="color: #000;"><b>Płatność:</b> ` + (!paymentMethod ? "Przelewy24" : (paymentMethod === 1 ? "Gotówką przy odbiorze" : "Kartą przy odbiorze")) + `</p>` +
+                                `<p style="color: #000;"><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
+                                `<p style="color: #000;"><b>Adres email:</b> ` + userEmail + `</p>` +
+                                `<p style="color: #000;"><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
+                                `<p style="color: #000;"><b>Łączny koszt zamówienia:</b> ` + orderPrice + ` PLN </p>` +
+                                `<p style="color: #000;"><b>Komentarz do zamówienia:</b> ` + (orderComment ? orderComment : "Brak") + `</p>` +
+                                `<p style="color: #000;"><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
+                                `<p style="color: #000;"><b>Faktura VAT:</b> ` + vat + `</p>` +
                                 '<a href="https://brunchbox.pl/admin">' +
                                 'Przejdź do panelu administratora' +
                                 ' </a>'
                         }
 
-                        let mailOptionsForUser = {
-                            from: 'brunchbox@skylo-pl.atthost24.pl',
-                            to: userEmail,
-                            subject: 'Przyjęliśmy Twoje zamówienie',
-                            html: `<h3>Dziękujemy. Przyjęliśmy Twoje zamówienie.</h3>` +
-                                `<p><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
-                                `<p><b>Adres dostawy:</b> ` + (deliveryAddress ? deliveryAddress : "Odbiór osobisty") + `</p>` +
-                                `<p><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
-                                `<p><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
-                                `<p><b>Łączny koszt zamówienia:</b> ` + orderPrice + `PLN </p>` +
-                                `<p><b>Komentarz do zamówienia:</b> ` + (orderComment ? orderComment : "Brak") + `</p>` +
-                                `<p><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
-                                `<p><b>Faktura VAT:</b> ` + vat + `</p>` +
-                                `<p></p>` +
-                                `<p></p>` +
-                                `<p></p>` +
-                                `<p>-----------------------</p>` +
-                                `<p></p>` +
-                                `<p></p>` +
-                                `<img style="max-width: 600px;" src="https://brunchbox.pl/image?url=/media/posts/stopka.png" />`
+                        let mailOptionsForUser;
+                        if(english) {
+                            mailOptionsForUser = {
+                                from: 'brunchbox@skylo-pl.atthost24.pl',
+                                to: userEmail,
+                                subject: 'We received your order',
+                                html: `<h3>Thank you. We received your order.</h3>` +
+                                    `<p style="color: #000;"><b>Time:</b> ` + deliveryTime + `</p>` +
+                                    `<p style="color: #000;"><b>Address:</b> ` + (deliveryAddress !== "0" ? deliveryAddress : "Self-pickup") + `</p>` +
+                                    `<p style="color: #000;"><b>Mobile number:</b> ` + phoneNumber + `</p>` +
+                                    `<p style="color: #000;"><b>Delivery consist:</b> ` + orderItems + `</p>` +
+                                    `<p style="color: #000;"><b>Total cost:</b> ` + orderPrice + ` PLN </p>` +
+                                    `<p style="color: #000;"><b>Comment:</b> ` + (orderComment ? orderComment : "None") + `</p>` +
+                                    `<p style="color: #000;"><b>Dedication:</b> ` + (orderDedication ? orderDedication : "None") + `</p>` +
+                                    `<p style="color: #000;"><b>Invoice:</b> ` + vat + `</p>` +
+                                    `<p></p>` +
+                                    `<p></p>` +
+                                    `<p></p>` +
+                                    `<p>-----------------------</p>` +
+                                    `<p></p>` +
+                                    `<p></p>` +
+                                    `<img style="max-width: 600px;" src="https://brunchbox.pl/image?url=/media/posts/stopka.png" />`
 
+                            }
+                        }
+                        else {
+                            mailOptionsForUser = {
+                                from: 'brunchbox@skylo-pl.atthost24.pl',
+                                to: userEmail,
+                                subject: 'Przyjęliśmy Twoje zamówienie',
+                                html: `<h3>Dziękujemy. Przyjęliśmy Twoje zamówienie.</h3>` +
+                                    `<p style="color: #000;"><b>Czas dostawy:</b> ` + deliveryTime + `</p>` +
+                                    `<p style="color: #000;"><b>Adres dostawy:</b> ` + (deliveryAddress !== "0" ? deliveryAddress : "Odbiór osobisty") + `</p>` +
+                                    `<p style="color: #000;"><b>Numer telefonu:</b> ` + phoneNumber + `</p>` +
+                                    `<p style="color: #000;"><b>Produkty w dostawie:</b> ` + orderItems + `</p>` +
+                                    `<p style="color: #000;"><b>Łączny koszt zamówienia:</b> ` + orderPrice + ` PLN </p>` +
+                                    `<p style="color: #000;"><b>Komentarz do zamówienia:</b> ` + (orderComment ? orderComment : "Brak") + `</p>` +
+                                    `<p style="color: #000;"><b>Dedykacja:</b> ` + (orderDedication ? orderDedication : "Brak") + `</p>` +
+                                    `<p style="color: #000;"><b>Faktura VAT:</b> ` + vat + `</p>` +
+                                    `<p></p>` +
+                                    `<p></p>` +
+                                    `<p></p>` +
+                                    `<p>-----------------------</p>` +
+                                    `<p></p>` +
+                                    `<p></p>` +
+                                    `<img style="max-width: 600px;" src="https://brunchbox.pl/image?url=/media/posts/stopka.png" />`
+
+                            }
                         }
 
                         transporter.sendMail(mailOptions, function(error, info) {

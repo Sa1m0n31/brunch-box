@@ -4,7 +4,9 @@ const getNextDays = (daysToAdd) => {
     for (let i=0; i<daysToAdd+3; i++) {
         let currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + i);
-        if(currentDate.getDay() !== 1) {
+        /* TMP TODO */
+        // if(currentDate.getDay() !== 1) {
+        if(currentDate.getDay() !== -1 && currentDate.getDate() !== 13) {
             /* Except Mondays */
             aryDates.push({
                 humanDate: addTrailingZero(currentDate.getDate()) + "." + addTrailingZero(currentDate.getMonth()+1) + "." + currentDate.getFullYear(),

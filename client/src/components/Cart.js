@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import trash from '../static/img/trash.svg'
 import write from '../static/img/eye.png'
 
-import {calculatePrice, deleteFromCart} from '../helpers/editCart'
+import {calculatePrice, deleteFromCart, editCart} from '../helpers/editCart'
 import { getSingleProduct } from "../helpers/productFunctions";
 import convertToURL from "../helpers/convertToURL";
 import settings from "../admin/helpers/settings";
@@ -85,8 +85,46 @@ const Cart = () => {
         }
     }
 
-    return <main className="cartContent">
+    const changeItemQuantity = (e, id) => {
+        if(!isNaN(parseInt(e.target.value)) && parseInt(e.target.value) > 0 && parseInt(e.target.value) < 100) {
+            setCart(cart.map((item) => {
+                if(id === item.id) {
+                    editCart(id, item.option, item.size, parseInt(e.target.value), true);
+                    return {
+                        id: item.id,
+                        option: item.option,
+                        quantity: parseInt(e.target.value),
+                        size: item.size
+                    }
+                }
+                else {
+                    return item;
+                }
+            }));
+        }
+        if(e.target.value === '') {
+            setCart(cart.map((item) => {
+                if(id === item.id) {
+                    deleteFromCart({uuid: item.uuid, id, size: item.size, option: item.option, banquet: false});
+                    return {
+                        id: item.id,
+                        option: item.option,
+                        quantity: 0,
+                        size: item.size
+                    }
+                }
+                else {
+                    return item;
+                }
+            }));
+        }
+    }
 
+    useEffect(() => {
+        setCartSum(calculateSum());
+    }, [cart]);
+
+    return <main className="cartContent">
         <Modal
             isOpen={error50Modal}
             portalClassName="smallModal"
@@ -151,9 +189,11 @@ const Cart = () => {
                             <h3 className="cart__item__label">
                                 Ilość
                             </h3>
-                            <h2 className="cart__item__value">
-                                {item.quantity}
-                            </h2>
+                            <span className="cart__item__value">
+                                <input className="cart__input"
+                                       value={item.quantity}
+                                       onChange={(e) => { changeItemQuantity(e, item.id); }} />
+                            </span>
                         </section>
 
                         <section className="cart__item__column fifthCol">

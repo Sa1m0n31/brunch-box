@@ -75,6 +75,21 @@ const OrderDetailsContent = () => {
         });
     }
 
+    const getPrice = (cartItem) => {
+        if(cartItem.size === 'M' && cartItem.option === 'Mieszana') {
+            return cartItem.price_m_meat;
+        }
+        else if(cartItem.size === 'M' && cartItem.option === 'Wegetariańska') {
+            return cartItem.price_m_vege;
+        }
+        else if(cartItem.size === 'L' && cartItem.option === 'Mieszana') {
+            return cartItem.price_l_meat;
+        }
+        else if(cartItem.size === 'L' && cartItem.option === 'Wegetariańska') {
+            return cartItem.price_l_vege;
+        }
+    }
+
     return <main className="panelContent">
 
         <Modal
@@ -145,16 +160,21 @@ const OrderDetailsContent = () => {
                             <section className="panelContent__cart__column">
                                 <span>{item.size ? `Rozmiar: ${item.size}` : ""}</span>
                             </section>
+                            <section className="panelContent__cart__column">
+                                <span>Cena: {getPrice(item)} PLN</span>
+                            </section>
                         </section>
                     })}
 
                     <div className="panelContent__cart__sum">
                         <h3>
+                            <span className="smaller">Kosz zamówienia</span> {cart[0].order_price} PLN
+                        </h3>
+                        <h3>
                             <span className="smaller">Czas dostarczenia zamówienia:</span> {cart[0].delivery}
                         </h3>
                     </div>
                 </main>
-
             </section>
 
             <section className="panelContent__orderDetails">
@@ -179,6 +199,15 @@ const OrderDetailsContent = () => {
                             {cart[0].date ? getDate(cart[0].date) + " " + getTime(cart[0].date) : ""}
                         </h3>
                     </main>
+
+                    <section className="">
+                        <h2 className="panelContent__header--smaller">
+                            Płatność:
+                        </h2>
+                        <span>
+                            {!cart[0].payment_method ? "Przelewy24" : (cart[0].payment_method === 1 ? "Płatność przy odbiorze - gotówka" : "Płatność przy odbiorze - karta")}
+                        </span>
+                    </section>
 
                     <section className="panelContent__orderStatus">
                         <h2 className="panelContent__orderStatus__header">

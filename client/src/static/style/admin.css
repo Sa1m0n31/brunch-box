@@ -1170,3 +1170,11 @@ label {
     font-weight: 400;
     font-size: 15px;
 }
+
+.panelContent__cart__sum {
+    text-align: right;
+}
+
+.panelContent__cart__sum h3:first-of-type {
+    margin-bottom: 10px;
+}

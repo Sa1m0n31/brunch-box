@@ -54,7 +54,7 @@ const ShippingAndPayment = () => {
     const [shopOpen, setShopOpen] = useState(true);
     const [calculate, setCalculate] = useState(false);
     const [paymentAtDelivery, setPaymentAtDelivery] = useState(false);
-    const [paymentAtDeliveryMethod, setPaymentAtDeliveryMethod] = useState(-1);
+    const [paymentAtDeliveryMethod, setPaymentAtDeliveryMethod] = useState(1);
 
     const [vat, setVat] = useState(false);
 
@@ -503,14 +503,14 @@ const ShippingAndPayment = () => {
                                 })
                                     .then((res) => {
                                         if((index === array.length-1) && (!banquetCart) && (paymentAtDelivery)) {
-                                            axios.post("http://localhost:5000/payment/send-notification", {
+                                            axios.post("https://brunchbox.pl/payment/send-notification", {
                                                 orderId
                                             })
                                                 .then((res) => {
                                                     window.location = "/dziekujemy";
                                                 });
                                         }
-                                    })
+                                    });
                             });
 
                             /* Add sells - banquet products */

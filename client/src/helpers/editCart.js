@@ -1,4 +1,4 @@
-const editCart = (id, option, size, quantity) => {
+const editCart = (id, option, size, quantity, editFromCart = false) => {
     let currentCart = JSON.parse(localStorage.getItem('sec-cart'));
 
    /* Iterrate over array of products - find if product is on the list */
@@ -6,7 +6,8 @@ const editCart = (id, option, size, quantity) => {
    if(currentCart?.length) {
        currentCart.forEach(item => {
            if((item.id === id)&&(item.size === size)&&(item.option === option)) {
-               item.quantity += 1;
+               if(editFromCart) item.quantity = quantity;
+               else item.quantity += 1;
                newProduct = 0;
            }
        });
