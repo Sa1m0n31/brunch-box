@@ -91,16 +91,16 @@ con.connect(err => {
 
                 let orderItems = "";
                 JSON.parse(JSON.stringify(res)).forEach((item, index, array) => {
-                    if(item.size === 'M' && item.option === 'Mieszana') {
+                    if((item.size === 'M' || item.size === '1/2 boxa') && item.option === 'Mieszana') {
                         price = item.price_m_meat;
                     }
-                    if(item.size === 'M' && item.option === 'Wegetariańska') {
+                    if((item.size === 'M' || item.size === 'Cały box') && item.option === 'Wegetariańska') {
                         price = item.price_m_vege;
                     }
-                    if(item.size === 'L' && item.option === 'Mieszana') {
+                    if((item.size === 'L' || item.size === '1/2 boxa') && item.option === 'Mieszana') {
                         price = item.price_l_meat;
                     }
-                    if(item.size === 'L' && item.option === 'Wegetariańska') {
+                    if((item.size === 'L' || item.size === 'Cały box') && item.option === 'Wegetariańska') {
                         price = item.price_l_vege;
                     }
                     orderItems += "<br/>" + item.name.split("/")[splitIndex] + ", " + item.option + (item.size ? ", " + item.size : ", ") + " x" + item.quantity + ' - ' + price + " PLN" + ";";

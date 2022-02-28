@@ -152,6 +152,7 @@ const Cart = () => {
         <main className="cart">
             {cart?.length || cartBanquet?.flat()?.length ? <>
                 {cart?.map((item, index) => {
+                    console.log(item);
                     return <section className="cart__item" id={"cart" + item.id + item.size + item.option}>
                         <a className="cart__item__imgWrapper" href={"https://brunchbox.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
                             <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>

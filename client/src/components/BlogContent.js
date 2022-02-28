@@ -16,7 +16,7 @@ const BlogContent = () => {
     }, []);
 
     const excerpt = (content) => {
-        return content.split("</p>")[0].replaceAll(/&nbsp;/g, " ").replaceAll("<p>", "");
+        return content.split("---")[0].replaceAll(/&nbsp;/g, " ").replaceAll("---", "").replaceAll(/\<(.|..)\>/gi, '');
     }
 
     return <main className="offerContent">

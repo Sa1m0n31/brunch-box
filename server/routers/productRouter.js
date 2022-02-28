@@ -140,7 +140,7 @@ con.connect(err => {
             const values = [id, name, priceM_meat, priceL_meat, priceS_meat, priceM_vege, priceL_vege, priceS_vege,
                shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS,
                filesId[0], categoryId, bracketName, vegan, meat, m, l, s, filesId[1], filesId[2], filesId[3], filesId[4], filesId[5], hidden, priority];
-            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             con.query(query, values, (err, res) => {
                if(res) response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=1");
                else response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=0");
@@ -365,7 +365,11 @@ con.connect(err => {
       'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
       'LEFT OUTER JOIN images i ON p.gallery_1 = i.id ORDER BY p.date DESC';
 
+      console.log('hii');
+
       con.query(query, (err, res) => {
+         console.log(err);
+         console.log(res);
          if(res) {
             response.send({
                result: res

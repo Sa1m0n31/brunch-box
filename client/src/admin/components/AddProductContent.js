@@ -368,19 +368,7 @@ const AddProductContent = () => {
                 </label> : ""}
 
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana M)" : ""}</span>
-                    <input type="file"
-                           className="product__fileInput"
-                           name="mainImage" />
-                    {gallery.length && gallery[0] && !deleteImg0 ? <section className="miniature">
-                        <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg0(true); }}>
-                            x
-                        </button>
-                        <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[0]}`} alt="zdjecie-produktu" />
-                    </section> : ""}
-                </label>
-                <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana L)" : ""}</span>
+                    <span>Główne zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana L)" : ""}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery1" />
@@ -392,7 +380,19 @@ const AddProductContent = () => {
                     </section> : ""}
                 </label>
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana S)" : ""}</span>
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana M)" : "1"}</span>
+                    <input type="file"
+                           className="product__fileInput"
+                           name="mainImage" />
+                    {gallery.length && gallery[0] && !deleteImg0 ? <section className="miniature">
+                        <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg0(true); }}>
+                            x
+                        </button>
+                        <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${gallery[0]}`} alt="zdjecie-produktu" />
+                    </section> : ""}
+                </label>
+                <label className="fileInputLabel">
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja Mieszana S)" : "3"}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery4" />
@@ -405,7 +405,7 @@ const AddProductContent = () => {
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja wege M)" : ""}</span>
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja wege M)" : "4"}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery2" />
@@ -418,7 +418,7 @@ const AddProductContent = () => {
                 </label>
 
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja wege L)" : ""}</span>
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja wege L)" : "5"}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery3" />
@@ -430,7 +430,7 @@ const AddProductContent = () => {
                     </section> : ""}
                 </label>
                 <label className="fileInputLabel">
-                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja wege S)" : ""}</span>
+                    <span>Zdjęcie produktu {categoryId === 1 ? "(opcja wege S)" : "6"}</span>
                     <input type="file"
                            className="product__fileInput"
                            name="gallery5" />

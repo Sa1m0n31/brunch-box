@@ -8,6 +8,7 @@ import settings from "../admin/helpers/settings";
 import Loader from "react-loader-spinner";
 import {getAllCategories} from "../helpers/categoryFunctions";
 import HomePageSection from "./HomePageSection";
+import CategoriesMenu from "./CategoriesMenu";
 
 const FullOffer = () => {
     const [products, setProducts] = useState([]);
@@ -16,23 +17,25 @@ const FullOffer = () => {
     const [productsMode, setProductsMode] = useState(-1);
 
     useEffect(() => {
+        console.log('hi');
         /* Check number of categories available */
         getAllCategories()
             .then(res => {
-                console.log(res);
                 if(res.data) {
                     const cats = res.data.result;
                     setCategories(res.data.result);
                     const availableCats = cats?.filter(item => {
                         return !item.hidden;
                     });
-                    if(availableCats.length > 1) {
-                        /* Show categories */
-                        setProductsMode(0);
-                    }
-                    else {
-                        /* Show products */
-                        setProductsMode(1);
+                    if(availableCats) {
+                        if(availableCats.length > 1) {
+                            /* Show categories */
+                            setProductsMode(0);
+                        }
+                        else {
+                            /* Show products */
+                            setProductsMode(1);
+                        }
                     }
                 }
             });
@@ -44,9 +47,11 @@ const FullOffer = () => {
 
         getAllProducts()
             .then(res => {
-                console.log(res.data.result);
-                setProducts(res.data.result.sort(sortByPriority));
-                setLoaded(true);
+                console.log(res?.data?.result);
+                if(res?.data?.result) {
+                    setProducts(res.data.result.sort(sortByPriority));
+                    setLoaded(true);
+                }
             });
     }, []);
 
@@ -95,7 +100,7 @@ const FullOffer = () => {
                     width={100}
                     height={100}
                 />
-            </main>) : <HomePageSection />}
+            </main>) : <CategoriesMenu />}
     </main>
 }
 

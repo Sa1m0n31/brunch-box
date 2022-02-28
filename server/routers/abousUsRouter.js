@@ -202,6 +202,8 @@ con.connect(err => {
     router.get("/get-all", (request, response) => {
        const query = 'SELECT a.id, a.header, a.content, a.header_en, a.content_en, i.file_path as img_path FROM about_us a LEFT OUTER JOIN images i ON a.image = i.id';
        con.query(query, (err, res) => {
+           console.log(err);
+           console.log(res);
             if(res) {
                 response.send({
                     result: res

@@ -42,8 +42,6 @@ const SingleProductContent = () => {
     const [modal, setModal] = useState(false);
     const [modalHint, setModalHint] = useState(false);
 
-    const [shopOpen, setShopOpen] = useState(true);
-
     const location = useLocation();
 
     const images = [
@@ -149,45 +147,25 @@ const SingleProductContent = () => {
             else setCurrentDesc(product.vege_description);
         }
 
-        if((size === "M")&&(option === "Mieszana")) {
+        if((size === "M" || size === '1/2 boxa')&&(option === "Mieszana")) {
             setPrice(product.price_m_meat);
             switchMainImage(0);
         }
-        else if((size === "L")&&(option === "Mieszana")) {
+        else if((size === "L" || size === 'Cały box')&&(option === "Mieszana")) {
             setPrice(product.price_l_meat);
             switchMainImage(1);
         }
-        else if((size === "M")&&(option === "Wegetariańska")) {
+        else if((size === "M" || size === '1/2 boxa')&&(option === "Wegetariańska")) {
             setPrice(product.price_m_vege);
             switchMainImage(2);
         }
-        else if((size === "L")&&(option === "Wegetariańska")) {
+        else if((size === "L" || size === 'Cały box')&&(option === "Wegetariańska")) {
             setPrice(product.price_l_vege);
             switchMainImage(3);
         }
     }, [size, option]);
 
     const addToCart = (id, option, size) => {
-        const currentDate = new Date();
-        const currentHour = currentDate.getHours();
-        const currentDayOfTheWeek = currentDate.getDay();
-
-        const shopOpenAlgorithm = areShopOpen();
-        if(shopOpenAlgorithm) {
-            shopOpenAlgorithm
-                .then((res) => {
-                    const result = res.data.result;
-                    result.findIndex((item) => {
-                        if((new Date(item.day).getDate() === new Date().getDate()+1)&&(item.hour_start === currentHour)) {
-                            setShopOpen(false);
-                        }
-                    })
-                });
-        }
-        else {
-            setShopOpen(false);
-        }
-
         if(product.category_id === 2) {
             /* Check number of half boxes in current cart */
             const currentCart = JSON.parse(localStorage.getItem('sec-cart'));
@@ -264,15 +242,10 @@ const SingleProductContent = () => {
                     <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
                         Przejdź do kasy
                     </button>
-                </> : <a href="https://brunchbox.pl/przekaski-dla-grup" className="modal__btn">
+                </> : <a href="https://brunchbox.pl/oferta-sylwestrowa" className="modal__btn">
                     Wybierz drugą połowę
                 </a>}
             </section>
-
-            {!shopOpen ? <p className="shopClosedText">
-                Przepraszamy. Nie prowadzimy w tej chwili dostaw. Wciąż możesz zaplanować dostawę w trakcie godzin naszej pracy.
-                Zapraszamy do zakładki <a href="/kontakt">Kontakt</a> po więcej informacji lub pod tel. 696-696-995.
-            </p> : ""}
         </Modal>
 
 
@@ -308,16 +281,16 @@ const SingleProductContent = () => {
 
                     </div>
 
-                    <section className="singleProduct__bottom">
-                        <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>
-                            {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu
-                            <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />
-                        </button>
+                    {/*<section className="singleProduct__bottom">*/}
+                    {/*    <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>*/}
+                    {/*        {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu*/}
+                    {/*        <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />*/}
+                    {/*    </button>*/}
 
-                        <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>
+                    {/*    <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>*/}
 
-                        </main>
-                    </section>
+                    {/*    </main>*/}
+                    {/*</section>*/}
 
                     {product.l && product.m ? <div className="singleProduct__options">
                         <h3 className="singleProduct__options__header">
@@ -405,16 +378,6 @@ const SingleProductContent = () => {
             }}
         /> : ""}
     </main>
-        {/*<section className="singleProduct__bottom">*/}
-        {/*    <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>*/}
-        {/*        {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu*/}
-        {/*        <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />*/}
-        {/*    </button>*/}
-
-        {/*    <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>*/}
-
-        {/*    </main>*/}
-        {/*</section>*/}
         </>
 }
 

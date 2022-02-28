@@ -18,15 +18,15 @@ const SinglePostContent = () => {
     }, []);
 
     const findHeaders = (content) => {
-        const headersRegEx = content?.match(/<strong><span style="font-size: ..px;">.{0,300}<\/span><\/strong>/g);
+        const headersRegEx = content?.match(/---.{0,300}---/g);
         setHeaders(headersRegEx?.map((item) => {
-            return item.split(">")[2].replace("</span", "");
+            return item.replaceAll('---', '').replaceAll(/\<(.{1,70})\>/gi, '');
         }));
         addAnchors();
     }
 
     const addAnchors = () => {
-        const allHeaders = document.querySelectorAll("p>strong>span");
+        const allHeaders = document.querySelectorAll("p strong");
         allHeaders.forEach((item, index) => {
             item.id = "header" + index;
         });
@@ -47,7 +47,7 @@ const SinglePostContent = () => {
             {post?.title}
         </h1>
         <main className="singlePost__content">
-            <article className="singlePost__article" dangerouslySetInnerHTML={{__html: post?.content?.replace(/&nbsp;/g, " ")}} >
+            <article className="singlePost__article" dangerouslySetInnerHTML={{__html: post?.content?.replace(/&nbsp;/g, " ")?.replaceAll('---', '')}} >
 
             </article>
             <aside className="singlePost__aside">

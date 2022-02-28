@@ -4,6 +4,8 @@ import settings from "./settings";
 const { API_URL } = settings;
 
 const getAllProducts = () => {
+    console.log('whitam');
+    console.log(API_URL);
     return axios.get(`${API_URL}/product/get-all-products`);
 }
 

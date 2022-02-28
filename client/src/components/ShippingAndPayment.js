@@ -129,7 +129,8 @@ const ShippingAndPayment = () => {
         const dateObj = new Date(year, month-1, day);
         const dayOfTheWeek = dateObj.getDay();
 
-        return ((dayOfTheWeek === 0)||(dayOfTheWeek === 2)||(dayOfTheWeek === 3));
+        // return ((dayOfTheWeek === 0)||(dayOfTheWeek === 2)||(dayOfTheWeek === 3));
+        return true;
     }
 
     const setExcludedHoursByCurrentTime = () => {
@@ -188,18 +189,18 @@ const ShippingAndPayment = () => {
 
         localStorage.setItem('schedule', JSON.stringify(currentSchedule.map((item) => {
             if(item.day) {
-                if(isShorterDay(item.day)) {
+                // if(isShorterDay(item.day)) {
                     return {
                         day: item.day,
                         hours: item.hours.map((hoursItem) => {
-                            if(hoursItem.end === 22) {
+                            if(hoursItem.end === 22 || hoursItem.end === 21) {
                                 return { start: hoursItem.start, end: hoursItem.end, available: 0 }
                             }
                             else return hoursItem;
                         })
                     }
-                }
-                else return item;
+                // }
+                // else return item;
             }
             else return item;
         })));
@@ -233,9 +234,9 @@ const ShippingAndPayment = () => {
         if(!amount) window.location = "/";
 
         /* Set fastest/choose hour based on screen resolution (mobile/desktop) */
-        if(window.innerWidth < 768) {
-            setFastest(true);
-        }
+        // if(window.innerWidth < 768) {
+        //     setFastest(true);
+        // }
 
         /* Set string dates in schedule */
         const next14Days = getNextDays(14);
@@ -251,12 +252,14 @@ const ShippingAndPayment = () => {
             .then(res => {
                 const excludedDaysInfo = res.data.result;
                 let excludedHoursTmp = [];
-                excludedDaysInfo?.forEach((item, index, array) => {
-                    excludedHoursTmp.push({
-                        day: item.day.substring(0, 10),
-                        hour: item.hour_start
+                if(excludedDaysInfo) {
+                    excludedDaysInfo?.forEach((item, index, array) => {
+                        excludedHoursTmp.push({
+                            day: item.day.substring(0, 10),
+                            hour: item.hour_start
+                        });
                     });
-                });
+                }
                 setExcludedHours(excludedHoursTmp);
             });
 
@@ -622,11 +625,15 @@ const ShippingAndPayment = () => {
 
         setRouteLoader(true);
 
+        console.log('calculate route');
+
         if((street)&&(building)&&(postalCode)&&(city)) {
-            axios.post("https://brunchbox.pl/maps/get-distance", {
+            console.log('ok');
+            axios.post("http://localhost:5000/maps/get-distance", {
                 street, building, postalCode, city
             })
                 .then(res => {
+                    console.log(res?.data);
                     if(res.data.result) {
                         setRouteResult(res.data.result.routes[0].legs[0].distance.text);
                         calculateDeliveryPrice(parseFloat(res.data.result.routes[0].legs[0].distance.text.split(" ")[0]));
@@ -674,6 +681,7 @@ const ShippingAndPayment = () => {
     const calculateDeliveryPrice = (km) => {
         getAllDeliveryPrices()
             .then(res => {
+                console.log(res?.data?.result);
                 const result = res.data.result;
                 let block = false;
                 result.forEach((item, index, array) => {
@@ -701,15 +709,15 @@ const ShippingAndPayment = () => {
                 <h2 className="shippingAndPayment__header">
                     Wybierz dzień dostawy
                 </h2>
-                <label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest">
-                    <button className="ribbonBtn" onClick={(e) => {
-                        e.preventDefault();
-                        setFastest(!fastest);
-                    }}>
-                        <span className={fastest ? "ribbon" : "d-none"}></span>
-                    </button>
-                    Dostarcz zamówienie najszybciej jak to możliwe
-                </label>
+                {/*<label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest">*/}
+                {/*    <button className="ribbonBtn" onClick={(e) => {*/}
+                {/*        e.preventDefault();*/}
+                {/*        setFastest(!fastest);*/}
+                {/*    }}>*/}
+                {/*        <span className={fastest ? "ribbon" : "d-none"}></span>*/}
+                {/*    </button>*/}
+                {/*    Dostarcz zamówienie najszybciej jak to możliwe*/}
+                {/*</label>*/}
                 <label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest ribbonBtnLabel--chooseHour">
                     <button className="ribbonBtn" onClick={(e) => {
                         e.preventDefault();
@@ -760,7 +768,7 @@ const ShippingAndPayment = () => {
                     })}
                 </section>
 
-                {!shopOpen ? <p className="shopClosedText">
+                {0 ? <p className="shopClosedText">
                     Przepraszamy. Nie prowadzimy w tej chwili dostaw. Wciąż możesz zaplanować dostawę w trakcie godzin naszej pracy.
                     Zapraszamy do zakładki <a href="/kontakt">Kontakt</a> po więcej informacji lub pod tel. 696-696-995.
                 </p> : ""}

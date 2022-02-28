@@ -103,6 +103,10 @@ app.get("/panel/*", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
+app.get("/oferta-podstawowa", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
 /* EN */
 app.get("/en", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
@@ -144,6 +148,15 @@ app.get("/shipping-and-payment", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 app.get("/cart", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/oferta-sylwestrowa", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/new-year's-eve", (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+app.get("/individual-boxes", (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 

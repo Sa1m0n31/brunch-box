@@ -10,6 +10,8 @@ con.connect(err => {
     router.post("/get-distance", (request, response) => {
        const { city, postalCode, street, building } = request.body;
 
+       console.log('get distance');
+
        /* Get origin address */
        const query = 'SELECT * FROM shipping_methods';
        con.query(query, (err, res) => {
@@ -26,6 +28,7 @@ con.connect(err => {
                    responseType: "json"
                })
                    .then(res => {
+                       console.log(res?.body);
                        response.send({
                            result: res.body
                        });

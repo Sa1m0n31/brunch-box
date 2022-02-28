@@ -605,6 +605,7 @@ ol {
     font-weight: 400;
 }
 
+.categories__item__header,
 .offerContent__item__btn {
     background: #E4E4E4;
     width: 100%;
@@ -617,6 +618,17 @@ ol {
     font-style: italic;
     position: relative;
     z-index: 3;
+}
+
+.categories__item__header {
+    text-align: center;
+    background: #000;
+    color: #fff;
+    font-size: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
 }
 
 /* Single product */
@@ -1493,7 +1505,7 @@ ol {
 
 .blogContent__item__imgWrapper {
     width: 100%;
-    max-height: 250px;
+    height: auto;
     overflow: hidden;
 }
 
@@ -2080,4 +2092,19 @@ ol {
     width: 40px;
     height: 30px;
     text-align: center;
+}
+
+/* Categories */
+.categories {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+
+.categories__item {
+    margin: 20px 10%;
+}
+
+.categories__item__img {
+    max-width: 100%;
 }

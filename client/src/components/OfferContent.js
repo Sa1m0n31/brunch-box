@@ -20,9 +20,10 @@ const OfferContent = ({type}) => {
     useEffect(() => {
         getCategoryByName(type)
             .then(res => {
+                console.log(res.data.result);
                const result = res.data.result[0];
                if(result) {
-                   setHeader(result.header);
+                   setHeader(result.name);
                    setSubheader(result.subheader);
                }
                else {
@@ -92,33 +93,33 @@ const OfferContent = ({type}) => {
                     else return "";
                 }
                 else if(!item.hidden) {
-                    return <Link className="offerContent__item"
-                                 key={index}
-                                 to={{
-                                     pathname: `/produkt/${convertToURL(item.product_name)}`,
-                                     state: {
-                                         id: item.id,
-                                         title: item.name,
-                                         price: item.price_m_meat
-                                     }
-                                 }}
-                    >
-                        <div className="offerContent__item__border">
-                            <h3 className="offerContent__item__header">
-                                {item.product_name.split("/")[0]}
-                                <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name.split("/")[0]}
-                                </span>
-                            </h3>
-                            <section className="offerContent__imgWrapper">
-                                <img className="offerContent__item__img"
-                                     src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt"/>
-                            </section>
-                        </div>
-                        <button className="offerContent__item__btn">
-                            Więcej informacji
-                        </button>
-                    </Link>
+                //     return <Link className="offerContent__item"
+                //                  key={index}
+                //                  to={{
+                //                      pathname: `/produkt/${convertToURL(item.product_name)}`,
+                //                      state: {
+                //                          id: item.id,
+                //                          title: item.name,
+                //                          price: item.price_m_meat
+                //                      }
+                //                  }}
+                //     >
+                //         <div className="offerContent__item__border">
+                //             <h3 className="offerContent__item__header">
+                //                 {item.product_name.split("/")[0]}
+                //                 <span className="offerContent__item__header--cursive">
+                //                     {item.bracket_name.split("/")[0]}
+                //                 </span>
+                //             </h3>
+                //             <section className="offerContent__imgWrapper">
+                //                 <img className="offerContent__item__img"
+                //                      src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt"/>
+                //             </section>
+                //         </div>
+                //         <button className="offerContent__item__btn">
+                //             Więcej informacji
+                //         </button>
+                //     </Link>
                 }
             })}
         </section> : <main className="loading">

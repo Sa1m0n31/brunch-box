@@ -293,6 +293,14 @@
         margin-bottom: 30px;
     }
 
+    .categories {
+        flex-direction: column;
+    }
+
+    .offerContent__header {
+        margin-bottom: 30px;
+    }
+
     /* Top menu */
     .topMenu {
         padding: 0 5%;

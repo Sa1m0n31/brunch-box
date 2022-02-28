@@ -99,7 +99,7 @@ function App() {
                 </Route>
 
                 {/* CATEGORIES */}
-                {categories.map((item, index) => {
+                {categories?.map((item, index) => {
                    if(index === 2) {
                        /* Banquet menu */
                        return <Route key={index} path="/przekaski-bankietowe">

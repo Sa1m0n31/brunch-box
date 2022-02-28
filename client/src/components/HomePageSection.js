@@ -9,9 +9,11 @@ const HomePageSection = () => {
     useEffect(() => {
         getAllSections()
             .then((res) => {
-                setSections(res?.data?.result.filter((item) => {
-                    return !item.content && !item.content_en;
-                }));
+                if(res?.data?.result) {
+                    setSections(res?.data?.result?.filter((item) => {
+                        return !item.content && !item.content_en;
+                    }));
+                }
             });
     }, []);
 
