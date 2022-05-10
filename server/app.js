@@ -13,15 +13,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 /* Redirect http to https */
 app.enable('trust proxy');
-// app.use (function (req, res, next) {
-//     if (req.secure) {
-//         // request was via https, so do no special handling
-//         next();
-//     } else {
-//         // request was via http, so redirect to https
-//         res.redirect('https://' + req.headers.host + req.url);
-//     }
-// });
+app.use (function (req, res, next) {
+    if (req.secure) {
+        // request was via https, so do no special handling
+        next();
+    } else {
+        // request was via http, so redirect to https
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
 
 const convertToURL = (str) => {
     if(str) return str.toLowerCase()

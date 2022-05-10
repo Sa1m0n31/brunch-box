@@ -55,14 +55,68 @@ const FullOffer = () => {
             });
     }, []);
 
-    return <main className="offerContent">
+    const printPrice = (lMeat, mMeat, lVege, mVege) => {
+        if(lMeat && mMeat) {
+            if(lMeat !== mMeat) {
+                return `${lMeat} zł / ${mMeat} zł`;
+            }
+            else {
+                return `${lMeat} zł`;
+            }
+        }
+        else if(lVege && mVege) {
+            if(lVege !== mVege) {
+                return `${lVege} zł / ${mVege} zł`;
+            }
+            else {
+                return `${lVege} zł`;
+            }
+        }
+        else if(lMeat && lVege) {
+            if(lMeat !== lVege) {
+                return `${lMeat} zł / ${lVege} zł`;
+            }
+            else {
+                return `${lMeat} zł`;
+            }
+        }
+        else if(mMeat && mVege) {
+            if(mMeat !== mVege) {
+                return `${mMeat} zł / ${mVege} zł`;
+            }
+            else {
+                return `${mMeat} zł`;
+            }
+        }
+        else if(lMeat) {
+            return `${lMeat} zł`;
+        }
+        else if(mMeat) {
+            return `${mMeat} zł`;
+        }
+        else if(lVege) {
+            return `${lVege} zł`;
+        }
+        else if(mVege) {
+            return `${mVege} zł`;
+        }
+        else {
+            return '';
+        }
+    }
+
+    return <main className="offerContent offerContent--offer">
         <h1 className="offerContent__header">
-            Wybierz idealny zestaw dla siebie
+            Menu
         </h1>
+        <h2 className="offerContent__header offerContent__header--2">
+            Wybierz idealny zestaw skomponowany do Twoich potrzeb.
+        </h2>
 
         {productsMode !== 0 ? (loaded ? <section className="offerContent__grid">
                 {products.map((item, index) => {
                     if(!item.hidden) {
+                        console.log(item);
                         return <Link className="offerContent__item"
                                      key={index}
                                      to={{
@@ -75,19 +129,22 @@ const FullOffer = () => {
                                      }}
                         >
                             <div className="offerContent__item__border">
-                                <h3 className="offerContent__item__header">
-                                    {item.product_name.split("/")[0]}
-                                    <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name.split("/")[0]}
-                                </span>
-                                </h3>
                                 <section className="offerContent__imgWrapper">
                                     <img className="offerContent__item__img"
                                          src={/*settings.API_URL + */"https://brunchbox.pl/image?url=/media/" + item.image} alt="produkt"/>
                                 </section>
+                                <h3 className="offerContent__item__header">
+                                    {item.product_name.split("/")[0]}
+                                    <span className="offerContent__item__header--cursive">
+                                        {item.bracket_name.split("/")[0]}
+                                    </span>
+                                </h3>
+                                <p className="offerContent__item__price">
+                                    {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}
+                                </p>
                             </div>
                             <button className="offerContent__item__btn">
-                                Więcej informacji
+                                Zamów teraz
                             </button>
                         </Link>
                     }

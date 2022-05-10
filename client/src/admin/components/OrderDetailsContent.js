@@ -29,6 +29,7 @@ const OrderDetailsContent = () => {
         /* Get order info */
         getOrderDetails(id, localStorage.getItem('sec-sessionKey'))
             .then(res => {
+                console.log(res.data.result);
                setCart(res.data.result);
                calculateCartSum();
             });
@@ -168,7 +169,7 @@ const OrderDetailsContent = () => {
 
                     <div className="panelContent__cart__sum">
                         <h3>
-                            <span className="smaller">Kosz zamówienia</span> {cart[0].order_price} PLN
+                            <span className="smaller">Koszt zamówienia</span> {cart[0].order_price} PLN
                         </h3>
                         <h3>
                             <span className="smaller">Czas dostarczenia zamówienia:</span> {cart[0].delivery}

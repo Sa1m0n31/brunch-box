@@ -46,7 +46,7 @@ const OfferContent = ({type}) => {
         if(type !== "oferta") setCategory(type);
     }, []);
 
-    return <main className="offerContent">
+    return <main className="offerContent offerContent--offer">
         {category ? <h1 className="offerContent__header">
             {header}
             <h2 className="offerContent__subheader marginLeft15">({subheader})</h2>
@@ -55,8 +55,11 @@ const OfferContent = ({type}) => {
         </h1>}
 
         <h1 className="offerContent__header">
-            Wybierz idealny zestaw dla siebie
+            Menu
         </h1>
+        <h2 className="offerContent__header offerContent__header--2">
+            Wybierz idealny zestaw skomponowany do Twoich potrzeb.
+        </h2>
 
         {loaded ? <section className="offerContent__grid">
             {products.map((item, index) => {
@@ -74,16 +77,16 @@ const OfferContent = ({type}) => {
                                      }}
                         >
                             <div className="offerContent__item__border">
-                                <h3 className="offerContent__item__header">
-                                    {item.product_name.split("/")[0]}
-                                    <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name.split("/")[0]}
-                                </span>
-                                </h3>
                                 <section className="offerContent__imgWrapper">
                                     <img className="offerContent__item__img"
                                          src={settings.API_URL + "/image?url=/media/" + item.image} alt="produkt"/>
                                 </section>
+                                <h3 className="offerContent__item__header">
+                                    {item.product_name.split("/")[0]}
+                                    <span className="offerContent__item__header--cursive">
+                                        {item.bracket_name.split("/")[0]}
+                                    </span>
+                                </h3>
                             </div>
                             <button className="offerContent__item__btn">
                                 Więcej informacji

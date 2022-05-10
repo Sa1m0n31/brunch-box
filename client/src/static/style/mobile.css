@@ -122,6 +122,11 @@
 }
 
 @media(max-width: 1200px) {
+    .offerContent__grid {
+        grid-column-gap: 30px;
+        grid-row-gap: 50px;
+    }
+
     /* Top menu */
     .topMenu__list__item {
         padding: 0 12px;
@@ -176,7 +181,11 @@
 
     /* Offer */
     .offerContent__item__header {
-        font-size: 13px;
+        font-size: 24px;
+    }
+
+    .offerContent__item__price {
+        font-size: 19px;
     }
 
     /* Cart */
@@ -293,8 +302,24 @@
         margin-bottom: 30px;
     }
 
+    .aboutUs {
+        margin-top: 0;
+    }
+
+    .aboutUs__header {
+        font-size: 28px;
+    }
+
     .categories {
         flex-direction: column;
+    }
+
+    .topMenu__list__item__link {
+        font-size: 26px;
+    }
+
+    .mobileMenu__list li {
+        margin-bottom: 20px;
     }
 
     .offerContent__header {
@@ -724,6 +749,15 @@
 }
 
 @media(max-width: 768px) {
+    .offerContent {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .offerContent__grid {
+        margin-bottom: 50px;
+    }
+
     /* Landing */
     .landing__content {
         left: unset;
@@ -1103,9 +1137,23 @@
         font-size: 13px;
     }
 
+    .offerContent__grid {
+        grid-row-gap: 40px;
+        margin-top: 20px;
+    }
+
     /* Home page section */
     .homePageSection {
+        padding-top: 30px;
         padding-bottom: 0;
+    }
+
+    .topBar .footer__header {
+        display: none;
+    }
+
+    .topBar .callToAction {
+        margin-left: 0;
     }
 
     /* Single product */
@@ -1250,11 +1298,6 @@
         height: 100vh !important;
     }
 
-    /* About us */
-    .aboutUs__header {
-        font-size: 18px;
-    }
-
     /* Coupons */
     .couponSection {
         flex-direction: column;
@@ -1307,5 +1350,11 @@
 
     .cart__summary__header {
         justify-content: flex-start;
+    }
+}
+
+@media(min-width: 996px) {
+    .offerContent--offer {
+        margin-top: 210px;
     }
 }

@@ -4,11 +4,11 @@ import Footer from "../components/Footer";
 import AboutUsContent from "../components/AboutUsContent";
 
 const AboutUsPage = () => {
-    return <>
+    return <div className="aboutUs">
         <TopMenu />
         <AboutUsContent />
         <Footer />
-    </>
+    </div>
 }
 
 export default AboutUsPage;

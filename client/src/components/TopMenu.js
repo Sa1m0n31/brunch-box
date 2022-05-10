@@ -106,6 +106,9 @@ const TopMenu = () => {
                         696 696 995
                     </a>
                 </h5>
+                <a className="callToAction" href="tel:+48696696995">
+                    Zamów teraz
+                </a>
             </section>
 
             <menu className="footer__menu footer__menu--topBar">
@@ -123,8 +126,10 @@ const TopMenu = () => {
                 </ul>
             </menu>
         </aside>
+
         <header className="topMenu" ref={topBar}>
-        <a className="topMenu__homepage" href="/" ref={topBarChild1}>
+
+        <a className="topMenu__homepage d-desktop" href="/" ref={topBarChild1}>
             <img className="topMenu__logo" src={logoImg} alt="brunch-box-logo" />
         </a>
 
@@ -143,14 +148,14 @@ const TopMenu = () => {
                 </li>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/oferta">
-                        Oferta
+                        Menu
                     </a>
                 </li>
-                <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="/blog">
-                        Blog
-                    </a>
-                </li>
+                {/*<li className="topMenu__list__item">*/}
+                {/*    <a className="topMenu__list__item__link" href="/blog">*/}
+                {/*        Blog*/}
+                {/*    </a>*/}
+                {/*</li>*/}
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/kontakt">
                         Kontakt
@@ -177,14 +182,17 @@ const TopMenu = () => {
         </menu>
 
         {/* MOBILE */}
+        <button className="button--hamburger d-mobile" onClick={() => openMobileMenu()}>
+        </button>
+        <a className="topMenu__homepage d-mobile" href="/" ref={topBarChild1}>
+            <img className="topMenu__logo" src={logoImg} alt="brunch-box-logo" />
+        </a>
         <a className="topMenu__list__item__link d-mobile" href="/koszyk">
             <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
             <span className="cartCounter">
                             { count }
                         </span>
         </a>
-        <button className="button--hamburger d-mobile" onClick={() => openMobileMenu()}>
-        </button>
 
         <menu className="mobileMenu d-mobile" ref={mobileMenu}>
             <button className="mobileMenu__closeBtn" onClick={() => closeMobileMenu()} ref={mobileMenuCloseBtn}>
@@ -205,20 +213,20 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
+                    <a className="topMenu__list__item__link" href="/oferta">
+                        Menu
+                    </a>
+                </li>
+                <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/o-nas">
                         O nas
                     </a>
                 </li>
-                <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="/oferta">
-                        Oferta
-                    </a>
-                </li>
-                <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="/blog">
-                        Blog
-                    </a>
-                </li>
+                {/*<li className="topMenu__list__item">*/}
+                {/*    <a className="topMenu__list__item__link" href="/blog">*/}
+                {/*        Blog*/}
+                {/*    </a>*/}
+                {/*</li>*/}
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/kontakt">
                         Kontakt

@@ -1,7 +1,5 @@
 /* Global */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Courgette&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 * {
     box-sizing: border-box;
@@ -17,7 +15,7 @@ html, body, h1, h2, h3, h4, h5, h6 {
 }
 
 h1, h2, h3, h4, h5, h6, p, li, input, label, a, button, textarea, .address {
-    font-family: 'Open sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 ul {
@@ -278,7 +276,7 @@ ol {
 }
 
 .landing__header {
-    font-family: 'Courgette', cursive;
+    font-family: 'Playfair display', cursive;
     font-weight: 400;
     font-size: 52px;
     margin: 60px 0;
@@ -350,7 +348,8 @@ ol {
     padding-bottom: 50px;
     position: relative;
     width: 100%;
-    background: url("../img/marmur.jpg");
+    background: transparent;
+    /*background: url("../img/marmur.jpg");*/
     background-size: 100%;
     padding-top: 60px;
     overflow: hidden;
@@ -404,8 +403,8 @@ ol {
 }
 
 .homePageSection__text {
-    font-family: 'Courgette', cursive;
-    font-size: 28px;
+    font-size: 24px;
+    font-style: italic;
 }
 
 .homePageSection__item__content {
@@ -524,7 +523,7 @@ ol {
 }
 
 .topBar .footer__header:last-of-type:hover {
-    transform: translateX(10px);
+    opacity: .85;
 }
 
 /* Offer page */
@@ -540,10 +539,17 @@ ol {
 
 .offerContent__header {
     text-align: center;
-    margin: 20px auto 150px;
-    font-family: 'Courgette', cursive;
-    font-size: 36px;
+    margin: 20px auto 10px;
+    font-family: 'Playfair display', cursive;
+    font-size: 48px;
+    font-weight: 500;
     max-width: 90vw;
+}
+
+.offerContent__header--2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 19px;
 }
 
 .offerContent__subheader {
@@ -556,18 +562,23 @@ ol {
 }
 
 .offerContent__grid {
-    width: 90%;
+    width: 100%;
     max-width: 1600px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-column-gap: 100px;
-    grid-row-gap: 150px;
+    grid-row-gap: 90px;
     margin: 50px auto 200px;
 }
 
+.offerContent__item {
+    overflow: hidden;
+    width: 100%;
+}
+
 .offerContent__item__border {
-    padding: 20px;
     position: relative;
+    padding-bottom: 15px;
 }
 
 .offerContent__imgWrapper {
@@ -575,38 +586,41 @@ ol {
     justify-content: center;
     align-items: center;
     height: 250px;
+    margin-bottom: 15px;
+    overflow: hidden;
 }
 
 .offerContent__item__img {
-    width: 100%;
+    width: auto;
     height: auto;
+    min-width: 100%;
+    min-height: 100%;
+    max-width: 150%;
+    max-height: 150%;
 }
 
 .offerContent__item__header {
-    background: #000;
-    color: #fff;
-    text-align: center;
-    font-size: 16px;
-    padding: 10px 20px;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    font-size: 32px;
+    padding: 10px 0;
     width: 100%;
-    font-family: 'Open-sans', sans-serif;
-    font-style: italic;
+    font-weight: 500;
     border-radius: 4px;
 }
 
 .offerContent__item__header--cursive {
-    display: block;
-    text-align: center;
-    font-style: italic;
+    display: flex;
+    align-items: center;
     font-weight: 400;
+    font-size: 15px;
+    padding-top: 8px;
+    min-height: 40px;
 }
 
-.categories__item__header,
-.offerContent__item__btn {
+.offerContent__item__price {
+    font-size: 24px;
+}
+
+.categories__item__header {
     background: #E4E4E4;
     width: 100%;
     height: 40px;
@@ -618,6 +632,21 @@ ol {
     font-style: italic;
     position: relative;
     z-index: 3;
+}
+
+.offerContent__item__btn {
+    width: 100%;
+    height: 45px;
+    border-radius: 45px;
+    background: #000;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: .2s all;
+}
+
+.offerContent__item__btn:hover {
+    opacity: .85;
 }
 
 .categories__item__header {
@@ -727,13 +756,13 @@ ol {
 }
 
 .singleProduct__title {
-    font-family: 'Courgette', cursive;
+    font-family: 'Playfair display', cursive;
     font-size: 24px;
     padding-bottom: 8px;
 }
 
 .singleProduct__title--cursive {
-    font-family: 'Courgette', cursive;
+    font-family: 'Playfair display', cursive;
     display: block;
 }
 
@@ -912,7 +941,7 @@ ol {
 }
 
 .cart__header {
-    font-family: 'Courgette', cursive;
+    font-family: 'Playfair display', cursive;
     font-size: 26px;
     margin-top: 20px;
 }
@@ -1566,9 +1595,15 @@ ol {
 }
 
 .aboutUs__header {
-    font-family: 'Courgette', cursive;
-    font-size: 26px;
-    margin-bottom: 20px;
+    font-family: 'Playfair display', cursive;
+    font-size: 48px;
+    font-weight: 500;
+    margin: 0 auto -20px;
+    text-align: center;
+}
+
+.aboutUs {
+    margin-top: -60px;
 }
 
 .aboutUs__p {
@@ -1626,7 +1661,7 @@ ol {
 .singlePost__aside__header {
     text-align: right;
     padding-bottom: 15px;
-    font-family: 'Courgette', cursive;
+    font-family: 'Playfair display', cursive;
     border-bottom: 3px solid rgba(0, 0, 0, .25);
 }
 
@@ -1670,7 +1705,7 @@ ol {
 }
 
 .contactContent__frame strong {
-    font-family: 'Courgette', cursive !important;
+    font-family: 'Playfair display', cursive !important;
     color: #D6B04A !important;
     margin-bottom: 6px !important;
     display: block !important;
@@ -1826,7 +1861,7 @@ ol {
 .cartBanquet__header {
     text-align: center;
     margin-top: 30px;
-    font-family: 'Courgette', Serif;
+    font-family: 'Playfair display', Serif;
 }
 
 .cart--borderRed {
@@ -1962,7 +1997,7 @@ ol {
 }
 
 .pageContent, .pageContent * {
-    font-family: 'Open sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 14px !important;
     font-style: italic;
 }
@@ -2107,4 +2142,32 @@ ol {
 
 .categories__item__img {
     max-width: 100%;
+}
+
+.footer__menu__item__img {
+    max-width: 20px;
+}
+
+.callToAction {
+    background: #000;
+    width: 150px;
+    height: 28px;
+    border-radius: 28px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    transition: .2s all;
+}
+
+.callToAction:hover {
+    opacity: .85;
+}
+
+.offerContent--offer .offerContent__header {
+    text-align: left;
 }

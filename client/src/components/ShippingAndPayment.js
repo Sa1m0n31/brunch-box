@@ -231,6 +231,11 @@ const ShippingAndPayment = () => {
     }
 
     useEffect(() => {
+        console.log(amount);
+        console.log(deliveryPrice);
+    }, [amount, deliveryPrice]);
+
+    useEffect(() => {
         if(!amount) window.location = "/";
 
         /* Set fastest/choose hour based on screen resolution (mobile/desktop) */
@@ -617,6 +622,10 @@ const ShippingAndPayment = () => {
         }
     }, [dateError]);
 
+    useEffect(() => {
+        calculateRoute();
+    }, [formik.values.street]);
+
     const calculateRoute = (city, postalCode, street, building) => {
         if(!city) city = formik.values.city;
         if(!postalCode) postalCode = formik.values.postalCode;
@@ -629,7 +638,7 @@ const ShippingAndPayment = () => {
 
         if((street)&&(building)&&(postalCode)&&(city)) {
             console.log('ok');
-            axios.post("http://localhost:5000/maps/get-distance", {
+            axios.post("https://brunchbox.pl/maps/get-distance", {
                 street, building, postalCode, city
             })
                 .then(res => {

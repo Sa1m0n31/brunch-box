@@ -4,6 +4,7 @@ import AboutUsSection from "./AboutUsSection";
 import {getAllSections} from "../admin/helpers/aboutUsFunctions";
 
 import settings from "../helpers/settings";
+import HomePageSection from "./HomePageSection";
 
 const AboutUsContent = () => {
     const [sections, setSections] = useState([]);
@@ -20,13 +21,10 @@ const AboutUsContent = () => {
     }, []);
 
     return <main className="offerContent">
-        {sections?.map((item, index) => (
-            <AboutUsSection
-                left={!(index%2)}
-                image={settings.API_URL + "/image?url=/media/" + item.img_path}
-                title={item.header}
-                content={item.content} />
-        ))}
+        <h2 className="aboutUs__header">
+            O nas
+        </h2>
+        <HomePageSection />
     </main>
 }
 
