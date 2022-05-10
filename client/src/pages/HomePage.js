@@ -8,7 +8,6 @@ const HomePage = () => {
     return <>
         <TopMenu />
         <Landing />
-        <HomePageSection />
         <Footer />
     </>
 }

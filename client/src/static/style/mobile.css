@@ -5,6 +5,15 @@
 }
 
 @media(max-width: 1400px) {
+    .sliderBottom__item__content__header {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+
+    .sliderBottom__item__content__text {
+        font-size: 12px;
+    }
+
     /* Top menu */
     .topMenu__list__item {
         padding: 0 15px;
@@ -125,6 +134,10 @@
     .offerContent__grid {
         grid-column-gap: 30px;
         grid-row-gap: 50px;
+    }
+
+    .afterSlider__header {
+        font-size: 24px;
     }
 
     /* Top menu */
