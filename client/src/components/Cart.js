@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 
 import trash from '../static/img/trash.svg'
 import write from '../static/img/eye.png'
@@ -9,6 +9,7 @@ import convertToURL from "../helpers/convertToURL";
 import settings from "../admin/helpers/settings";
 import closeImg from "../static/img/close.png";
 import Modal from "react-modal";
+import {LangContext} from "../App";
 
 const Cart = () => {
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
@@ -18,6 +19,8 @@ const Cart = () => {
     const [cartSum, setCartSum] = useState(0);
     const [error50, setError50] = useState(false);
     const [error50Modal, setError50Modal] = useState(false);
+
+    const { content } = useContext(LangContext);
 
     useEffect(async () => {
        let newArr = [];
@@ -137,22 +140,21 @@ const Cart = () => {
 
             <img className="modalTick" src={closeImg} alt="ostrzezenie" />
             <h2 className="modalHeader">
-                Musisz skompletować całkowitą liczbę boxów
+                {content.cartHalfBoxError}
             </h2>
             <section className="modal__buttons">
                 <button className="modal__btn" onClick={() => { setError50Modal(false) }}>
-                    Wróć do koszyka
+                    {content.checkoutBackToCart}
                 </button>
             </section>
         </Modal>
 
         <h1 className="cart__header">
-            Podsumowanie koszyka
+            {content.cartHeader}
         </h1>
         <main className="cart">
             {cart?.length || cartBanquet?.flat()?.length ? <>
                 {cart?.map((item, index) => {
-                    console.log(item);
                     return <section className="cart__item" id={"cart" + item.id + item.size + item.option}>
                         <a className="cart__item__imgWrapper" href={"https://brunchbox.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])}>
                             <img className="cart__item__img" src={settings.API_URL + "/image?url=/media/" + cartProducts[index]?.file_path} alt="produkt"/>
@@ -160,7 +162,7 @@ const Cart = () => {
 
                         <a href={"https://brunchbox.pl/produkt/" + convertToURL(cartProducts[index]?.name.split("/")[0])} className="cart__item__column firstCol">
                             <h3 className="cart__item__label">
-                                Nazwa produktu
+                                {content.cartCols[0]}
                             </h3>
                             <h2 className="cart__item__value">
                                 {cartProducts[index]?.name?.split("/")[0]}<br/>
@@ -170,7 +172,7 @@ const Cart = () => {
 
                         <section className="cart__item__column secondCol">
                             <h3 className="cart__item__label">
-                                Opcja
+                                {content.cartCols[1]}
                             </h3>
                             <h2 className="cart__item__value uppercase">
                                 {item.option}
@@ -179,7 +181,7 @@ const Cart = () => {
 
                         <section className="cart__item__column thirdCol">
                             <h3 className="cart__item__label">
-                                Rozmiar
+                                {content.cartCols[2]}
                             </h3>
                             <h2 className="cart__item__value">
                                 {item.size}
@@ -188,7 +190,7 @@ const Cart = () => {
 
                         <section className="cart__item__column fourthCol">
                             <h3 className="cart__item__label">
-                                Ilość
+                                {content.cartCols[3]}
                             </h3>
                             <span className="cart__item__value">
                                 <input className="cart__input"
@@ -199,7 +201,7 @@ const Cart = () => {
 
                         <section className="cart__item__column fifthCol">
                             <h3 className="cart__item__label">
-                                Wartość
+                                {content.cartCols[4]}
                             </h3>
                             <h2 className="cart__item__value noWrap" id="price">
                                 {calculatePrice(item.size, item.option, item.quantity, {mMeat: cartProducts[index]?.price_m_meat, lMeat: cartProducts[index]?.price_l_meat, mVege: cartProducts[index]?.price_m_vege, lVege: cartProducts[index]?.price_l_vege})} PLN
@@ -208,7 +210,7 @@ const Cart = () => {
 
                         <section className="cart__item__column sixthCol">
                             <h3 className="cart__item__label">
-                                Działania
+                                {content.cartCols[5]}
                             </h3>
                             <section className="cart__item__value cart__item__value--flex">
                                 <button className="cart__item__value cart__item__value--button">
@@ -246,7 +248,7 @@ const Cart = () => {
 
                                     <a href="https://brunchbox.pl/menu-bankietowe/" className="cart__item__column firstCol">
                                         <h3 className="cart__item__label">
-                                            Nazwa produktu
+                                            {content.cartCols[0]}
                                         </h3>
                                         <h2 className="cart__item__value">
                                             {itemChild?.name?.split("/")[0]}<br/>
@@ -255,7 +257,7 @@ const Cart = () => {
 
                                     <section className="cart__item__column secondCol">
                                         <h3 className="cart__item__label">
-                                            Rozmiar
+                                            {content.cartCols[2]}
                                         </h3>
                                         <h2 className="cart__item__value uppercase">
                                             {itemChild.selected25 ? "25 szt." : "50 szt."}
@@ -264,7 +266,7 @@ const Cart = () => {
 
                                     <section className="cart__item__column fourthCol">
                                         <h3 className="cart__item__label">
-                                            Ilość
+                                            {content.cartCols[3]}
                                         </h3>
                                         <h2 className="cart__item__value">
                                             {itemChild.amount}
@@ -273,7 +275,7 @@ const Cart = () => {
 
                                     <section className="cart__item__column fifthCol">
                                         <h3 className="cart__item__label">
-                                            Wartość
+                                            {content.cartCols[4]}
                                         </h3>
                                         <h2 className="cart__item__value noWrap" id="price">
                                             {itemChild.selected25 ? itemChild.price25 * itemChild.amount : itemChild.price50 * itemChild.amount} PLN
@@ -282,7 +284,7 @@ const Cart = () => {
 
                                     <section className="cart__item__column sixthCol">
                                         <h3 className="cart__item__label">
-                                            Działania
+                                            {content.cartCols[5]}
                                         </h3>
                                         <section className="cart__item__value cart__item__value--flex">
                                             <button className="cart__item__value cart__item__value--button">
@@ -310,7 +312,7 @@ const Cart = () => {
                 <section className="cart__summary">
                     <header className="cart__summary__header">
                         <h3 className="cart__summary__header__label">
-                            Łącznie do zapłaty:
+                            {content.cartSum}:
                         </h3>
                         <h4 className="cart__summary__header__value">
                             { cartSum } PLN
@@ -318,17 +320,17 @@ const Cart = () => {
                     </header>
                     <button className="cart__summary__button" onClick={() => { validateCart(); }}>
                         <span className="button--landing__link button__link--smaller">
-                            Przjedź dalej
+                            {content.cartBtn}
                         </span>
                     </button>
                 </section>
             </> : <>
                 <h2 className="emptyCart">
-                    Twój koszyk jest pusty
+                    {content.emptyCart}
                 </h2>
                 <button className="button button--landing button--emptyCart">
                     <a className="button--landing__link button--emptyCart__link" href="/">
-                        Wróć do sklepu
+                        {content.backToShop}
                     </a>
                 </button>
             </> }

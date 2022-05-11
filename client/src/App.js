@@ -45,8 +45,74 @@ import PanelHomepage from "./admin/pages/PanelHomepage";
 ReactGA.initialize('G-2YV1L21QB9');
 ReactGA.pageview(window.location.pathname + window.location.search);
 
+const LangContext = React.createContext(null);
+
 function App() {
     const [categories, setCategories] = useState([]);
+    const [langIndex, setLangIndex] = useState(localStorage.getItem('langIndex') ? parseInt(localStorage.getItem('langIndex')) : 0);
+
+    const content = [
+        {
+            homepageHeader: 'Każde zamówienie pakujemy z wielką starannością i załączamy specjalną dedykację dla Ciebie!',
+            homepageCallToAction: 'Zamów teraz',
+            phone: 'Telefon',
+            orderNow: 'Zamów teraz',
+            menu: ['Strona główna', 'O nas', 'Menu', 'Kontakt'],
+            footerCopyright: 'Wszelkie prawa zastrzeżone',
+            footerMenu: ['Polityka prywatności', 'Regulamin', 'Kontakt'],
+            cartHeader: 'Podsumowanie koszyka',
+            cartCols: ['Nazwa produktu', 'Opcja', 'Rozmiar', 'Ilość', "Wartość", 'Działania'],
+            cartSum: 'Łącznie do zapłaty',
+            cartBtn: 'Przejdź dalej',
+            checkoutHeader: 'Wpisz swoje dane i dokończ zamówienie',
+            checkoutSubheaders: ['Wybierz dzień dostawy', 'Wybierz godzinę dostawy', 'Dane osobowe', 'Pozostałe informacje'],
+            checkoutForm: ['Twoje imię', 'Twoje nazwisko', 'Adres e-mail', 'Numer telefonu', 'Miejscowość', 'Kod pocztowy', 'Ulica, numer domu, numer mieszkania'],
+            checkoutCheckboxes: ['Odbiór osobisty', 'Płatność przy odbiorze', 'Płatność gotówką', 'Płatność kartą', 'Mam kupon rabatowy', 'Wstążka z dedykacją', 'Chcę otrzymać fakturę'],
+            checkoutCompanyForm: ['Nazwa firmy', 'NIP', 'Miejscowość', 'Kod pocztowy', 'Ulica, numer domu, numer mieszkania'],
+            checkoutDiscountCodeInput: 'Tu wpisz swój kupon',
+            checkoutDiscountCodeBtn: 'Dodaj kupon',
+            checkoutDiscountCodeError: 'Podany kupon rabatowy nie istnieje',
+            checkoutDiscountCodeSuccess: ['Kupon', 'Zniżka'],
+            checkoutFromTo: ['Od kogo', 'Dla kogo'],
+            checkoutTextarea: 'Komentarz do zamówienia (opcjonalnie)',
+            checkoutDelivery: 'Dostawa',
+            checkoutBtn: 'Przechodzę do płatności',
+            checkoutBackToCart: 'Powrót do koszyka',
+            offerSubheader: 'Wybierz idealny zestaw skomponowany do Twoich potrzeb.',
+            offerBtn: 'Zamów teraz',
+            availableSizes: 'Dostępne rozmiary',
+            availableOptions: 'Dostępne opcje',
+            addToCart: 'Dodaj do koszyka',
+            meatVersion: 'Mieszana',
+            vegeVersion: 'Wegetariańska',
+            allergens: 'Alergeny',
+            addedToCart: "Produkt został dodany do koszyka",
+            halfBoxError: 'Połowa boxa została dodana do koszyka. Uzupełnij swój box o drugą połówkę.',
+            cartHalfBoxError: 'Musisz skompletować całkowitą liczbę boxów',
+            continueShopping: 'Kontynuuj zakupy',
+            goToCheckout: 'Przejdź do kasy',
+            chooseSecondHalf: 'Wybierz drugą połowę',
+            aboutUs: 'O nas',
+            emptyCart: 'Twój koszyk jest pusty',
+            backToShop: 'Wróć do sklepu',
+            noDelivery: 'Brak możliwości dostawy na podany adres',
+            checkoutMobile: 'Wybierz datę i godzinę zamówienia',
+            aboutUsBtn: 'Zobacz dostępne zestawy'
+        },
+        {
+            homepageHeader: 'Each order is packed with special care by our team and we\'ll even include a message from you!',
+            homepageCallToAction: 'Order now',
+            phone: 'Phone',
+            orderNow: 'Order now',
+            menu: ['Homepage', 'About us', 'Menu', 'Contact'],
+            footerCopyright: 'All rights reserved',
+            footerMenu: ['Privacy policy', 'Terms of service', 'Contact']
+        }
+    ];
+
+    useEffect(() => {
+        localStorage.setItem('langIndex', langIndex.toString());
+    }, [langIndex]);
 
     useEffect(() => {
        AOS.init({
@@ -66,130 +132,137 @@ function App() {
               <meta name="description" content="Nowy koncept- wyselekcjonowane  zestawy fingerfood w eleganckim pudełku. Zamów z 2 godzinnym wyprzedzeniem i ciesz się pysznym jedzeniem z bliskimi." />
               <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Helmet>
-    <div className="App">
-        <Router>
-            <Switch>
-                {/* WEBSITE ROUTES */}
-                <Route exact path="/">
-                    <HomePage />
-                </Route>
-                <Route path="/dziekujemy">
-                    <TYPage />
-                </Route>
-                <Route path="/oferta">
-                    <Offer type="oferta" />
-                </Route>
-                <Route path="/blog">
-                    <BlogPage />
-                </Route>
-                <Route path="/wpis">
-                    <SinglePostPage />
-                </Route>
-                <Route path="/o-nas">
-                    <AboutUsPage />
-                </Route>
-                <Route path="/kontakt">
-                    <ContactPage />
-                </Route>
-                <Route path="/regulamin">
-                    <TermsOfService />
-                </Route>
-                <Route path="/polityka-prywatnosci">
-                    <PrivacyPolicy />
-                </Route>
+        <LangContext.Provider value={{
+            content: content[langIndex],
+            langIndex,
+            changeLanguage: setLangIndex
+        }}>
+            <div className="App">
+                <Router>
+                    <Switch>
+                        {/* WEBSITE ROUTES */}
+                        <Route exact path="/">
+                            <HomePage />
+                        </Route>
+                        <Route path="/dziekujemy">
+                            <TYPage />
+                        </Route>
+                        <Route path="/oferta">
+                            <Offer type="oferta" />
+                        </Route>
+                        <Route path="/blog">
+                            <BlogPage />
+                        </Route>
+                        <Route path="/wpis">
+                            <SinglePostPage />
+                        </Route>
+                        <Route path="/o-nas">
+                            <AboutUsPage />
+                        </Route>
+                        <Route path="/kontakt">
+                            <ContactPage />
+                        </Route>
+                        <Route path="/regulamin">
+                            <TermsOfService />
+                        </Route>
+                        <Route path="/polityka-prywatnosci">
+                            <PrivacyPolicy />
+                        </Route>
 
-                {/* CATEGORIES */}
-                {categories?.map((item, index) => {
-                   if(index === 2) {
-                       /* Banquet menu */
-                       return <Route key={index} path="/przekaski-bankietowe">
-                           <CustomMenu />
-                       </Route>
-                   }
-                   else {
-                       /* Normal menu */
-                       return <Route key={index} path={"/" + convertToURL(item.name)}>
-                           <Offer type={item.name} />
-                       </Route>
-                   }
-                })}
+                        {/* CATEGORIES */}
+                        {categories?.map((item, index) => {
+                            if(index === 2) {
+                                /* Banquet menu */
+                                return <Route key={index} path="/przekaski-bankietowe">
+                                    <CustomMenu />
+                                </Route>
+                            }
+                            else {
+                                /* Normal menu */
+                                return <Route key={index} path={"/" + convertToURL(item.name)}>
+                                    <Offer type={item.name} />
+                                </Route>
+                            }
+                        })}
 
-                {/* Page for all products */}
-                <Route path="/produkt">
-                    <SingleProduct />
-                </Route>
+                        {/* Page for all products */}
+                        <Route path="/produkt">
+                            <SingleProduct />
+                        </Route>
 
-                {/* Shipping and payment */}
-                <Route path="/dostawa-i-platnosc">
-                    <ShippingAndPaymentPage />
-                </Route>
+                        {/* Shipping and payment */}
+                        <Route path="/dostawa-i-platnosc">
+                            <ShippingAndPaymentPage />
+                        </Route>
 
-                {/* Cart */}
-                <Route path="/koszyk">
-                    <CartPage />
-                </Route>
+                        {/* Cart */}
+                        <Route path="/koszyk">
+                            <CartPage />
+                        </Route>
 
-                {/* ADMIN ROUTES */}
-                <Route exact path='/admin'>
-                    <LoginPage />
-                </Route>
-                <Route exact path="/panel">
-                    <PanelPage />
-                </Route>
-                <Route path="/panel/produkty">
-                    <PanelProducts />
-                </Route>
-                <Route path="/panel/zamowienia">
-                    <PanelOrders />
-                </Route>
-                <Route path="/panel/kategorie">
-                    <PanelCategories />
-                </Route>
-                <Route path="/panel/platnosci">
-                    <PanelPayment />
-                </Route>
-                <Route path="/panel/wysylka">
-                    <PanelShipping />
-                </Route>
-                <Route path="/panel/ustawienia">
-                    <PanelSettings />
-                </Route>
-                <Route path="/panel/blog">
-                    <PanelBlog />
-                </Route>
-                <Route path="/panel/o-nas">
-                    <PanelAboutUs />
-                </Route>
-                <Route path="/panel/kupony">
-                    <PanelCoupons />
-                </Route>
-                <Route path="/panel/dostawa">
-                    <PanelDelivery />
-                </Route>
-                <Route path="/panel/pozostale">
-                    <PanelOthers />
-                </Route>
-                <Route path="/panel/strona-glowna">
-                    <PanelHomepage />
-                </Route>
+                        {/* ADMIN ROUTES */}
+                        <Route exact path='/admin'>
+                            <LoginPage />
+                        </Route>
+                        <Route exact path="/panel">
+                            <PanelPage />
+                        </Route>
+                        <Route path="/panel/produkty">
+                            <PanelProducts />
+                        </Route>
+                        <Route path="/panel/zamowienia">
+                            <PanelOrders />
+                        </Route>
+                        <Route path="/panel/kategorie">
+                            <PanelCategories />
+                        </Route>
+                        <Route path="/panel/platnosci">
+                            <PanelPayment />
+                        </Route>
+                        <Route path="/panel/wysylka">
+                            <PanelShipping />
+                        </Route>
+                        <Route path="/panel/ustawienia">
+                            <PanelSettings />
+                        </Route>
+                        <Route path="/panel/blog">
+                            <PanelBlog />
+                        </Route>
+                        <Route path="/panel/o-nas">
+                            <PanelAboutUs />
+                        </Route>
+                        <Route path="/panel/kupony">
+                            <PanelCoupons />
+                        </Route>
+                        <Route path="/panel/dostawa">
+                            <PanelDelivery />
+                        </Route>
+                        <Route path="/panel/pozostale">
+                            <PanelOthers />
+                        </Route>
+                        <Route path="/panel/strona-glowna">
+                            <PanelHomepage />
+                        </Route>
 
-                {/* Add content pages */}
-                <Route path="/panel/dodaj-produkt">
-                    <AddProductPage />
-                </Route>
-                <Route path="/panel/dodaj-wpis">
-                    <AddPostPage />
-                </Route>
+                        {/* Add content pages */}
+                        <Route path="/panel/dodaj-produkt">
+                            <AddProductPage />
+                        </Route>
+                        <Route path="/panel/dodaj-wpis">
+                            <AddPostPage />
+                        </Route>
 
-                {/* Order details */}
-                <Route path="/panel/szczegoly-zamowienia">
-                    <OrderDetails />
-                </Route>
-            </Switch>
-        </Router>
-    </div>
+                        {/* Order details */}
+                        <Route path="/panel/szczegoly-zamowienia">
+                            <OrderDetails />
+                        </Route>
+                    </Switch>
+                </Router>
+            </div>
+        </LangContext.Provider>
       </>
   );
 }
 
 export default App;
+export { LangContext }

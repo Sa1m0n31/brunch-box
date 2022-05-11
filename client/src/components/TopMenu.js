@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, {useRef, useState, useEffect, useContext} from 'react'
 import logoImg from '../static/img/brunch-box-logo.png'
 import poland from '../static/img/poland.png'
 import uk from '../static/img/united-kingdom.png'
@@ -8,6 +8,7 @@ import cart from '../static/img/cartIcon.png'
 import fb from "../static/img/facebook.svg";
 import insta from "../static/img/instagram.svg";
 import settings from "../helpers/settings";
+import {LangContext} from "../App";
 
 const TopMenu = () => {
     const mobileMenu = useRef(null);
@@ -21,6 +22,8 @@ const TopMenu = () => {
     const mobileMenuLanguages = useRef(null);
 
     const [count, setCount] = useState(0);
+
+    const { changeLanguage, content, langIndex } = useContext(LangContext);
 
     useEffect(() => {
         let lastScrollTop = 0;
@@ -99,7 +102,7 @@ const TopMenu = () => {
         <aside className="topBar" ref={topBarAside}>
             <section className="footer__headerWrapper">
                 <h5 className="footer__header footer__header--label">
-                    Telefon:
+                    {content.phone}:
                 </h5>
                 <h5 className="footer__header">
                     <a className="footer__header__link" href="tel:+48696696995">
@@ -107,7 +110,7 @@ const TopMenu = () => {
                     </a>
                 </h5>
                 <a className="callToAction" href="tel:+48696696995">
-                    Zamów teraz
+                    {content.orderNow}
                 </a>
             </section>
 
@@ -138,27 +141,22 @@ const TopMenu = () => {
             <ul className="topMenu__list">
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/">
-                        Strona główna
+                        {content.menu[0]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/o-nas">
-                        O nas
+                        {content.menu[1]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/oferta">
-                        Menu
+                        {content.menu[2]}
                     </a>
                 </li>
-                {/*<li className="topMenu__list__item">*/}
-                {/*    <a className="topMenu__list__item__link" href="/blog">*/}
-                {/*        Blog*/}
-                {/*    </a>*/}
-                {/*</li>*/}
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/kontakt">
-                        Kontakt
+                        {content.menu[3]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">
@@ -172,12 +170,12 @@ const TopMenu = () => {
             </ul>
 
             <div className="topMenu__languages">
-                <a className="topMenu__languages__btn" href={settings.API_URL}>
+                <button className="topMenu__languages__btn" onClick={() => { changeLanguage(0); }}>
                     <img className="topMenu__languages__img" src={poland} alt="polski" />
-                </a>
-                <a className="topMenu__languages__btn" href="https://en.brunchbox.pl">
+                </button>
+                <button className="topMenu__languages__btn" onClick={() => { changeLanguage(1); }}>
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
-                </a>
+                </button>
             </div>
         </menu>
 
@@ -190,8 +188,8 @@ const TopMenu = () => {
         <a className="topMenu__list__item__link d-mobile" href="/koszyk">
             <img className="topMenu__list__item__img" src={cart} alt="koszyk" />
             <span className="cartCounter">
-                            { count }
-                        </span>
+                { count }
+            </span>
         </a>
 
         <menu className="mobileMenu d-mobile" ref={mobileMenu}>
@@ -201,35 +199,30 @@ const TopMenu = () => {
             <img className="mobileMenu__logo" src={logoImg} alt="brunch-box-logo" ref={mobileMenuLogo} />
 
             <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
-                <a className="topMenu__languages__btn" href="https://en.brunchbox.pl">
+                <button className="topMenu__languages__btn" onClick={() => { changeLanguage(1); }}>
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
-                </a>
+                </button>
             </div>
 
             <ul className="mobileMenu__list" ref={mobileMenuList}>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/">
-                        Strona główna
+                        {content.menu[0]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/oferta">
-                        Menu
+                        {content.menu[2]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/o-nas">
-                        O nas
+                        {content.menu[1]}
                     </a>
                 </li>
-                {/*<li className="topMenu__list__item">*/}
-                {/*    <a className="topMenu__list__item__link" href="/blog">*/}
-                {/*        Blog*/}
-                {/*    </a>*/}
-                {/*</li>*/}
                 <li className="topMenu__list__item">
                     <a className="topMenu__list__item__link" href="/kontakt">
-                        Kontakt
+                        {content.menu[3]}
                     </a>
                 </li>
             </ul>

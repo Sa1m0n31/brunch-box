@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
@@ -16,6 +16,7 @@ import {allergensImg, allergensList} from "../helpers/allergens";
 import ReactTooltip from 'react-tooltip'
 import Loader from "react-loader-spinner";
 import {areShopOpen} from "../helpers/openCloseAlgorithm";
+import {LangContext} from "../App";
 
 const SingleProductContent = () => {
     const [size, setSize] = useState("L");
@@ -42,6 +43,7 @@ const SingleProductContent = () => {
     const [modal, setModal] = useState(false);
     const [modalHint, setModalHint] = useState(false);
 
+    const { content } = useContext(LangContext);
     const location = useLocation();
 
     const images = [
@@ -232,18 +234,18 @@ const SingleProductContent = () => {
 
             <img className="modalTick" src={tickImg} alt="dodano-do-koszyka" />
             <h2 className={modalHint ? "modalHeader modalHeader--smaller" : "modalHeader"}>
-                {!modalHint ? "Produkt został dodany do koszyka" : "Połowa boxa została dodana do koszyka. Uzupełnij swój box o drugą połówkę."}
+                {!modalHint ? content.addedToCart : content.halfBoxError}
             </h2>
             <section className="modal__buttons">
                 {!modalHint ? <>
                     <button className="modal__btn" onClick={() => { setModal(false) }}>
-                        Kontynuuj zakupy
+                        {content.continueShopping}
                     </button>
                     <button className="modal__btn" onClick={() => { window.location = "/koszyk" }}>
-                        Przejdź do kasy
+                        {content.goToCheckout}
                     </button>
                 </> : <a href="https://brunchbox.pl/oferta-sylwestrowa" className="modal__btn">
-                    Wybierz drugą połowę
+                    {content.chooseSecondHalf}
                 </a>}
             </section>
         </Modal>
@@ -281,20 +283,9 @@ const SingleProductContent = () => {
 
                     </div>
 
-                    {/*<section className="singleProduct__bottom">*/}
-                    {/*    <button className="singleProduct__bottom__btn button--landing" onClick={() => { toggleDescription() }}>*/}
-                    {/*        {longDesc ? "Zwiń" : "Zobacz"} pełny opis produktu*/}
-                    {/*        <img className={longDesc ? "arrowDown rotate180" : "arrowDown"} src={arrowDown} alt="na-dol" />*/}
-                    {/*    </button>*/}
-
-                    {/*    <main className={longDesc ? "singleProduct__longDesc" : "o-0"} dangerouslySetInnerHTML={{__html: product.long_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>*/}
-
-                    {/*    </main>*/}
-                    {/*</section>*/}
-
                     {product.l && product.m ? <div className="singleProduct__options">
                         <h3 className="singleProduct__options__header">
-                            Dostępne rozmiary:
+                            {content.availableSizes}:
                         </h3>
                         <div className="singleProduct__options__buttons">
                             <button className={size === "M" || size === "1/2 boxa" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
@@ -309,25 +300,25 @@ const SingleProductContent = () => {
                     </div> : ""}
                     {product.vege && product.meat ? <div className="singleProduct__options">
                         <h3 className="singleProduct__options__header">
-                            Dostępne opcje:
+                            {content.availableOptions}:
                         </h3>
                         <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
                             <button className={option === "Mieszana" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
                                     onClick={() => setOption("Mieszana")}
                             >
-                                Mieszana
+                                {content.meatVersion}
                             </button>
                             <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
                                     onClick={() => setOption("Wegetariańska")}
                             >
-                                Wegetariańska
+                                {content.vegeVersion}
                             </button>
                         </section>
                     </div> : ""}
 
                     {allergens.length ? <div className="singleProduct__options singleProduct__options--allergens">
                         <h3 className="singleProduct__options__header marginRight15">
-                            Alergeny:
+                            {content.allergens}:
                         </h3>
                         {allergens.map((item, index) => {
                             const allergen = allergensList.findIndex(itemOnTheList => {
@@ -350,16 +341,16 @@ const SingleProductContent = () => {
 
                     <section className="singleProduct__options marginTop20">
                         <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id, option, size) }}>
-                            Dodaj do koszyka
+                            {content.addToCart}
                         </button>
                     </section>
                 </section></> : <main className="loading">
                 <Loader
-                type="puff"
-                color="#000"
-                width={100}
-                height={100}
-                />
+                    type="puff"
+                    color="#000"
+                    width={100}
+                    height={100}
+                    />
                 </main>}
 
         {/* GALLERY */}

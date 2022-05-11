@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import AboutUsSection from "./AboutUsSection";
-
+import React, {useState, useEffect, useContext} from 'react'
 import {getAllSections} from "../admin/helpers/aboutUsFunctions";
-
-import settings from "../helpers/settings";
 import HomePageSection from "./HomePageSection";
+import {LangContext} from "../App";
 
 const AboutUsContent = () => {
     const [sections, setSections] = useState([]);
+
+    const { content } = useContext(LangContext);
 
     useEffect(() => {
         getAllSections()
@@ -22,7 +21,7 @@ const AboutUsContent = () => {
 
     return <main className="offerContent">
         <h2 className="aboutUs__header">
-            O nas
+            {content.aboutUs}
         </h2>
         <HomePageSection />
     </main>

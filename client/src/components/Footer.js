@@ -1,10 +1,13 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import {LangContext} from "../App";
 
 const Footer = () => {
+    const { content } = useContext(LangContext);
+
     return <footer className="footer">
         <section className="footer__headerWrapper">
                 <h5 className="footer__header__link italic">
-                    &copy; { new Date().getFullYear() } BrunchBox. Wszystkie prawa zastrzeżone
+                    &copy; { new Date().getFullYear() } BrunchBox. {content.footerCopyright}
                 </h5>
         </section>
 
@@ -12,17 +15,17 @@ const Footer = () => {
             <ul className="footer__list">
                 <li className="footer__menu__item">
                     <a className="footer__menu__item__link" href="/polityka-prywatnosci">
-                        Polityka prywatności
+                        {content.footerMenu[0]}
                     </a>
                 </li>
                 <li className="footer__menu__item">
                     <a className="footer__menu__item__link" href="/regulamin">
-                        Regulamin
+                        {content.footerMenu[1]}
                     </a>
                 </li>
                 <li className="footer__menu__item">
                     <a className="footer__menu__item__link" href="/kontakt">
-                        Kontakt
+                        {content.footerMenu[2]}
                     </a>
                 </li>
             </ul>

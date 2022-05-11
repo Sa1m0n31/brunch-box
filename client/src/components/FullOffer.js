@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 
 import {getAllProducts} from "../helpers/productFunctions";
@@ -9,12 +9,15 @@ import Loader from "react-loader-spinner";
 import {getAllCategories} from "../helpers/categoryFunctions";
 import HomePageSection from "./HomePageSection";
 import CategoriesMenu from "./CategoriesMenu";
+import {LangContext} from "../App";
 
 const FullOffer = () => {
     const [products, setProducts] = useState([]);
     const [loaded, setLoaded] = useState(false);
     const [categories, setCategories] = useState([]);
     const [productsMode, setProductsMode] = useState(-1);
+
+    const { content } = useContext(LangContext);
 
     useEffect(() => {
         console.log('hi');
@@ -110,13 +113,12 @@ const FullOffer = () => {
             Menu
         </h1>
         <h2 className="offerContent__header offerContent__header--2">
-            Wybierz idealny zestaw skomponowany do Twoich potrzeb.
+            {content.offerSubheader}
         </h2>
 
         {productsMode !== 0 ? (loaded ? <section className="offerContent__grid">
                 {products.map((item, index) => {
                     if(!item.hidden) {
-                        console.log(item);
                         return <Link className="offerContent__item"
                                      key={index}
                                      to={{
@@ -144,7 +146,7 @@ const FullOffer = () => {
                                 </p>
                             </div>
                             <button className="offerContent__item__btn">
-                                Zamów teraz
+                                {content.offerBtn}
                             </button>
                         </Link>
                     }

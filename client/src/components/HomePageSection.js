@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import example from '../static/img/o-pomysle.png'
 import {getAllSections} from "../admin/helpers/aboutUsFunctions";
 import settings from "../helpers/settings";
+import {LangContext} from "../App";
 
 const HomePageSection = () => {
     const [sections, setSections] = useState([]);
+
+    const { langIndex, content } = useContext(LangContext);
 
     useEffect(() => {
         getAllSections()
@@ -22,12 +25,12 @@ const HomePageSection = () => {
             return  <section className={index % 2 ? "homePageSection__item homePageSection__item--odd" : "homePageSection__item"}>
                 <section className="homePageSection__item__content" data-aos={index % 2 ? "fade-right" : "fade-left"}>
                     <p className="homePageSection__text">
-                        {item.header}
+                        {langIndex === 0 ? item.header : item.header_en}
                     </p>
 
                     <button className="button button--landing d-desktop-important">
                         <a className="button--landing__link" href="/oferta">
-                            Zobacz dostępne zestawy
+                            {content.aboutUsBtn}
                         </a>
                     </button>
                 </section>
@@ -37,7 +40,7 @@ const HomePageSection = () => {
                 </figure>
                 <button className="button button--landing d-mobile d-mobile-important">
                     <a className="button--landing__link" href="/oferta">
-                        Zobacz dostępne zestawy
+                        {content.aboutUsBtn}
                     </a>
                 </button>
             </section>

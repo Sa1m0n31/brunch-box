@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import TopMenu from "../components/TopMenu";
 import Footer from "../components/Footer";
 import {getPagesContent} from "../helpers/pagesFunctions";
+import {LangContext} from "../App";
 
 const PrivacyPolicy = () => {
-    const [content, setContent] = useState("");
+    const { content, langIndex } = useContext(LangContext);
+
+    const [data, setData] = useState("");
+    const [dataEn, setDataEn] = useState("");
 
     useEffect(() => {
         getPagesContent()
             .then(res => {
                 if(res.data.result) {
-                    setContent(res.data.result[0].privacy_policy);
+                    setData(res.data.result[0].privacy_policy);
+                    setDataEn(res.data.result[0].privacy_policy_en);
                 }
             });
     }, []);
@@ -19,10 +24,10 @@ const PrivacyPolicy = () => {
         <TopMenu />
         <main className="offerContent">
             <h1 className="offerContent__header">
-                Polityka prywatności
+                {content.footerMenu[0]}
             </h1>
             <article className="pageContent"
-                dangerouslySetInnerHTML={{__html: content}}
+                dangerouslySetInnerHTML={{__html: langIndex === 0 ? data : dataEn}}
             >
 
             </article>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { useStateWithCallbackLazy } from 'use-state-with-callback';
 import axios from 'axios'
 import * as Yup from 'yup'
@@ -11,8 +11,11 @@ import Loader from "react-loader-spinner";
 import {getAllDeliveryPrices} from "../admin/helpers/deliveryFunctions";
 import deliverySchedule from "../helpers/deliverySchedule";
 import {areShopOpen} from "../helpers/openCloseAlgorithm";
+import {LangContext} from "../App";
 
 const ShippingAndPayment = () => {
+    const { content, langIndex } = useContext(LangContext);
+
     const [cart, setCart] = useState(JSON.parse(localStorage.getItem('sec-cart')));
     const [amount, setAmount] = useState(parseInt(localStorage.getItem('sec-amount')));
     const [ribbon, setRibbon] = useState(false);
@@ -30,7 +33,7 @@ const ShippingAndPayment = () => {
     const [couponUsed, setCouponUsed] = useState(false);
     const [discount, setDiscount] = useState("");
     const [couponError, setCouponError] = useState(false);
-    const [calendar, setCalendar] = useState(getNextDays(14));
+    const [calendar, setCalendar] = useState(getNextDays(14, langIndex));
     const [dayOfDelivery, setDayOfDelivery] = useState(0);
     const [hourOfDelivery, setHourOfDelivery] = useState(-1);
     const [schedule, setSchedule] = useState(deliverySchedule);
@@ -55,8 +58,11 @@ const ShippingAndPayment = () => {
     const [calculate, setCalculate] = useState(false);
     const [paymentAtDelivery, setPaymentAtDelivery] = useState(false);
     const [paymentAtDeliveryMethod, setPaymentAtDeliveryMethod] = useState(1);
-
     const [vat, setVat] = useState(false);
+
+    useEffect(() => {
+        setCalendar(getNextDays(14, langIndex));
+    }, [langIndex]);
 
     useEffect(() => {
         const currentDate = new Date();
@@ -634,10 +640,7 @@ const ShippingAndPayment = () => {
 
         setRouteLoader(true);
 
-        console.log('calculate route');
-
         if((street)&&(building)&&(postalCode)&&(city)) {
-            console.log('ok');
             axios.post("https://brunchbox.pl/maps/get-distance", {
                 street, building, postalCode, city
             })
@@ -710,13 +713,13 @@ const ShippingAndPayment = () => {
 
     return <form className="cartContent shippingAndPayment" onSubmit={formik.handleSubmit}>
         <h1 className="cart__header cart__header--shippingAndPayment">
-            Wpisz swoje dane i dokończ zamówienie
+            {content.checkoutHeader}
         </h1>
 
         <main className={dateError ? "cart cart--flex cart--borderRed shakeAnimation" : "cart cart--flex"}>
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
-                    Wybierz dzień dostawy
+                    {content.checkoutSubheaders[0]}
                 </h2>
                 {/*<label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest">*/}
                 {/*    <button className="ribbonBtn" onClick={(e) => {*/}
@@ -728,13 +731,13 @@ const ShippingAndPayment = () => {
                 {/*    Dostarcz zamówienie najszybciej jak to możliwe*/}
                 {/*</label>*/}
                 <label className="ribbonBtnLabel ribbonBtnLabel--hour ribbonBtnLabel--fastest ribbonBtnLabel--chooseHour">
-                    <button className="ribbonBtn" onClick={(e) => {
-                        e.preventDefault();
-                        setFastest(!fastest);
-                    }}>
-                        <span className={!fastest ? "ribbon" : "d-none"}></span>
-                    </button>
-                    Wybierz datę i godzinę zamówienia
+                    {/*<button className="ribbonBtn" onClick={(e) => {*/}
+                    {/*    e.preventDefault();*/}
+                    {/*    setFastest(!fastest);*/}
+                    {/*}}>*/}
+                    {/*    <span className={!fastest ? "ribbon" : "d-none"}></span>*/}
+                    {/*</button>*/}
+                    {content.checkoutMobile}
                 </label>
                 <section className={fastest ? "shippingAndPayment__calendar opacity-5" : "shippingAndPayment__calendar"} id={fastest && window.innerWidth < 768 ? "d-none" : ""}>
                     {fastest ? <div className="shippingAndPayment__calendar__overlay"></div> : ""}
@@ -748,7 +751,7 @@ const ShippingAndPayment = () => {
                                 {item.day}
                             </h3>
                             <h4 className="calendarDayOfWeek">
-                                {numberToDayOfTheWeek(item.dayOfTheWeek)}
+                                {numberToDayOfTheWeek(item.dayOfTheWeek, langIndex)}
                             </h4>
                             <h5 className="calendarMonth">
                                 {item.month}
@@ -759,7 +762,7 @@ const ShippingAndPayment = () => {
 
                 {/* Second section */}
                 {!fastest ? <h2 className="shippingAndPayment__header marginTop50">
-                    Wybierz godzinę dostawy
+                    {content.checkoutSubheaders[1]}
                 </h2> : ""}
                 <section className={fastest ? "shippingAndPayment__section shippingAndPayment__section--hours opacity-5" : "shippingAndPayment__section shippingAndPayment__section--hours"}>
                     {fastest ? <div className="shippingAndPayment__calendar__overlay"></div> : ""}
@@ -776,16 +779,11 @@ const ShippingAndPayment = () => {
                         </label>
                     })}
                 </section>
-
-                {0 ? <p className="shopClosedText">
-                    Przepraszamy. Nie prowadzimy w tej chwili dostaw. Wciąż możesz zaplanować dostawę w trakcie godzin naszej pracy.
-                    Zapraszamy do zakładki <a href="/kontakt">Kontakt</a> po więcej informacji lub pod tel. 696-696-995.
-                </p> : ""}
             </section>
 
             <section className="shippingAndPayment__section">
                 <h2 className="shippingAndPayment__header">
-                    Dane osobowe
+                    {content.checkoutSubheaders[2]}
                 </h2>
 
                 <div className="shippingAndPayment__form">
@@ -798,7 +796,7 @@ const ShippingAndPayment = () => {
                                name="firstName"
                                value={formik.values.firstName}
                                onChange={formik.handleChange}
-                               placeholder="Twoje imię"
+                               placeholder={content.checkoutForm[0]}
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-100">
@@ -806,7 +804,7 @@ const ShippingAndPayment = () => {
                                name="lastName"
                                value={formik.values.lastName}
                                onChange={formik.handleChange}
-                               placeholder="Twoje nazwisko"
+                               placeholder={content.checkoutForm[1]}
                                type="text" />
                     </label>
 
@@ -815,7 +813,7 @@ const ShippingAndPayment = () => {
                                name="email"
                                value={formik.values.email}
                                onChange={formik.handleChange}
-                               placeholder="Adres email"
+                               placeholder={content.checkoutForm[2]}
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-50">
@@ -823,7 +821,7 @@ const ShippingAndPayment = () => {
                                name="phoneNumber"
                                value={formik.values.phoneNumber}
                                onChange={formik.handleChange}
-                               placeholder="Numer telefonu"
+                               placeholder={content.checkoutForm[3]}
                                type="text" />
                     </label>
 
@@ -834,7 +832,7 @@ const ShippingAndPayment = () => {
                                value={formik.values.city}
                                onChange={(e) => { changeAddress(e, 0); }}
                                disabled={personal}
-                               placeholder="Miejscowość"
+                               placeholder={content.checkoutForm[4]}
                                type="text" />
                     </label>
                     <label className="shippingAndPayment__label label-30">
@@ -844,7 +842,7 @@ const ShippingAndPayment = () => {
                                value={formik.values.postalCode}
                                onChange={(e) => { changeAddress(e, 1); }}
                                disabled={personal}
-                               placeholder="Kod pocztowy"
+                               placeholder={content.checkoutForm[5]}
                                type="text" />
                     </label>
 
@@ -854,7 +852,7 @@ const ShippingAndPayment = () => {
                                autoComplete="new-password"
                                value={formik.values.street}
                                onChange={(e) => { changeAddress(e, 2); }}
-                               placeholder="Ulica, numer domu, numer mieszkania"
+                               placeholder={content.checkoutForm[6]}
                                disabled={personal}
                                type="text" />
                     </label>
@@ -868,7 +866,7 @@ const ShippingAndPayment = () => {
                                 <span className={personal ? "ribbon" : "d-none"}></span>
                             </button>
                             <section className="address">
-                                Odbiór osobisty: {originStreet} {originBuilding}{originFlat ? "/" + originFlat + ";" : ";"} <br/>
+                                {content.checkoutCheckboxes[0]}: {originStreet} {originBuilding}{originFlat ? "/" + originFlat + ";" : ";"} <br/>
                                 {originPostalCode} {originCity}
                             </section>
                         </label>
@@ -878,20 +876,20 @@ const ShippingAndPayment = () => {
                             <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPaymentAtDelivery(!paymentAtDelivery); }}>
                                 <span className={paymentAtDelivery ? "ribbon" : "d-none"}></span>
                             </button>
-                            Płatność przy odbiorze
+                            {content.checkoutCheckboxes[1]}
                         </label>
                         {paymentAtDelivery ? <div className="paymentAtDelivery">
                             <label className="ribbonBtnLabel">
                                 <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPaymentAtDeliveryMethod(1); }}>
                                     <span className={paymentAtDeliveryMethod === 1 ? "ribbon" : "d-none"}></span>
                                 </button>
-                                Płatność gotówką
+                                {content.checkoutCheckboxes[2]}
                             </label>
                             <label className="ribbonBtnLabel">
                                 <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPaymentAtDeliveryMethod(2); }}>
                                     <span className={paymentAtDeliveryMethod === 2 ? "ribbon" : "d-none"}></span>
                                 </button>
-                                Płatność kartą
+                                {content.checkoutCheckboxes[3]}
                             </label>
                         </div> : ""}
 
@@ -900,7 +898,7 @@ const ShippingAndPayment = () => {
                             <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setCoupon(!coupon); }}>
                                 <span className={coupon ? "ribbon" : "d-none"}></span>
                             </button>
-                            Mam kupon rabatowy
+                            {content.checkoutCheckboxes[4]}
                         </label>
 
                         <section className={coupon ? "ribbonDedication" : "o-none"}>
@@ -911,16 +909,16 @@ const ShippingAndPayment = () => {
                                            type="text"
                                            value={couponContent}
                                            onChange={(e) => { setCouponContent(e.target.value); }}
-                                           placeholder="Tu wpisz swój kupon" />
+                                           placeholder={content.checkoutDiscountCodeInput} />
                                 </label>
                                     <button className="button button--coupon" onClick={(e) => { checkCoupon(e) }}>
-                                        Dodaj kupon
+                                        {content.checkoutDiscountCodeBtn}
                                     </button></> : <h3 className="couponUsed">
-                                    Kupon: { couponContent }, zniżka: { discount }
+                                    {content.checkoutDiscountCodeSuccess[0]}: { couponContent }, {content.checkoutDiscountCodeSuccess[1]}: { discount }
                                 </h3>}
                             </section>
                             <span className="errorsContainer errorsContainer--coupon">
-                        {couponError ? "Podany kupon rabatowy nie istnieje" : ""}
+                        {couponError ? content.checkoutDiscountCodeError : ""}
                     </span>
                         </section>
 
@@ -928,7 +926,7 @@ const ShippingAndPayment = () => {
                             <button className="ribbonBtn" onClick={(e) => { addRibbon(e) }}>
                                 <span className={ribbon ? "ribbon" : "d-none"}></span>
                             </button>
-                            Wstążka z dedykacją (10 PLN)
+                            {content.checkoutCheckboxes[5]} (10 PLN)
                         </label>
 
                         <section className={ribbon ? "ribbonDedication" : "o-none"}>
@@ -938,7 +936,7 @@ const ShippingAndPayment = () => {
                                        type="text"
                                        value={formik.values.ribbonFrom}
                                        onChange={formik.handleChange}
-                                       placeholder="Od kogo" />
+                                       placeholder={content.checkoutFromTo[0]} />
                             </label>
                             <label className="ribbonLabel">
                                 <input className="shippingAndPayment__input"
@@ -946,7 +944,7 @@ const ShippingAndPayment = () => {
                                        type="text"
                                        value={formik.values.ribbonTo}
                                        onChange={formik.handleChange}
-                                       placeholder="Dla kogo" />
+                                       placeholder={content.checkoutFromTo[1]} />
                             </label>
                         </section>
 
@@ -954,7 +952,7 @@ const ShippingAndPayment = () => {
                             <button type="button" className="ribbonBtn" onClick={(e) => { setVat(!vat); }}>
                                 <span className={vat ? "ribbon" : "d-none"}></span>
                             </button>
-                            Chcę otrzymać fakturę
+                            {content.checkoutCheckboxes[6]}
                         </label>
 
                         <section className={vat ? "ribbonDedication" : "o-none"}>
@@ -964,7 +962,7 @@ const ShippingAndPayment = () => {
                                        type="text"
                                        value={formik.values.companyName}
                                        onChange={formik.handleChange}
-                                       placeholder="Nazwa firmy" />
+                                       placeholder={content.checkoutCompanyForm[0]} />
                             </label>
                             <label className="ribbonLabel">
                                 <input className="shippingAndPayment__input"
@@ -972,14 +970,14 @@ const ShippingAndPayment = () => {
                                        type="text"
                                        value={formik.values.nip}
                                        onChange={formik.handleChange}
-                                       placeholder="NIP" />
+                                       placeholder={content.checkoutCompanyForm[1]} />
                             </label>
                             <label className="shippingAndPayment__label label-70">
                                 <input className={formik.errors.companyCity ? "shippingAndPayment__input input--addressCompany shippingAndPayment--error" : "shippingAndPayment__input input--addressCompany"}
                                        name="companyCity"
                                        value={formik.values.companyCity}
                                        onChange={formik.handleChange}
-                                       placeholder="Miejscowość"
+                                       placeholder={content.checkoutCompanyForm[2]}
                                        type="text" />
                             </label>
                             <label className="shippingAndPayment__label label-30">
@@ -987,7 +985,7 @@ const ShippingAndPayment = () => {
                                        name="companyPostalCode"
                                        value={formik.values.companyPostalCode}
                                        onChange={formik.handleChange}
-                                       placeholder="Kod pocztowy"
+                                       placeholder={content.checkoutCompanyForm[3]}
                                        type="text" />
                             </label>
 
@@ -996,7 +994,7 @@ const ShippingAndPayment = () => {
                                        name="companyStreet"
                                        value={formik.values.companyStreet}
                                        onChange={formik.handleChange}
-                                       placeholder="Ulica, numer domu, numer mieszkania"
+                                       placeholder={content.checkoutCompanyForm[4]}
                                        type="text" />
                             </label>
                         </section>
@@ -1006,7 +1004,7 @@ const ShippingAndPayment = () => {
 
                 {/* Second section */}
                 <h2 className="shippingAndPayment__header marginTop50">
-                    Pozostałe informacje
+                    {content.checkoutSubheaders[3]}
                 </h2>
 
                 <textarea
@@ -1014,7 +1012,7 @@ const ShippingAndPayment = () => {
                     name="comment"
                     value={formik.values.comment}
                     onChange={formik.handleChange}
-                    placeholder="Komentarz do zamówienia (opcjonalnie)" />
+                    placeholder={content.checkoutTextarea} />
 
             </section>
         </main>
@@ -1022,7 +1020,7 @@ const ShippingAndPayment = () => {
         <section className="cart__summary cart__summary--shippingAndPayment">
             <button className="cart__summary__button cart__summary__button--back button__link--small">
                 <a href="/koszyk">
-                    Powrót do koszyka
+                    {content.checkoutBackToCart}
                 </a>
             </button>
 
@@ -1030,23 +1028,23 @@ const ShippingAndPayment = () => {
                 {deliveryPrice !== -1 ? <>
                     <header className="cart__summary__header">
                         <h3 className="cart__summary__header__label">
-                            Dostawa:
+                            {content.checkoutDelivery}:
                         </h3>
                         <h4 className="cart__summary__header__value">
-                            {deliveryPrice !== -2 ? (deliveryPrice + " PLN") : <span className="noDelivery">Brak możliwości dostawy na podany adres</span>}
+                            {deliveryPrice !== -2 ? (deliveryPrice + " PLN") : <span className="noDelivery">{content.noDelivery}</span>}
                         </h4>
                     </header>
                 </> : ""}
                 <header className={deliveryPrice !== -1 ? "cart__summary__header cart__summary__header--sum" : "cart__summary__header"}>
                     <h3 className="cart__summary__header__label">
-                        Łącznie do zapłaty:
+                        {content.cartSum}:
                     </h3>
                     <h4 className="cart__summary__header__value">
                         {deliveryPrice > 0 ? amount + deliveryPrice : amount} PLN
                     </h4>
                 </header>
                 <button className="cart__summary__button cart__summary__button--shippingAndPayment button__link--small" type="submit">
-                    Przechodzę do płatności
+                    {content.checkoutBtn}
                 </button>
             </section>
         </section>
