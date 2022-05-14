@@ -706,13 +706,12 @@ ol {
 }
 
 .allergensImg--client {
-    margin: 0 10px 15px;
+    margin: 0 5px 15px;
+    filter: grayscale(1);
 }
 
-.singleProduct__options--allergens {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start !important;
+.allergensImg--client:hover {
+    filter: grayscale(0);
 }
 
 .singleProduct__images {
@@ -720,6 +719,10 @@ ol {
     justify-content: space-between;
     align-items: center;
     margin-top: 30px;
+}
+
+.singleProduct__options--allergens {
+    display: block !important;
 }
 
 .singleProduct__mainImage {
@@ -743,7 +746,6 @@ ol {
 }
 
 .singleProduct__right__header {
-    border-bottom: 1px solid rgba(142, 142, 142, .25);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -751,7 +753,8 @@ ol {
 
 .singleProduct__title {
     font-family: 'Playfair display', cursive;
-    font-size: 24px;
+    font-size: 42px;
+    font-weight: 500;
     padding-bottom: 8px;
 }
 
@@ -761,10 +764,10 @@ ol {
 }
 
 .singleProduct__price {
-    margin-left: 50px;
+    margin-right: 40px;
     white-space: nowrap;
     font-size: 30px;
-    font-style: italic;
+    font-weight: 500;
 }
 
 .singleProduct__options {
@@ -776,12 +779,18 @@ ol {
 
 .singleProduct__options__header {
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
 }
 
 .singleProduct__options__buttons {
     margin-left: 15px;
     white-space: nowrap;
+}
+
+.allergens__inner > img:first-of-type {
+    margin-left: 0;
 }
 
 .singleProduct__options__btn {
@@ -791,9 +800,13 @@ ol {
     text-transform: uppercase;
     border: 3px solid #000;
     font-weight: 700;
-    font-style: italic;
-    border-radius: 4px;
+    font-style: normal;
+    border-radius: 50%;
     transition: .4s all;
+}
+
+.singleProduct__options__buttons--lower .singleProduct__options__btn {
+    border-radius: 10px;
 }
 
 .singleProduct__options__buttons--lower .singleProduct__options__btn {
@@ -808,6 +821,7 @@ ol {
 .singleProduct__description {
     margin: 20px 0 30px;
     font-size: 16px;
+    font-weight: 400;
     font-style: italic;
 }
 
@@ -827,17 +841,27 @@ ol {
     background: #000;
     color: #fff;
     font-size: 18px;
-    font-style: italic;
+    font-style: normal !important;
+    text-transform: none !important;
     border: 2px solid #000;
-    border-radius: 4px;
     width: 340px;
-    height: 60px;
-    text-transform: uppercase;
+    height: 50px;
+    border-radius: 50px;
     font-weight: 700;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: .4s all ease-in-out;
+}
+
+.priceSection .button--addToCart {
+    width: 260px;
+    font-size: 21px;
+    font-weight: 400;
+}
+
+.priceSection .button--addToCart:hover {
+    transform: translateY(-2px);
 }
 
 .button--addToCart__img {
@@ -2160,20 +2184,20 @@ ol {
 .slider {
     width: 100%;
     height: 500px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
     overflow: hidden;
     position: relative;
+}
+
+.slider > div > div,
+.slider > div {
+    height: 100%;
 }
 
 .slider__item {
     width: 100%;
     height: 100%;
-    flex-basis: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
+    overflow: hidden;
 }
 
 .slider__item__img {
@@ -2208,7 +2232,7 @@ ol {
 .slider__item__btn {
     width: 300px;
     height: 45px;
-    /*border-radius: 45px;*/
+    border-radius: 45px;
     background: #000;
     text-transform: uppercase;
     font-size: 14px;
@@ -2218,11 +2242,11 @@ ol {
     align-items: center;
     font-weight: 500;
     margin-top: 5px;
-    transition: .2s all;
+    transition: .2s all ease;
 }
 
 .slider__item__btn:hover {
-    background: rgba(0, 0, 0, .95);
+    transform: translateY(-2px);
 }
 
 .sliderBottom {
@@ -2236,7 +2260,7 @@ ol {
 }
 
 .landing img {
-    filter: brightness(.8);
+    filter: brightness(.9);
 }
 
 .sliderBottom__item__img {
@@ -2357,4 +2381,34 @@ ol {
 
 .sliderBottom__item__content__text {
     font-size: 14px;
+}
+
+.panelContent__frame__header--flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addProduct__input--textarea {
+    resize: none;
+    height: 80px !important;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.afterLanding__header {
+    font-family: 'Playfair display', serif;
+    font-weight: 500;
+    text-align: center;
+    font-size: 36px;
+}
+
+.priceSection {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }

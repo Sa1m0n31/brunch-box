@@ -17,10 +17,9 @@ const FullOffer = () => {
     const [categories, setCategories] = useState([]);
     const [productsMode, setProductsMode] = useState(-1);
 
-    const { content } = useContext(LangContext);
+    const { content, langIndex } = useContext(LangContext);
 
     useEffect(() => {
-        console.log('hi');
         /* Check number of categories available */
         getAllCategories()
             .then(res => {
@@ -136,9 +135,9 @@ const FullOffer = () => {
                                          src={/*settings.API_URL + */"https://brunchbox.pl/image?url=/media/" + item.image} alt="produkt"/>
                                 </section>
                                 <h3 className="offerContent__item__header">
-                                    {item.product_name.split("/")[0]}
+                                    {item.product_name.split("/")[langIndex]}
                                     <span className="offerContent__item__header--cursive">
-                                        {item.bracket_name.split("/")[0]}
+                                        {item.bracket_name.split("/")[langIndex]}
                                     </span>
                                 </h3>
                                 <p className="offerContent__item__price">

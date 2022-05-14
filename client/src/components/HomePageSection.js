@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react'
-import example from '../static/img/o-pomysle.png'
 import {getAllSections} from "../admin/helpers/aboutUsFunctions";
 import settings from "../helpers/settings";
 import {LangContext} from "../App";

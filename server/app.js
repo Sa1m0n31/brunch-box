@@ -176,6 +176,7 @@ const pagesRouter = require("./routers/pagesRouter");
 const couponRouter = require("./routers/couponRouter");
 const datesRouter = require("./routers/datesRouter");
 const googleMapsRouter = require("./routers/googleMapsRouter");
+const sliderRouter = require('./routers/sliderRouter');
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -192,5 +193,6 @@ app.use("/pages", pagesRouter);
 app.use("/coupon", couponRouter);
 app.use("/dates", datesRouter);
 app.use("/maps", googleMapsRouter);
+app.use('/slider', sliderRouter);
 
 app.listen(5000);

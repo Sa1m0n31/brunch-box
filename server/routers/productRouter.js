@@ -106,7 +106,7 @@ con.connect(err => {
          for(let i=len; i<6; i++) filesId.push(null);
 
          /* Add product to database */
-         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS, priceM_meat, priceL_meat, priceM_vege, priceL_vege, priceS_meat, priceS_vege, m, l, s, vegan, meat, hidden, priority } = request.body;
+         let { id, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS, priceM_meat, priceL_meat, priceM_vege, priceL_vege, priceS_meat, priceS_vege, m, l, s, vegan, meat, hidden, priority, newCategory, bestsellerCategory } = request.body;
          if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
          else priceL_meat = null;
          if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
@@ -139,8 +139,8 @@ con.connect(err => {
             /* Add image to database */
             const values = [id, name, priceM_meat, priceL_meat, priceS_meat, priceM_vege, priceL_vege, priceS_vege,
                shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS,
-               filesId[0], categoryId, bracketName, vegan, meat, m, l, s, filesId[1], filesId[2], filesId[3], filesId[4], filesId[5], hidden, priority];
-            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+               filesId[0], categoryId, bracketName, vegan, meat, m, l, s, filesId[1], filesId[2], filesId[3], filesId[4], filesId[5], hidden, priority, newCategory === 'true', bestsellerCategory === 'true'];
+            const query = 'INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
             con.query(query, values, (err, res) => {
                if(res) response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=1");
                else response.redirect("https://brunchbox.pl/panel/dodaj-produkt?add=0");
@@ -187,7 +187,7 @@ con.connect(err => {
       });
 
       const updateProduct = () => {
-         let { id, deleteImg0, deleteImg1, deleteImg2, deleteImg3, deleteImg4, deleteImg5, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS, priceM_meat, priceL_meat, priceM_vege, priceL_vege, priceS_meat, priceS_vege, m, l, s, vegan, meat, hidden, priority } = request.body;
+         let { id, deleteImg0, deleteImg1, deleteImg2, deleteImg3, deleteImg4, deleteImg5, name, bracketName, categoryId, shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS, priceM_meat, priceL_meat, priceM_vege, priceL_vege, priceS_meat, priceS_vege, m, l, s, vegan, meat, hidden, priority, newCategory, bestsellerCategory } = request.body;
          if(priceL_meat !== '') priceL_meat = parseFloat(priceL_meat);
          else priceL_meat = null;
          if(priceM_meat !== '') priceM_meat = parseFloat(priceM_meat);
@@ -252,10 +252,10 @@ con.connect(err => {
          /* Add product without main image */
          const values = [name, priceM_meat, priceL_meat, priceS_meat, priceM_vege, priceL_vege, priceS_vege,
             shortDescription, longDescription, meatDescription, vegeDescription, meatDescriptionM, vegeDescriptionM, meatDescriptionS, vegeDescriptionS,
-            categoryId, bracketName, vegan, meat, m, l, s, hidden, priority, id];
+            categoryId, bracketName, vegan, meat, m, l, s, hidden, priority, newCategory === 'true', bestsellerCategory === 'true', id];
          const query = 'UPDATE products SET name = ?, price_m_meat = ?, price_l_meat = ?, price_s_meat = ?, price_m_vege = ?, price_l_vege = ?, price_s_vege = ?, ' +
              'short_description = ?, long_description = ?, meat_description = ?, vege_description = ?, meat_description_m = ?, vege_description_m = ?, meat_description_s = ?, vege_description_s = ?, category_id = ?, bracket_name = ?, ' +
-             'vege = ?, meat = ?, m = ?, l = ?, s = ?, hidden = ?, priority = ? ' +
+             'vege = ?, meat = ?, m = ?, l = ?, s = ?, hidden = ?, priority = ?, new_category = ?, bestseller_category = ? ' +
              'WHERE id = ?';
          con.query(query, values, (err, res) => {
             /* Update images id in product row */
@@ -352,12 +352,43 @@ con.connect(err => {
       });
    });
 
-   /* REMOVE CURRENT CROSS-SELLS */
-   const deleteCrossSellsForProduct = (productId) => {
-      const values = [productId];
-      const query = 'DELETE FROM cross-sells WHERE product1 = ?';
-      con.query(query, values);
-   }
+   router.get("/get-bestsellers", (request, response) => {
+      const query = 'SELECT p.id, p.name as product_name, p.bracket_name, i.file_path as image, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, p.date, COALESCE(c.name, "Brak") as category_name, p.hidden, p.priority FROM products p ' +
+          'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
+          'LEFT OUTER JOIN images i ON p.gallery_1 = i.id WHERE p.bestseller_category = TRUE ORDER BY p.date DESC';
+
+      con.query(query, (err, res) => {
+         if(res) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: null
+            });
+         }
+      });
+   });
+
+   router.get("/get-new-products", (request, response) => {
+      const query = 'SELECT p.id, p.name as product_name, p.bracket_name, i.file_path as image, p.price_m_meat, p.price_l_meat, p.price_m_vege, p.price_l_vege, p.date, COALESCE(c.name, "Brak") as category_name, p.hidden, p.priority FROM products p ' +
+          'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
+          'LEFT OUTER JOIN images i ON p.gallery_1 = i.id WHERE p.new_category = TRUE ORDER BY p.date DESC';
+
+      con.query(query, (err, res) => {
+         if(res) {
+            response.send({
+               result: res
+            });
+         }
+         else {
+            response.send({
+               result: null
+            });
+         }
+      });
+   });
 
    /* GET ALL PRODUCTS */
    router.get("/get-all-products", (request, response) => {
@@ -365,11 +396,8 @@ con.connect(err => {
       'LEFT OUTER JOIN categories c ON p.category_id = c.id ' +
       'LEFT OUTER JOIN images i ON p.gallery_1 = i.id ORDER BY p.date DESC';
 
-      console.log('hii');
 
       con.query(query, (err, res) => {
-         console.log(err);
-         console.log(res);
          if(res) {
             response.send({
                result: res

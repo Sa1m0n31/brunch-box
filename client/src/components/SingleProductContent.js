@@ -43,7 +43,7 @@ const SingleProductContent = () => {
     const [modal, setModal] = useState(false);
     const [modalHint, setModalHint] = useState(false);
 
-    const { content } = useContext(LangContext);
+    const { content, langIndex } = useContext(LangContext);
     const location = useLocation();
 
     const images = [
@@ -266,21 +266,20 @@ const SingleProductContent = () => {
                 <section className="singleProduct__right">
                     <section className="singleProduct__right__header">
                         <h1 className="singleProduct__title">
-                            {product.name.split("/")[0]}
-                            <span className="thin singleProduct__title--cursive">
-                        {product.bracket_name.split("/")[0]}
-                    </span>
+                            {product.name.split("/")[langIndex]}
                         </h1>
+                    </section>
+
+                    <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.split("---")[langIndex]?.replace(/&nbsp;/g, " ")}}>
+                    </div>
+
+                    <div className="priceSection">
                         <h2 className="singleProduct__price">
                             {price} PLN
                         </h2>
-                    </section>
-
-                    <div className="singleProduct__description" dangerouslySetInnerHTML={{__html: product.short_description?.split("---")[0]?.replace(/&nbsp;/g, " ")}}>
-                    </div>
-
-                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc.split("---")[0]}}>
-
+                        <button className="button button--addToCart" onClick={() => { addToCart(product.id, option, size) }}>
+                            {content.addToCart}
+                        </button>
                     </div>
 
                     {product.l && product.m ? <div className="singleProduct__options">
@@ -316,34 +315,34 @@ const SingleProductContent = () => {
                         </section>
                     </div> : ""}
 
+                    <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc.split("---")[langIndex]}}>
+
+                    </div>
+
                     {allergens.length ? <div className="singleProduct__options singleProduct__options--allergens">
                         <h3 className="singleProduct__options__header marginRight15">
                             {content.allergens}:
                         </h3>
-                        {allergens.map((item, index) => {
-                            const allergen = allergensList.findIndex(itemOnTheList => {
-                                return itemOnTheList === item.allergen;
-                            });
-                            if((allergen)||(allergen === 0)) {
-                                return <>
-                                    <img className="allergensImg allergensImg--client"
-                                         src={allergensImg[allergen]}
-                                         data-tip
-                                         data-for={`id${index}`}
-                                         alt="alergen" />
-                                    <ReactTooltip id={`id${index}`} type='dark' effect='float'>
-                                        {item.allergen.split("/")[0]}
-                                    </ReactTooltip>
-                                </>
-                            }
-                        })}
+                        <div className="allergens__inner">
+                            {allergens.map((item, index) => {
+                                const allergen = allergensList.findIndex(itemOnTheList => {
+                                    return itemOnTheList === item.allergen;
+                                });
+                                if((allergen)||(allergen === 0)) {
+                                    return <>
+                                        <img className="allergensImg allergensImg--client"
+                                             src={allergensImg[allergen]}
+                                             data-tip
+                                             data-for={`id${index}`}
+                                             alt="alergen" />
+                                        <ReactTooltip id={`id${index}`} type='dark' effect='float'>
+                                            {item.allergen.split("/")[langIndex]}
+                                        </ReactTooltip>
+                                    </>
+                                }
+                            })}
+                        </div>
                     </div> : ""}
-
-                    <section className="singleProduct__options marginTop20">
-                        <button className="button button--addToCart button--landing" onClick={() => { addToCart(product.id, option, size) }}>
-                            {content.addToCart}
-                        </button>
-                    </section>
                 </section></> : <main className="loading">
                 <Loader
                     type="puff"

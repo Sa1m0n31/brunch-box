@@ -1,21 +1,24 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import TopMenu from "../components/TopMenu";
 import Footer from "../components/Footer";
+import {LangContext} from "../App";
 
 const TYPage = () => {
+    const { content } = useContext(LangContext);
+
     return <>
         <TopMenu />
         <main className="tyPage">
             <h1 className="ty__header">
-                Dziękujemy za złożenie zamówienia!
+                {content?.ty1}
             </h1>
             <h2 className="ty__subheader">
-                Wkrótce dostarczymy je pod Twoje drzwi!
+                {content?.ty2}
             </h2>
 
             <button className="button button--landing button--ty marginTop30">
                 <a className="button--landing__link" href="/">
-                    Wróć na stronę główną
+                    {content?.ty3}
                 </a>
             </button>
         </main>

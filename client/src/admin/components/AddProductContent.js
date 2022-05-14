@@ -46,6 +46,8 @@ const AddProductContent = () => {
     const [hidden, setHidden] = useState(false);
     const [gallery, setGallery] = useState([0, 0, 0, 0, 0, 0]);
     const [priority, setPriority] = useState(0);
+    const [newCategory, setNewCategory] = useState(false);
+    const [bestsellerCategory, setBestsellerCategory] = useState(false);
 
     /* Prices */
     const [priceMMeat, setPriceMMeat] = useState("");
@@ -176,6 +178,8 @@ const AddProductContent = () => {
         setCategoryId(productData.category_id);
         setHidden(productData.hidden);
         setPriority(productData.priority);
+        setNewCategory(productData.new_category);
+        setBestsellerCategory(productData.bestseller_category);
 
         setShortDescription(productData.short_description);
         setLongDescription(productData.long_description);
@@ -617,6 +621,18 @@ const AddProductContent = () => {
                     </button>
                     Ukryj produkt
                 </label>
+                <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                    <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setNewCategory(!newCategory); }}>
+                        <span className={newCategory ? "panelContent__filters__btn--active" : "d-none"} />
+                    </button>
+                    Dodaj do nowości
+                </label>
+                <label className="panelContent__filters__label__label panelContent__filters__label__label--category">
+                    <button className="panelContent__filters__btn" onClick={(e) => { e.preventDefault(); setBestsellerCategory(!bestsellerCategory); }}>
+                        <span className={bestsellerCategory ? "panelContent__filters__btn--active" : "d-none"} />
+                    </button>
+                    Dodaj do bestsellerów
+                </label>
 
                 <label className="label--priority">
                     Priorytet wyświetlania
@@ -631,6 +647,12 @@ const AddProductContent = () => {
                 <input className="invisibleInput"
                        value={hidden ? "hidden" : ""}
                        name="hidden" />
+                <input className="invisibleInput"
+                       value={newCategory ? "true" : ""}
+                       name="newCategory" />
+                <input className="invisibleInput"
+                       value={bestsellerCategory ? "true" : ""}
+                       name="bestsellerCategory" />
             </section>
 
             <section className="addProduct__btnWrapper">

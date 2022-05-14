@@ -17,7 +17,6 @@ con.connect(err => {
 
     /* Add new section */
     router.post("/add", (request, response) => {
-        console.log("add section");
 
         /* Add images */
         let fileId = null;

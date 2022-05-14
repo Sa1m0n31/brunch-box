@@ -41,6 +41,7 @@ import PanelCoupons from "./admin/pages/PanelCoupons";
 import CustomMenu from "./pages/CustomMenu";
 import PanelDelivery from "./admin/pages/PanelDelivery";
 import PanelHomepage from "./admin/pages/PanelHomepage";
+import PanelSlider from "./admin/pages/PanelSlider";
 
 ReactGA.initialize('G-2YV1L21QB9');
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -97,7 +98,12 @@ function App() {
             backToShop: 'Wróć do sklepu',
             noDelivery: 'Brak możliwości dostawy na podany adres',
             checkoutMobile: 'Wybierz datę i godzinę zamówienia',
-            aboutUsBtn: 'Zobacz dostępne zestawy'
+            aboutUsBtn: 'Zobacz dostępne zestawy',
+            bestsellers: 'Bestsellery',
+            newProducts: 'Nowości',
+            ty: 'Dziękujemy za złożenie zamówienia!',
+            ty2: 'Wkrótce dostarczymy je pod Twoje drzwi!',
+            ty3: 'Wróć na stronę główną'
         },
         {
             homepageHeader: 'Each order is packed with special care by our team and we\'ll even include a message from you!',
@@ -106,7 +112,50 @@ function App() {
             orderNow: 'Order now',
             menu: ['Homepage', 'About us', 'Menu', 'Contact'],
             footerCopyright: 'All rights reserved',
-            footerMenu: ['Privacy policy', 'Terms of service', 'Contact']
+            footerMenu: ['Privacy policy', 'Terms of service', 'Contact'],
+            cartHeader: 'Cart',
+            cartCols: ['Product name', 'Option', 'Size', 'Quantity', "Total", 'Edit'],
+            cartSum: 'Total',
+            cartBtn: 'Next',
+            checkoutHeader: 'Fill the data',
+            checkoutSubheaders: ['Choose day of delivery', 'Choose hour of delivery', 'Personal data', 'Additional information'],
+            checkoutForm: ['First name', 'Last name', 'E-mail', 'Phone number', 'City', 'Postal code', 'Street, building, flat'],
+            checkoutCheckboxes: ['Collection', 'Payment on delivery', 'Cash', 'Card', 'Discount code', 'Dedication', 'Get invoice'],
+            checkoutCompanyForm: ['Company name', 'NIP', 'City', 'Postal code', 'Street, building, flat'],
+            checkoutDiscountCodeInput: 'Your discount code',
+            checkoutDiscountCodeBtn: 'Add discount code',
+            checkoutDiscountCodeError: 'Discount code does not exists',
+            checkoutDiscountCodeSuccess: ['Code', 'Discount'],
+            checkoutFromTo: ['From', 'To'],
+            checkoutTextarea: 'Additional comment (optionally)',
+            checkoutDelivery: 'Delivery',
+            checkoutBtn: 'Go pay',
+            checkoutBackToCart: 'Back to cart',
+            offerSubheader: 'Choose your perfect box',
+            offerBtn: 'Order now',
+            availableSizes: 'Available sizes',
+            availableOptions: 'Available options',
+            addToCart: 'Add to cart',
+            meatVersion: 'Mix',
+            vegeVersion: 'Vege',
+            allergens: 'Allergens',
+            addedToCart: "Produkt added to cart",
+            halfBoxError: 'First half of the box has been added to cart. Fulfill your box with second half.',
+            cartHalfBoxError: 'You have to complete full box',
+            continueShopping: 'Continue',
+            goToCheckout: 'Checkout',
+            chooseSecondHalf: 'Choose second half',
+            aboutUs: 'About us',
+            emptyCart: 'Your cart is empty',
+            backToShop: 'Back to shop',
+            noDelivery: 'Sorry, we are not deliver to your location',
+            checkoutMobile: 'Choose day and hour of delivery',
+            aboutUsBtn: 'Choose your box',
+            bestsellers: 'Bestsellers',
+            newProducts: 'New',
+            ty1: 'Thank you for your order!',
+            ty2: 'Soon we will deliver it to you',
+            ty3: 'Back to homepage'
         }
     ];
 
@@ -242,6 +291,9 @@ function App() {
                         </Route>
                         <Route path="/panel/strona-glowna">
                             <PanelHomepage />
+                        </Route>
+                        <Route path="/panel/slider">
+                            <PanelSlider />
                         </Route>
 
                         {/* Add content pages */}

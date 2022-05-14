@@ -16,6 +16,7 @@ import aboutUs from '../static/img/about-us.png'
 import others from '../static/img/file.png'
 import discount from '../static/img/discount.png'
 import priceTag from '../static/img/price-tag.png'
+import sliderIcon from '../../static/img/gallery.svg'
 
 import settings from "../helpers/settings";
 import auth from "../helpers/auth";
@@ -170,6 +171,12 @@ const PanelMenu = ({active, submenu}) => {
                         <a className="panelMenu__list__item__link" id={active === 10 ? "menuItem--active" : ""} href="/panel/dostawa">
                             <img className="panelMenu__list__item__img" src={priceTag} alt="ceny-dostawy" />
                             Ceny dostawy
+                        </a>
+                    </li>
+                    <li className="panelMenu__list__item">
+                        <a className="panelMenu__list__item__link" id={active === 12 ? "menuItem--active" : ""} href="/panel/slider">
+                            <img className="panelMenu__list__item__img" src={sliderIcon} alt="pozostale" />
+                            Slider
                         </a>
                     </li>
                     <li className="panelMenu__list__item">

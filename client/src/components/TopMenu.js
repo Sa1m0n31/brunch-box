@@ -199,9 +199,11 @@ const TopMenu = () => {
             <img className="mobileMenu__logo" src={logoImg} alt="brunch-box-logo" ref={mobileMenuLogo} />
 
             <div className="topMenu__languages topMenu__languages--mobile" ref={mobileMenuLanguages}>
-                <button className="topMenu__languages__btn" onClick={() => { changeLanguage(1); }}>
+                {langIndex === 0 ? <button className="topMenu__languages__btn" onClick={() => { changeLanguage(1); }}>
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
-                </button>
+                </button> : <button className="topMenu__languages__btn" onClick={() => { changeLanguage(0); }}>
+                    <img className="topMenu__languages__img" src={poland} alt="polski" />
+                </button>}
             </div>
 
             <ul className="mobileMenu__list" ref={mobileMenuList}>

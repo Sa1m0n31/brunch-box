@@ -39,7 +39,6 @@ const ShippingAndPayment = () => {
     const [schedule, setSchedule] = useState(deliverySchedule);
     const [excludedHours, setExcludedHours] = useState([]);
     const [fastest, setFastest] = useState(false);
-    const [changeOnFastest, setChangeOnFastest] = useState(0);
     const [dateError, setDateError] = useState(false);
     const [routeResult, setRouteResult] = useState("");
     const [routeError, setRouteError] = useState("");
@@ -415,17 +414,6 @@ const ShippingAndPayment = () => {
     useEffect(() => {
         setHourOfDelivery(-1);
     }, [dayOfDelivery]);
-
-    useEffect(() => {
-        if(fastest) {
-            setChangeOnFastest(changeOnFastest+1);
-        }
-        else {
-            setChangeOnFastest(0);
-        }
-
-        if(changeOnFastest) setFastest(false);
-    }, [hourOfDelivery]);
 
     Date.prototype.addHours = function(h) {
         this.setTime(this.getTime() + (h * 60 * 60 * 1000));
