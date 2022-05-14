@@ -801,10 +801,14 @@
 
     .sliderMobile__dots .dot {
         margin: 0 10px;
-        width: 20px;
-        height: 20px;
-        background: #D6B04A;
+        width: 15px;
+        height: 15px;
+        background: rgb(211, 207, 201);
         border-radius: 50%;
+    }
+
+    .sliderMobile__dots .dot--active {
+        background: rgb(217, 159, 84);
     }
 
     .sliderMobile {
@@ -818,8 +822,7 @@
     }
 
     .sliderMobile .img {
-        height: 500px;
-        width: auto;
+        min-height: 500px;
         min-width: 100%;
     }
 

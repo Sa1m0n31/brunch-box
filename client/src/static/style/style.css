@@ -2240,7 +2240,7 @@ ol {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: 500;
+    font-weight: 700;
     margin-top: 5px;
     transition: .2s all ease;
 }
