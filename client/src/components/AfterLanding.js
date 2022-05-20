@@ -75,7 +75,7 @@ const AfterLanding = () => {
 
     return <div className="afterLanding">
         <h3 className="afterLanding__header">
-            Bestsellery
+            {content.bestsellers}
         </h3>
         <section className="offerContent__grid">
             {bestsellers ? bestsellers.map((item, index) => {
@@ -91,13 +91,13 @@ const AfterLanding = () => {
                             </section>
                             <h3 className="offerContent__item__header">
                                 {item.product_name.split("/")[langIndex]}
-                                <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name.split("/")[langIndex]}
-                                </span>
+                                {/*<span className="offerContent__item__header--cursive">*/}
+                                {/*    {item.bracket_name.split("/")[langIndex]}*/}
+                                {/*</span>*/}
                             </h3>
-                            <p className="offerContent__item__price">
-                                {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}
-                            </p>
+                            {/*<p className="offerContent__item__price">*/}
+                            {/*    {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}*/}
+                            {/*</p>*/}
                         </div>
                         <button className="offerContent__item__btn">
                             {content.offerBtn}
@@ -109,7 +109,7 @@ const AfterLanding = () => {
         </section>
 
         <h3 className="afterLanding__header">
-            Nowości
+            {content.newProducts}
         </h3>
         <section className="offerContent__grid">
             {newProducts ? newProducts.map((item, index) => {
@@ -125,13 +125,13 @@ const AfterLanding = () => {
                             </section>
                             <h3 className="offerContent__item__header">
                                 {item.product_name.split("/")[langIndex]}
-                                <span className="offerContent__item__header--cursive">
-                                    {item.bracket_name.split("/")[langIndex]}
-                                </span>
+                                {/*<span className="offerContent__item__header--cursive">*/}
+                                {/*    {item.bracket_name.split("/")[langIndex]}*/}
+                                {/*</span>*/}
                             </h3>
-                            <p className="offerContent__item__price">
-                                {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}
-                            </p>
+                            {/*<p className="offerContent__item__price">*/}
+                            {/*    {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}*/}
+                            {/*</p>*/}
                         </div>
                         <button className="offerContent__item__btn">
                             {content.offerBtn}

@@ -640,7 +640,7 @@ ol {
 }
 
 .offerContent__item__btn:hover {
-    opacity: .85;
+    transform: translateY(-2px);
 }
 
 .categories__item__header {
@@ -2050,6 +2050,10 @@ ol {
     zoom: .98;
 }
 
+.slider, .slider * {
+    zoom: 1 !important;
+}
+
 @media(min-width: 1200px) {
     .landing__logo {
         width: 350px !important;
@@ -2183,7 +2187,7 @@ ol {
 /* Slider */
 .slider {
     width: 100%;
-    height: 500px;
+    height: 700px;
     overflow: hidden;
     position: relative;
 }
@@ -2277,6 +2281,10 @@ ol {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.afterSlider {
+    margin-top: 100px;
 }
 
 .afterSlider__header {

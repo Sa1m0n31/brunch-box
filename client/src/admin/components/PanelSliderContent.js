@@ -77,7 +77,6 @@ const PanelSliderContent = () => {
         axios.get(`${settings.API_URL}/slider/get`)
             .then((res) => {
                 const r = res?.data?.result;
-                console.log(r);
                 if(r) {
                     setInitialValuesPl(r[r.findIndex((item) => (item.language === 'pl'))]);
                     setInitialValuesEn(r[r.findIndex((item) => (item.language === 'en'))]);
@@ -98,9 +97,9 @@ const PanelSliderContent = () => {
         setLink1(r.slide1link);
         setLink2(r.slide2link);
         setLink3(r.slide3link);
-        setHeaderBottom1(r.slidebottom1header);
-        setHeaderBottom2(r.slidebottom2header);
-        setHeaderBottom3(r.slidebottom3header);
+        setHeaderBottom1(r.after_slider_text);
+        setHeaderBottom2(r.after_slider_btn);
+        setHeaderBottom3(r.after_menu);
         setTextBottom1(r.slidebottom1text);
         setTextBottom2(r.slidebottom2text);
         setTextBottom3(r.slidebottom3text);
@@ -120,6 +119,7 @@ const PanelSliderContent = () => {
     }
 
     const setInitialValuesEn = (r) => {
+        console.log(r);
         setHeader1En(r.slide1header);
         setHeader2En(r.slide2header);
         setHeader3En(r.slide3header);
@@ -132,9 +132,9 @@ const PanelSliderContent = () => {
         setLink1En(r.slide1link);
         setLink2En(r.slide2link);
         setLink3En(r.slide3link);
-        setHeaderBottom1En(r.slidebottom1header);
-        setHeaderBottom1En(r.slidebottom2header);
-        setHeaderBottom1En(r.slidebottom3header);
+        setHeaderBottom1En(r.after_slider_text);
+        setHeaderBottom2En(r.after_slider_btn);
+        setHeaderBottom3En(r.after_menu);
         setTextBottom1En(r.slidebottom1text);
         setTextBottom2En(r.slidebottom2text);
         setTextBottom3En(r.slidebottom3text);
@@ -157,7 +157,7 @@ const PanelSliderContent = () => {
             {addedMsg === "" ? <div className="flex">
                 <form className="panelContent__frame__form categoriesForm"
                       method="POST"
-                      action="http://localhost:5000/slider/update"
+                      action="https://brunchbox.pl/slider/update"
                       encType="multipart/form-data"
                 >
 
@@ -275,85 +275,33 @@ const PanelSliderContent = () => {
                     </label>
 
                     <label className="addProduct__label addProduct__label--frame">
-                        Nagłówek slide dolny 1
+                        Napis pod sliderem
                         <input className="addProduct__input"
                                name="slideBottom1Header"
                                value={headerBottom1}
                                onChange={(e) => { setHeaderBottom1(e.target.value) }}
                                type="text"
-                               placeholder="Nagłówek slide 1" />
+                               placeholder="Napis pod sliderem" />
                     </label>
                     <label className="addProduct__label addProduct__label--frame">
-                        Nagłówek slide dolny 2
+                        Napis na buttonie pod sliderem
                         <input className="addProduct__input"
                                name="slideBottom2Header"
                                value={headerBottom2}
                                onChange={(e) => { setHeaderBottom2(e.target.value) }}
                                type="text"
-                               placeholder="Nagłówek slide 2" />
+                               placeholder="Napis na buttonie pod sliderem" />
                     </label>
                     <label className="addProduct__label addProduct__label--frame">
-                        Nagłówek slide dolny 3
+                        Napis pod menu
                         <input className="addProduct__input"
                                name="slideBottom3Header"
                                value={headerBottom3}
                                onChange={(e) => { setHeaderBottom3(e.target.value) }}
                                type="text"
-                               placeholder="Nagłówek slide 3" />
+                               placeholder="Napis pod menu" />
                     </label>
 
-                    <label className="addProduct__label addProduct__label--frame">
-                        Tekst slide dolny 1
-                        <textarea className="addProduct__input addProduct__input--textarea"
-                                  name="slideBottom1Text"
-                                  value={textBottom1}
-                                  onChange={(e) => { setTextBottom1(e.target.value) }}
-                                  placeholder="Tekst slide dolny 1" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Tekst slide dolny 2
-                        <textarea className="addProduct__input addProduct__input--textarea"
-                                  name="slideBottom2Text"
-                                  value={textBottom2}
-                                  onChange={(e) => { setTextBottom2(e.target.value) }}
-                                  placeholder="Tekst slide dolny 2" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Tekst slide dolny 3
-                        <textarea className="addProduct__input addProduct__input--textarea"
-                                  name="slideBottom3Text"
-                                  value={textBottom3}
-                                  onChange={(e) => { setTextBottom3(e.target.value) }}
-                                  placeholder="Tekst slide dolny 3" />
-                    </label>
-
-                    <label className="addProduct__label addProduct__label--frame">
-                        Link slide dolny 1
-                        <input className="addProduct__input"
-                               name="slideBottom1Link"
-                               value={linkBottom1}
-                               onChange={(e) => { setLinkBottom1(e.target.value) }}
-                               type="text"
-                               placeholder="Link slide dolny 1" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Link slide dolny 2
-                        <input className="addProduct__input"
-                               name="slideBottom2Link"
-                               value={linkBottom2}
-                               onChange={(e) => { setLinkBottom2(e.target.value) }}
-                               type="text"
-                               placeholder="Link slide dolny 2" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Link slide dolny 3
-                        <input className="addProduct__input"
-                               name="slideBottom3Link"
-                               value={linkBottom3}
-                               onChange={(e) => { setLinkBottom3(e.target.value) }}
-                               type="text"
-                               placeholder="Link slide dolny 3" />
-                    </label>
 
                     <label className="fileInputLabel">
                         <span>Slide 1</span>
@@ -391,42 +339,7 @@ const PanelSliderContent = () => {
                             <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${image3}`} alt="zdjecie-produktu" />
                         </section> : ""}
                     </label>
-                    <label className="fileInputLabel">
-                        <span>Slide dolny 1</span>
-                        <input type="file"
-                               className="product__fileInput"
-                               name="slidebottom1" />
-                        {image4 && !deleteImg4 ? <section className="miniature">
-                            <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg4(true); }}>
-                                x
-                            </button>
-                            <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${image4}`} alt="zdjecie-produktu" />
-                        </section> : ""}
-                    </label>
-                    <label className="fileInputLabel">
-                        <span>Slide dolny 2</span>
-                        <input type="file"
-                               className="product__fileInput"
-                               name="slidebottom2" />
-                        {image5 && !deleteImg5 ? <section className="miniature">
-                            <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg5(true); }}>
-                                x
-                            </button>
-                            <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${image5}`} alt="zdjecie-produktu" />
-                        </section> : ""}
-                    </label>
-                    <label className="fileInputLabel">
-                        <span>Slide dolny 3</span>
-                        <input type="file"
-                               className="product__fileInput"
-                               name="slidebottom3" />
-                        {image6 && !deleteImg6 ? <section className="miniature">
-                            <button className="miniature__deleteBtn" onClick={(e) => { e.stopPropagation(); e.preventDefault(); setDeleteImg6(true); }}>
-                                x
-                            </button>
-                            <img className="miniature__img" src={`${settings.API_URL}/image?url=/media/${image6}`} alt="zdjecie-produktu" />
-                        </section> : ""}
-                    </label>
+
                     <label className="fileInputLabel">
                         <span>Slide mobile 1</span>
                         <input type="file"
@@ -472,7 +385,7 @@ const PanelSliderContent = () => {
                 {/* ENGLISH */}
                 <form className="panelContent__frame__form categoriesForm"
                       method="POST"
-                      action="http://localhost:5000/slider/update"
+                      action="https://brunchbox.pl/slider/update"
                       encType="multipart/form-data"
                 >
 
@@ -590,84 +503,31 @@ const PanelSliderContent = () => {
                     </label>
 
                     <label className="addProduct__label addProduct__label--frame">
-                        Nagłówek slide dolny 1
+                        Napis pod sliderem
                         <input className="addProduct__input"
                                name="slideBottom1Header"
                                value={headerBottom1En}
                                onChange={(e) => { setHeaderBottom1En(e.target.value) }}
                                type="text"
-                               placeholder="Nagłówek slide 1" />
+                               placeholder="Napis pod sliderem" />
                     </label>
                     <label className="addProduct__label addProduct__label--frame">
-                        Nagłówek slide dolny 2
+                        Napis na buttonie pod sliderem
                         <input className="addProduct__input"
                                name="slideBottom2Header"
                                value={headerBottom2En}
                                onChange={(e) => { setHeaderBottom2En(e.target.value) }}
                                type="text"
-                               placeholder="Nagłówek slide 2" />
+                               placeholder="Napis na buttonie pod sliderem" />
                     </label>
                     <label className="addProduct__label addProduct__label--frame">
-                        Nagłówek slide dolny 3
+                        Napis pod menu
                         <input className="addProduct__input"
                                name="slideBottom3Header"
                                value={headerBottom3En}
                                onChange={(e) => { setHeaderBottom3En(e.target.value) }}
                                type="text"
-                               placeholder="Nagłówek slide 3" />
-                    </label>
-
-                    <label className="addProduct__label addProduct__label--frame">
-                        Tekst slide dolny 1
-                        <textarea className="addProduct__input addProduct__input--textarea"
-                                  name="slideBottom1Text"
-                                  value={textBottom1En}
-                                  onChange={(e) => { setTextBottom1En(e.target.value) }}
-                                  placeholder="Tekst slide dolny 1" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Tekst slide dolny 2
-                        <textarea className="addProduct__input addProduct__input--textarea"
-                                  name="slideBottom2Text"
-                                  value={textBottom2En}
-                                  onChange={(e) => { setTextBottom2En(e.target.value) }}
-                                  placeholder="Tekst slide dolny 2" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Tekst slide dolny 3
-                        <textarea className="addProduct__input addProduct__input--textarea"
-                                  name="slideBottom3Text"
-                                  value={textBottom3En}
-                                  onChange={(e) => { setTextBottom3En(e.target.value) }}
-                                  placeholder="Tekst slide dolny 3" />
-                    </label>
-
-                    <label className="addProduct__label addProduct__label--frame">
-                        Link slide dolny 1
-                        <input className="addProduct__input"
-                               name="slideBottom1Link"
-                               value={linkBottom1En}
-                               onChange={(e) => { setLinkBottom1En(e.target.value) }}
-                               type="text"
-                               placeholder="Link slide dolny 1" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Link slide dolny 2
-                        <input className="addProduct__input"
-                               name="slideBottom2Link"
-                               value={linkBottom2En}
-                               onChange={(e) => { setLinkBottom2En(e.target.value) }}
-                               type="text"
-                               placeholder="Link slide dolny 2" />
-                    </label>
-                    <label className="addProduct__label addProduct__label--frame">
-                        Link slide dolny 3
-                        <input className="addProduct__input"
-                               name="slideBottom3Link"
-                               value={linkBottom3En}
-                               onChange={(e) => { setLinkBottom3En(e.target.value) }}
-                               type="text"
-                               placeholder="Link slide dolny 3" />
+                               placeholder="Napis pod menu" />
                     </label>
 
                     <button className="addProduct__btn" type="submit">

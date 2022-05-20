@@ -10,14 +10,38 @@ import {getAllCategories} from "../helpers/categoryFunctions";
 import HomePageSection from "./HomePageSection";
 import CategoriesMenu from "./CategoriesMenu";
 import {LangContext} from "../App";
+import axios from "axios";
 
 const FullOffer = () => {
+    const [dataPl, setDataPl] = useState({});
+    const [dataEn, setDataEn] = useState({});
+    const [data, setData] = useState({});
     const [products, setProducts] = useState([]);
     const [loaded, setLoaded] = useState(false);
     const [categories, setCategories] = useState([]);
     const [productsMode, setProductsMode] = useState(-1);
 
     const { content, langIndex } = useContext(LangContext);
+
+    useEffect(() => {
+        axios.get(`${settings.API_URL}/slider/get`)
+            .then((res) => {
+                const r = res?.data?.result;
+                if(r) {
+                    setDataPl(r[r.findIndex((item) => (item.language === 'pl'))]);
+                    setDataEn(r[r.findIndex((item) => (item.language === 'en'))]);
+                }
+            });
+    }, []);
+
+    useEffect(() => {
+        if(langIndex === 0) {
+            setData(dataPl);
+        }
+        else {
+            setData(dataEn);
+        }
+    }, [langIndex, dataPl, dataEn]);
 
     useEffect(() => {
         /* Check number of categories available */
@@ -49,7 +73,6 @@ const FullOffer = () => {
 
         getAllProducts()
             .then(res => {
-                console.log(res?.data?.result);
                 if(res?.data?.result) {
                     setProducts(res.data.result.sort(sortByPriority));
                     setLoaded(true);
@@ -112,7 +135,7 @@ const FullOffer = () => {
             Menu
         </h1>
         <h2 className="offerContent__header offerContent__header--2">
-            {content.offerSubheader}
+            {data.after_menu}
         </h2>
 
         {productsMode !== 0 ? (loaded ? <section className="offerContent__grid">

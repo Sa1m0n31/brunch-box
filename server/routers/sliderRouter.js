@@ -111,8 +111,8 @@ con.connect(err => {
                });
 
                query = `UPDATE slider SET slide1header = ?, slide2header = ?, slide3header = ?, slide1text = ?, slide2text = ?, slide3text = ?, 
-                        slide1link = ?, slide2link = ?, slide3link = ?, slide1btn = ?, slide2btn = ?, slide3btn = ?, slidebottom1header = ?,
-                        slidebottom2header = ?, slidebottom3header = ?, slidebottom1text = ?, slidebottom2text = ?, slidebottom3text = ?, 
+                        slide1link = ?, slide2link = ?, slide3link = ?, slide1btn = ?, slide2btn = ?, slide3btn = ?, after_slider_text = ?,
+                        after_slider_btn = ?, after_menu = ?, slidebottom1text = ?, slidebottom2text = ?, slidebottom3text = ?, 
                         slidebottom1link = ?, slidebottom2link = ?, slidebottom3link = ?, slide1image = COALESCE(?, slide1image), slide2image = COALESCE(?, slide2image), slide3image = COALESCE(?, slide3image), 
                         slidebottom1image = COALESCE(?, slidebottom1image), slidebottom2image = COALESCE(?, slidebottom2image), slidebottom3image = COALESCE(?, slidebottom3image), mobile1 = COALESCE(?, mobile1), mobile2 = COALESCE(?, mobile2), mobile3 = COALESCE(?, mobile3) WHERE language = ?`;
                values = [slide1Header, slide2Header, slide3Header, slide1Text, slide2Text, slide3Text, slide1Link, slide2Link, slide3Link,
@@ -122,8 +122,8 @@ con.connect(err => {
            }
            else {
                query = `UPDATE slider SET slide1header = ?, slide2header = ?, slide3header = ?, slide1text = ?, slide2text = ?, slide3text = ?, 
-                        slide1link = ?, slide2link = ?, slide3link = ?, slide1btn = ?, slide2btn = ?, slide3btn = ?, slidebottom1header = ?,
-                        slidebottom2header = ?, slidebottom3header = ?, slidebottom1text = ?, slidebottom2text = ?, slidebottom3text = ?, 
+                        slide1link = ?, slide2link = ?, slide3link = ?, slide1btn = ?, slide2btn = ?, slide3btn = ?, after_slider_text = ?,
+                        after_slider_btn = ?, after_menu = ?, slidebottom1text = ?, slidebottom2text = ?, slidebottom3text = ?, 
                         slidebottom1link = ?, slidebottom2link = ?, slidebottom3link = ? WHERE language = ?`;
                values = [slide1Header, slide2Header, slide3Header, slide1Text, slide2Text, slide3Text, slide1Link, slide2Link, slide3Link,
                    slide1Btn, slide2Btn, slide3Btn, slideBottom1Header, slideBottom2Header, slideBottom3Header, slideBottom1Text,
@@ -131,9 +131,8 @@ con.connect(err => {
            }
 
             con.query(query, values, (err, res) => {
-                console.log(err);
-                if(res) response.redirect("http://localhost:5000/panel/slider");
-                else response.redirect("http://localhost:5000/panel/slider");
+                if(res) response.redirect("https://brunchbox.pl/panel");
+                else response.redirect("https://brunchbox.pl/panel");
             });
         }
     });
