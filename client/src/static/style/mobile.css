@@ -817,13 +817,17 @@
 
     .sliderMobile, .sliderMobile > div,
     .sliderMobile > div > div, .sliderMobile a {
-        height: 500px;
+        height: calc(100vh - 120px);
+        max-height: 800px;
         display: block;
     }
 
     .sliderMobile .img {
-        min-height: 500px;
+        height: auto;
+        width: auto;
+        min-height: 100%;
         min-width: 100%;
+        max-width: 110%;
     }
 
     .landing {
@@ -1205,6 +1209,18 @@
         margin-bottom: 25px;
     }
 
+    .singleProduct__left {
+        margin-bottom: 20px;
+    }
+
+    .singleProduct__right__header {
+        margin-top: 10px;
+    }
+
+    .singleProduct__images__item {
+        height: 60px;
+    }
+
     .banquet__btn {
         flex-basis: 30%;
     }
@@ -1258,8 +1274,14 @@
         white-space: normal;
     }
 
-    .singleProduct__options__btn {
-        margin-bottom: 10px;
+    .singleProduct--circle {
+        width: 35px;
+        height: 35px;
+        font-size: 19px;
+    }
+
+    .singleProduct__options__header {
+        font-size: 12px;
     }
 
     /* Cart */
@@ -1326,12 +1348,12 @@
 
     /* Single product */
     .singleProduct__options__btn {
-        font-size: 11px;
-        padding: 7px;
+        font-size: 16px;
+        padding: 6px 10px;
     }
 
     .singleProduct__options__buttons {
-        margin-left: 0;
+        margin-left: 10px;
     }
 
     .smallModal .ReactModal__Content {

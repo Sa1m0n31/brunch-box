@@ -104,9 +104,9 @@ const Landing = () => {
                             <h4 className="slider__item__subheader">
                                 {data.slide1text}
                             </h4>
-                            <a className="slider__item__btn" href={data.slide1link}>
+                            <button className="slider__item__btn" onClick={() => { window.location = data.slide1link }}>
                                 {data.slide1btn}
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div className="slider__item">
@@ -118,9 +118,9 @@ const Landing = () => {
                             <h4 className="slider__item__subheader">
                                 {data.slide2text}
                             </h4>
-                            <a className="slider__item__btn" href={data.slide2link}>
+                            <button className="slider__item__btn" onClick={() => { window.location = data.slide2link }}>
                                 {data.slide2btn}
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div className="slider__item">
@@ -132,54 +132,54 @@ const Landing = () => {
                             <h4 className="slider__item__subheader">
                                 {data.slide3text}
                             </h4>
-                            <a className="slider__item__btn" href={data.slide3link}>
+                            <button className="slider__item__btn" onClick={() => { window.location = data.slide3link }}>
                                 {data.slide3btn}
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </ReactSiema>
             </div>
-            {/*<div className="sliderBottom d-desktop">*/}
-            {/*    <a className="sliderBottom__item" href={data.slidebottom1link}>*/}
-            {/*        <figure className="sliderBottom__item__imgWrapper">*/}
-            {/*            <img className="sliderBottom__item__img" src={`${settings.API_URL}/image?url=/media/${dataPl.slidebottom1image}`} alt="img" />*/}
-            {/*        </figure>*/}
-            {/*        <div className="sliderBottom__item__content">*/}
-            {/*            <h4 className="sliderBottom__item__content__header">*/}
-            {/*                {data.slidebottom1header}*/}
-            {/*            </h4>*/}
-            {/*            <p className="sliderBottom__item__content__text">*/}
-            {/*                {data.slidebottom1text}*/}
-            {/*            </p>*/}
-            {/*        </div>*/}
-            {/*    </a>*/}
-            {/*    <a className="sliderBottom__item" href={data.slidebottom2link}>*/}
-            {/*        <figure className="sliderBottom__item__imgWrapper">*/}
-            {/*            <img className="sliderBottom__item__img" src={`${settings.API_URL}/image?url=/media/${dataPl.slidebottom2image}`} alt="img" />*/}
-            {/*        </figure>*/}
-            {/*        <div className="sliderBottom__item__content">*/}
-            {/*            <h4 className="sliderBottom__item__content__header">*/}
-            {/*                {data.slidebottom2header}*/}
-            {/*            </h4>*/}
-            {/*            <p className="sliderBottom__item__content__text">*/}
-            {/*                {data.slidebottom2text}*/}
-            {/*            </p>*/}
-            {/*        </div>*/}
-            {/*    </a>*/}
-            {/*    <a className="sliderBottom__item" href={data.slidebottom3link}>*/}
-            {/*        <figure className="sliderBottom__item__imgWrapper">*/}
-            {/*            <img className="sliderBottom__item__img" src={`${settings.API_URL}/image?url=/media/${dataPl.slidebottom3image}`} alt="img" />*/}
-            {/*        </figure>*/}
-            {/*        <div className="sliderBottom__item__content">*/}
-            {/*            <h4 className="sliderBottom__item__content__header">*/}
-            {/*                {data.slidebottom3header}*/}
-            {/*            </h4>*/}
-            {/*            <p className="sliderBottom__item__content__text">*/}
-            {/*                {data.slidebottom3text}*/}
-            {/*            </p>*/}
-            {/*        </div>*/}
-            {/*    </a>*/}
-            {/*</div>*/}
+            <div className="sliderBottom d-desktop">
+                <a className="sliderBottom__item" href={data.slidebottom1link}>
+                    <figure className="sliderBottom__item__imgWrapper">
+                        <img className="sliderBottom__item__img" src={`${settings.API_URL}/image?url=/media/${dataPl.slidebottom1image}`} alt="img" />
+                    </figure>
+                    <div className="sliderBottom__item__content">
+                        <h4 className="sliderBottom__item__content__header">
+                            {data.slidebottom1header}
+                        </h4>
+                        <p className="sliderBottom__item__content__text">
+                            {data.slidebottom1text}
+                        </p>
+                    </div>
+                </a>
+                <a className="sliderBottom__item" href={data.slidebottom2link}>
+                    <figure className="sliderBottom__item__imgWrapper">
+                        <img className="sliderBottom__item__img" src={`${settings.API_URL}/image?url=/media/${dataPl.slidebottom2image}`} alt="img" />
+                    </figure>
+                    <div className="sliderBottom__item__content">
+                        <h4 className="sliderBottom__item__content__header">
+                            {data.slidebottom2header}
+                        </h4>
+                        <p className="sliderBottom__item__content__text">
+                            {data.slidebottom2text}
+                        </p>
+                    </div>
+                </a>
+                <a className="sliderBottom__item" href={data.slidebottom3link}>
+                    <figure className="sliderBottom__item__imgWrapper">
+                        <img className="sliderBottom__item__img" src={`${settings.API_URL}/image?url=/media/${dataPl.slidebottom3image}`} alt="img" />
+                    </figure>
+                    <div className="sliderBottom__item__content">
+                        <h4 className="sliderBottom__item__content__header">
+                            {data.slidebottom3header}
+                        </h4>
+                        <p className="sliderBottom__item__content__text">
+                            {data.slidebottom3text}
+                        </p>
+                    </div>
+                </a>
+            </div>
             <div className="afterSlider">
                 <h3 className="afterSlider__header">
                     {data.after_slider_text}

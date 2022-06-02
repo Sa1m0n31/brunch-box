@@ -8,9 +8,7 @@ const deliveryHours = [
     { start: 16, end: 17, available: 1 },
     { start: 17, end: 18, available: 1 },
     { start: 18, end: 19, available: 1 },
-    { start: 19, end: 20, available: 1 },
-    { start: 20, end: 21, available: 1 },
-    { start: 21, end: 22, available: 1 }
+    { start: 19, end: 20, available: 1 }
 ];
 
 const deliverySchedule = [

@@ -22,28 +22,23 @@ const HomePageSection = () => {
     return <section className="homePageSection">
         {sections?.map((item, index) => {
             return  <section className={index % 2 ? "homePageSection__item homePageSection__item--odd" : "homePageSection__item"}>
-                <section className="homePageSection__item__content" data-aos={index % 2 ? "fade-right" : "fade-left"}>
+                <section className="homePageSection__item__content">
                     <p className="homePageSection__text">
                         {langIndex === 0 ? item.header : item.header_en}
                     </p>
-
-                    <button className="button button--landing d-desktop-important">
-                        <a className="button--landing__link" href="/oferta">
-                            {content.aboutUsBtn}
-                        </a>
-                    </button>
                 </section>
 
-                <figure className="homePageSection__imgWrapper" data-aos={index % 2 ? "fade-left" : "fade-right"}>
+                <figure className="homePageSection__imgWrapper">
                     <img className="homePageSection__img" src={settings.API_URL + "/image?url=/media/" + item.img_path} alt="pasja-do-gotowania" />
                 </figure>
-                <button className="button button--landing d-mobile d-mobile-important">
-                    <a className="button--landing__link" href="/oferta">
-                        {content.aboutUsBtn}
-                    </a>
-                </button>
             </section>
         })}
+
+        <button className="button button--landing button--aboutUsPage">
+            <a className="button--landing__link" href="/oferta">
+                {content.aboutUsBtn}
+            </a>
+        </button>
     </section>
 }
 

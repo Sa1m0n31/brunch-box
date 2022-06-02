@@ -28,6 +28,7 @@ const SingleProductContent = () => {
     const [longDesc, setLongDesc] = useState(false);
     const [currentDesc, setCurrentDesc] = useState("");
     const [allergens, setAllergens] = useState([]);
+    const [amount, setAmount] = useState(1);
 
     const [mainImage, setMainImage] = useState(null);
     const [gallery1, setGallery1] = useState(null);
@@ -104,11 +105,9 @@ const SingleProductContent = () => {
             /* Get there by link */
             getProductIdByURL(window.location.pathname.split("/"))
                 .then(res => {
-                    console.log(res.data);
                     id = res.data.result[0]?.id
                 })
                 .then(() => {
-                    console.log(id);
                     getSingleProduct(id)
                         .then(res => {
                             setProduct(res.data.result[0]);
@@ -167,6 +166,12 @@ const SingleProductContent = () => {
         }
     }, [size, option]);
 
+    useEffect(() => {
+        if(amount === 0) {
+            setAmount(1);
+        }
+    }, [amount]);
+
     const addToCart = (id, option, size) => {
         if(product.category_id === 2) {
             /* Check number of half boxes in current cart */
@@ -181,22 +186,22 @@ const SingleProductContent = () => {
                     if(index === array.length-1) {
                         if((numberOfHalfs % 2 === 0)&&(size === "1/2 boxa")) {
                             setModalHint(true);
-                            editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+                            editCart(id, option, size === "M" ? "1/2 boxa" : size, amount);
                         }
                         else {
                             setModalHint(false);
-                            editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+                            editCart(id, option, size === "M" ? "1/2 boxa" : size, amount);
                         }
                     }
                 });
             }
             else {
                 if(size === "M") setModalHint(true);
-                editCart(id, option, size === "M" ? "1/2 boxa" : size, 1);
+                editCart(id, option, size === "M" ? "1/2 boxa" : size, amount);
             }
         }
         else {
-            editCart(id, option, size, 1);
+            editCart(id, option, size, amount);
         }
         setModal(true);
     }
@@ -257,9 +262,15 @@ const SingleProductContent = () => {
                     </button>
 
                     <section className="singleProduct__images">
-                        <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />
-                        <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />
-                        <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />
+                        <div className="singleProduct__images__item">
+                            <img className="singleProduct__img" src={images[indexAt1]} alt="produkt" onClick={() => { switchMainImage(indexAt1); }} />
+                        </div>
+                        <div className="singleProduct__images__item">
+                            <img className="singleProduct__img" src={images[indexAt2]} alt="produkt" onClick={() => { switchMainImage(indexAt2); }} />
+                        </div>
+                        <div className="singleProduct__images__item">
+                            <img className="singleProduct__img" src={images[indexAt3]} alt="produkt" onClick={() => { switchMainImage(indexAt3); }} />
+                        </div>
                     </section>
 
                 </section>
@@ -275,7 +286,7 @@ const SingleProductContent = () => {
 
                     <div className="priceSection">
                         <h2 className="singleProduct__price">
-                            {price} PLN
+                            {price} zł
                         </h2>
                         <button className="button button--addToCart" onClick={() => { addToCart(product.id, option, size) }}>
                             {content.addToCart}
@@ -314,14 +325,36 @@ const SingleProductContent = () => {
                             </button>
                         </section>
                     </div> : ""}
+                    <div className="singleProduct__options">
+                        <h3 className="singleProduct__options__header">
+                            {content.cartCols[3]}:
+                        </h3>
+                        <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
+                            <button className="singleProduct__options__btn singleProduct--circle singleProduct--amount"
+                                    disabled={true}
+                            >
+                                {amount}
+                            </button>
+                            <button className="singleProduct__options__btn singleProduct--checked singleProduct--circle"
+                                    onClick={() => setAmount(amount+1)}
+                            >
+                                +
+                            </button>
+                            <button className="singleProduct__options__btn singleProduct--checked singleProduct--circle"
+                                    onClick={() => setAmount(amount-1)}
+                            >
+                                -
+                            </button>
+                        </section>
+                    </div>
 
                     <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc.split("---")[langIndex]}}>
 
                     </div>
 
                     {allergens.length ? <div className="singleProduct__options singleProduct__options--allergens">
-                        <h3 className="singleProduct__options__header marginRight15">
-                            {content.allergens}:
+                        <h3 className="singleProduct__options__header allergensHeader marginRight15">
+                            {content.allergens}
                         </h3>
                         <div className="allergens__inner">
                             {allergens.map((item, index) => {

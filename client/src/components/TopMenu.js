@@ -145,13 +145,13 @@ const TopMenu = () => {
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="/o-nas">
-                        {content.menu[1]}
+                    <a className="topMenu__list__item__link" href="/oferta">
+                        {content.menu[2]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">
-                    <a className="topMenu__list__item__link" href="/oferta">
-                        {content.menu[2]}
+                    <a className="topMenu__list__item__link" href="/o-nas">
+                        {content.menu[1]}
                     </a>
                 </li>
                 <li className="topMenu__list__item">

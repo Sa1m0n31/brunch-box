@@ -158,7 +158,7 @@ const ShippingAndPayment = () => {
                     return {
                         day: scheduleItem.day,
                         hours: scheduleItem.hours.map((hoursItem) => {
-                            return { start: hoursItem.start, end: hoursItem.end, available: hour + 2 < hoursItem.start ? hoursItem.available : 0 }
+                            return { start: hoursItem.start, end: hoursItem.end, available: hour + 3 < hoursItem.start ? hoursItem.available : 0 }
                         })
                     }
                 }
@@ -853,7 +853,7 @@ const ShippingAndPayment = () => {
                             <button className="ribbonBtn" onClick={(e) => { e.preventDefault(); setPersonal(!personal); }}>
                                 <span className={personal ? "ribbon" : "d-none"}></span>
                             </button>
-                            <section className="address">
+                            <section className="address--1">
                                 {content.checkoutCheckboxes[0]}: {originStreet} {originBuilding}{originFlat ? "/" + originFlat + ";" : ";"} <br/>
                                 {originPostalCode} {originCity}
                             </section>

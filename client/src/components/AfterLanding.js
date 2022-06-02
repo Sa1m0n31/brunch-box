@@ -77,7 +77,7 @@ const AfterLanding = () => {
         <h3 className="afterLanding__header">
             {content.bestsellers}
         </h3>
-        <section className="offerContent__grid">
+        <section className="offerContent__grid offerContent__grid--landing">
             {bestsellers ? bestsellers.map((item, index) => {
                 if(!item.hidden && index < 3) {
                     return <a className="offerContent__item"
@@ -111,7 +111,7 @@ const AfterLanding = () => {
         <h3 className="afterLanding__header">
             {content.newProducts}
         </h3>
-        <section className="offerContent__grid">
+        <section className="offerContent__grid offerContent__grid--landing">
             {newProducts ? newProducts.map((item, index) => {
                 if(!item.hidden && index < 3) {
                     return <a className="offerContent__item"

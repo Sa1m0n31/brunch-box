@@ -27,7 +27,7 @@ const ContactContent = () => {
             <img className="offerContent__logo" src={logo} alt="logo" />
         </section>
         <main className="contactContent">
-            <section className="contactContent__section" data-aos="fade-left">
+            <section className="contactContent__section">
                 {langIndex === 0 && contactSections ? contactSections.map((item, index) => (
                     <section className="contactContent__frame"
                         key={index}
