@@ -3,6 +3,7 @@ import TopMenu from "../components/TopMenu";
 import Footer from "../components/Footer";
 import {getPagesContent} from "../helpers/pagesFunctions";
 import {LangContext} from "../App";
+import {Helmet} from "react-helmet";
 
 const PrivacyPolicy = () => {
     const { content, langIndex } = useContext(LangContext);
@@ -21,6 +22,9 @@ const PrivacyPolicy = () => {
     }, []);
 
     return <>
+        <Helmet>
+            <title>Brunchbox | Polityka prywatności</title>
+        </Helmet>
         <TopMenu />
         <main className="offerContent">
             <h1 className="offerContent__header">

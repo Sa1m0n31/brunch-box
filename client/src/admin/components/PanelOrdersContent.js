@@ -4,11 +4,13 @@ import trash from '../static/img/trash.svg'
 import exit from '../static/img/exit.svg'
 import searchImg from '../static/img/search.svg'
 
-import {deleteOrderById, getAllOrders} from "../helpers/orderFunctions";
+import {deleteOrderById, getAllOrders, getPaymentStatus} from "../helpers/orderFunctions";
 import { getDate, getTime } from "../helpers/formatFunctions";
 import { orderSearch, sortByDate } from "../helpers/search";
 import closeImg from "../static/img/close.png";
 import Modal from "react-modal";
+import axios from "axios";
+import settings from "../helpers/settings";
 
 const PanelOrdersContent = () => {
     const [orders, setOrders] = useState([]);
@@ -16,16 +18,36 @@ const PanelOrdersContent = () => {
     const [modal, setModal] = useState(false);
     const [candidate, setCandidate] = useState(0);
     const [deleteMsg, setDeleteMsg] = useState("");
+    const [paymentStatuses, setPaymentStatuses] = useState([]);
 
     const [filterOplacone, setFilterOplacone] = useState(true);
     const [filterNieoplacone, setFilterNieoplacone] = useState(true);
 
+    const isElementInArray = (el, arr) => {
+        return arr.findIndex((item) => {
+            return item === el;
+        }) !== -1;
+    }
+
     useEffect(() => {
         getAllOrders(localStorage.getItem('sec-sessionKey'))
-            .then(res => {
+            .then(async res => {
                 const result = res.data.result;
                 setOrders(result?.reverse());
                 sessionStorage.setItem('skylo-e-commerce-orders', JSON.stringify(result));
+
+                let i = 0;
+                for(const item of result.slice(0, 20)) {
+                    getPaymentStatus(item.przelewy24_id)
+                        .then((res) => {
+                            if(JSON.parse(res.data.result).status === 'CONFIRMED') {
+                                axios.post(`${settings.API_URL}/order/change-payment-status`, {
+                                    id: item.id, status: 'opłacone'
+                                });
+                                setPaymentStatuses(prevState => ([...prevState, item.id]));
+                            }
+                        });
+                }
             });
     }, [deleteMsg]);
 
@@ -185,9 +207,9 @@ const PanelOrdersContent = () => {
                                     Płatność
                                 </h4>
                                 <h3 className="panelContent__column__value">
-                            <span className={item.payment_status.toLowerCase() === "opłacone" ? "panelContent__column__status status--positive" : "panelContent__column__status status--negative"}>
-                                {item.payment_status}
-                            </span>
+                                    <span className={item.payment_status.toLowerCase() === "opłacone" || isElementInArray(item.id, paymentStatuses) ? "panelContent__column__status status--positive" : "panelContent__column__status status--negative"}>
+                                        {isElementInArray(item.id, paymentStatuses) ? 'Opłacone' : item.payment_status}
+                                    </span>
                                 </h3>
                             </section>
 

@@ -29,4 +29,14 @@ const getRibbons = (id, sessionKey) => {
     return axios.post(`${API_URL}/order/get-ribbons`, { id, sessionKey });
 }
 
-export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById, getRibbons };
+const changePaymentId = (id, paymentId) => {
+    return axios.post(`${API_URL}/payment/change-payment-id`, {
+        id, paymentId
+    });
+}
+
+const getPaymentStatus = (paymentId) => {
+    return axios.post(`${API_URL}/payment/get-payment-status`, { paymentId });
+}
+
+export { getAllOrders, getOrderDetails, calculateCartSum, deleteOrderById, getRibbons, changePaymentId, getPaymentStatus };

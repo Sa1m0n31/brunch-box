@@ -1,12 +1,16 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import TopMenu from "../components/TopMenu";
 import Footer from "../components/Footer";
 import {LangContext} from "../App";
+import {Helmet} from "react-helmet";
 
 const TYPage = () => {
-    const { content } = useContext(LangContext);
+    const { content, langIndex } = useContext(LangContext);
 
     return <>
+        <Helmet>
+            <title>Brunchbox | Dziękujemy</title>
+        </Helmet>
         <TopMenu />
         <main className="tyPage">
             <h1 className="ty__header">

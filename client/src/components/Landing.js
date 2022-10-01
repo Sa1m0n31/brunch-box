@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import img from '../static/img/img.webp'
 import arrow from '../static/img/arrow.svg'
 import ReactSiema from 'react-siema'
@@ -15,7 +15,10 @@ const Landing = () => {
     const [mobileSlide, setMobileSlide] = useState(0);
     const [loaded, setLoaded] = useState(false);
 
-    let slider, sliderMobile;
+    let slider;
+    // let sliderMobile;
+
+    let sliderMobile = useRef(null);
 
     useEffect(() => {
         axios.get(`${settings.API_URL}/slider/get`)
@@ -51,10 +54,15 @@ const Landing = () => {
         slider.next();
     }
 
+    useEffect(() => {
+        console.log(sliderMobile);
+    }, [sliderMobile?.current?.currentSlide])
+
     return <main className="landing">
         {loaded ? <>
             <div className="sliderMobile d-mobile">
                 <ReactSiema loop={true}
+                            onChange={() => { console.log('change'); }}
                             duration={500}
                             easing="ease-in-out"
                             ref={siema => sliderMobile = siema}
@@ -181,9 +189,9 @@ const Landing = () => {
                 </a>
             </div>
             <div className="afterSlider">
-                <h3 className="afterSlider__header">
+                <h1 className="afterSlider__header">
                     {data.after_slider_text}
-                </h3>
+                </h1>
                 <a className="slider__item__btn slider__item__btn--afterSlider" href="/oferta">
                     {data.after_slider_btn}
                 </a>

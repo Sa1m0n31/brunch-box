@@ -8,7 +8,7 @@
 }
 
 h1, h2, h3, h4, h5, h6, p, li, input, button, a, label, span {
-    font-family: 'Open sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .button {
@@ -379,7 +379,7 @@ ul {
 }
 
 .allergensImg {
-    width: 40px;
+    width: 30px;
     height: auto;
 }
 

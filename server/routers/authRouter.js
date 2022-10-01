@@ -10,7 +10,7 @@ con.connect(function(err) {
        /* Add session row */
        const sessionKey = uuidv4();
        const values = [sessionKey];
-       const query = 'INSERT INTO sessions VALUES (NULL, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 30 MINUTE))';
+       const query = 'INSERT INTO sessions VALUES (NULL, ?, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 50 MONTH))';
        con.query(query, values, (err, res) => {
            console.log(err);
            console.log("INSERT ROW INTO sessions");
@@ -20,7 +20,7 @@ con.connect(function(err) {
 
     const updateSession = (id) => {
        const values = [id];
-       const query = 'UPDATE sessions SET expire_date = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 30 MINUTE) WHERE id = ?';
+       const query = 'UPDATE sessions SET expire_date = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 50 MONTH) WHERE id = ?';
        con.query(query, values);
     }
 

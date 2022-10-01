@@ -81,7 +81,7 @@ function App() {
             checkoutBackToCart: 'Powrót do koszyka',
             offerSubheader: 'Wybierz idealny zestaw skomponowany do Twoich potrzeb.',
             offerBtn: 'Zamów teraz',
-            availableSizes: 'Dostępne rozmiary',
+            availableSizes: 'Wybierz rozmiar',
             availableOptions: 'Dostępne opcje',
             addToCart: 'Dodaj do koszyka',
             meatVersion: 'Mieszana',
@@ -101,9 +101,13 @@ function App() {
             aboutUsBtn: 'Zobacz dostępne zestawy',
             bestsellers: 'Bestsellery',
             newProducts: 'Nowości',
-            ty: 'Dziękujemy za złożenie zamówienia!',
-            ty2: 'Wkrótce dostarczymy je pod Twoje drzwi!',
-            ty3: 'Wróć na stronę główną'
+            ty1: 'Dziękujemy za złożenie zamówienia!',
+            ty2: 'Dostarczymy je w wybranym przez Ciebie terminie.',
+            ty3: 'Wróć na stronę główną',
+            checkbox1: 'Akceptuję',
+            checkbox2: 'Regulamin',
+            checkbox3: 'Politykę prywatności',
+            and: 'i'
         },
         {
             homepageHeader: 'Each order is packed with special care by our team and we\'ll even include a message from you!',
@@ -154,8 +158,12 @@ function App() {
             bestsellers: 'Bestsellers',
             newProducts: 'New',
             ty1: 'Thank you for your order!',
-            ty2: 'Soon we will deliver it to you',
-            ty3: 'Back to homepage'
+            ty2: 'It will be delivered in time you choose.',
+            ty3: 'Back to homepage',
+            checkbox1: 'I agree to',
+            checkbox2: 'Terms of service',
+            checkbox3: 'Privacy policy',
+            and: 'and'
         }
     ];
 
@@ -176,11 +184,6 @@ function App() {
     }, []);
 
   return (<>
-          <Helmet>
-              <title>BrunchBox - przekąski na każdą okazję</title>
-              <meta name="description" content="Nowy koncept- wyselekcjonowane  zestawy fingerfood w eleganckim pudełku. Zamów z 2 godzinnym wyprzedzeniem i ciesz się pysznym jedzeniem z bliskimi." />
-              <meta name="viewport" content="width=device-width, initial-scale=1" />
-          </Helmet>
         <LangContext.Provider value={{
             content: content[langIndex],
             langIndex,

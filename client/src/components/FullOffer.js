@@ -131,14 +131,14 @@ const FullOffer = () => {
     }
 
     return <main className="offerContent offerContent--offer">
-        <h1 className="offerContent__header">
-            Menu
-        </h1>
-        <h2 className="offerContent__header offerContent__header--2">
-            {data.after_menu}
-        </h2>
+        {/*<h1 className="offerContent__header">*/}
+        {/*    Menu*/}
+        {/*</h1>*/}
+        {/*<h2 className="offerContent__header offerContent__header--2">*/}
+        {/*    {data.after_menu}*/}
+        {/*</h2>*/}
 
-        {productsMode !== 0 ? (loaded ? <section className="offerContent__grid">
+        {productsMode !== 0 ? (loaded ? <section className="offerContent__grid offerContent__grid--fullOffer">
                 {products.map((item, index) => {
                     if(!item.hidden) {
                         return <Link className="offerContent__item"
@@ -167,9 +167,6 @@ const FullOffer = () => {
                                     {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}
                                 </p>
                             </div>
-                            <button className="offerContent__item__btn">
-                                {content.offerBtn}
-                            </button>
                         </Link>
                     }
                     else return "";

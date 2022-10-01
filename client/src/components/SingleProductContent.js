@@ -17,6 +17,7 @@ import ReactTooltip from 'react-tooltip'
 import Loader from "react-loader-spinner";
 import {areShopOpen} from "../helpers/openCloseAlgorithm";
 import {LangContext} from "../App";
+import {Helmet} from "react-helmet";
 
 const SingleProductContent = () => {
     const [size, setSize] = useState("L");
@@ -54,13 +55,6 @@ const SingleProductContent = () => {
         settings.API_URL + "/image?url=/media/" + gallery3
     ];
 
-    const imagesConst = {
-        meatM: settings.API_URL + "/image?url=/media/" + mainImage,
-        meatL: settings.API_URL + "/image?url=/media/" + gallery1,
-        vegeM: settings.API_URL + "/image?url=/media/" + gallery2,
-        vegeL: settings.API_URL + "/image?url=/media/" + gallery3,
-    }
-
     const getProductIdByURL = (name) => {
         const newName = name[name.length-1].replace(/-/g, " ");
         return getProductByName(newName);
@@ -73,7 +67,6 @@ const SingleProductContent = () => {
             id = location.state.id;
             getSingleProduct(id)
                 .then(res => {
-                    console.log(res);
                     if(res?.data?.result) {
                         setProduct(res.data.result[0]);
                         setOption(res.data.result[0].meat ? "Mieszana" : "Wegetariańska");
@@ -226,6 +219,9 @@ const SingleProductContent = () => {
     }
 
     return <>
+        <Helmet>
+            <title>Brunchbox - {product?.name ? product.name.split("/")[langIndex] : ''}</title>
+        </Helmet>
         <main className="singleProduct">
         <Modal
             isOpen={modal}
@@ -293,59 +289,63 @@ const SingleProductContent = () => {
                         </button>
                     </div>
 
-                    {product.l && product.m ? <div className="singleProduct__options">
-                        <h3 className="singleProduct__options__header">
-                            {content.availableSizes}:
-                        </h3>
-                        <div className="singleProduct__options__buttons">
-                            <button className={size === "M" || size === "1/2 boxa" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setSize(product.category_id === 2 ? "1/2 boxa" : "M")}>
-                                {product.category_id === 2 ? "1/2 boxa" : "M"}
-                            </button>
-                            <button className={size === "Cały box" || size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setSize(product.category_id === 2 ? "Cały box" : "L")}>
-                                {product.category_id === 2 ? "Cały box" : "L"}
-                            </button>
+                    <div className={!(product.vege && product.meat) ? "singleProduct__oneLine" : "singleProduct__oneLine--no"}>
+                        {product.l && product.m ? <div className="singleProduct__options singleProduct__options--sizes">
+                            <h3 className="singleProduct__options__header">
+                                {content.availableSizes}:
+                            </h3>
+                            <div className="singleProduct__options__buttons singleProduct__options__buttons--sizes">
+                                <button className={size === "M" || size === "1/2 boxa" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                        onClick={() => setSize(product.category_id === 2 ? "1/2 boxa" : "M")}>
+                                    {product.category_id === 2 ? "1/2 boxa" : "M"}
+                                </button>
+                                <button className={size === "Cały box" || size === "L" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
+                                        onClick={() => setSize(product.category_id === 2 ? "Cały box" : "L")}>
+                                    {product.category_id === 2 ? "Cały box" : "L"}
+                                </button>
+                            </div>
+                        </div> : ""}
+
+                        {product.vege && product.meat ? <div className="singleProduct__options">
+                            <h3 className="singleProduct__options__header">
+                                {content.availableOptions}:
+                            </h3>
+                            <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
+                                <button className={option === "Mieszana" ? "singleProduct__options__btn singleProduct__options__btn--version singleProduct--checked" : "singleProduct__options__btn singleProduct__options__btn--version"}
+                                        onClick={() => setOption("Mieszana")}
+                                >
+                                    {content.meatVersion}
+                                </button>
+                                <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked singleProduct__options__btn--version" : "singleProduct__options__btn singleProduct__options__btn--version"}
+                                        onClick={() => setOption("Wegetariańska")}
+                                >
+                                    {content.vegeVersion}
+                                </button>
+                            </section>
+                        </div> : ""}
+
+                        <div className="singleProduct__options singleProduct__options--amount">
+                            <h3 className="singleProduct__options__header">
+                                {content.cartCols[3]}:
+                            </h3>
+                            <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
+                                <button className="singleProduct__options__btn singleProduct--circle singleProduct--amount"
+                                        disabled={true}
+                                >
+                                    {amount}
+                                </button>
+                                <button className="singleProduct__options__btn singleProduct--checked singleProduct--circle"
+                                        onClick={() => setAmount(amount+1)}
+                                >
+                                    +
+                                </button>
+                                <button className="singleProduct__options__btn singleProduct--checked singleProduct--circle"
+                                        onClick={() => setAmount(amount-1)}
+                                >
+                                    -
+                                </button>
+                            </section>
                         </div>
-                    </div> : ""}
-                    {product.vege && product.meat ? <div className="singleProduct__options">
-                        <h3 className="singleProduct__options__header">
-                            {content.availableOptions}:
-                        </h3>
-                        <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
-                            <button className={option === "Mieszana" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setOption("Mieszana")}
-                            >
-                                {content.meatVersion}
-                            </button>
-                            <button className={option === "Wegetariańska" ? "singleProduct__options__btn singleProduct--checked" : "singleProduct__options__btn"}
-                                    onClick={() => setOption("Wegetariańska")}
-                            >
-                                {content.vegeVersion}
-                            </button>
-                        </section>
-                    </div> : ""}
-                    <div className="singleProduct__options">
-                        <h3 className="singleProduct__options__header">
-                            {content.cartCols[3]}:
-                        </h3>
-                        <section className="singleProduct__options__buttons singleProduct__options__buttons--lower">
-                            <button className="singleProduct__options__btn singleProduct--circle singleProduct--amount"
-                                    disabled={true}
-                            >
-                                {amount}
-                            </button>
-                            <button className="singleProduct__options__btn singleProduct--checked singleProduct--circle"
-                                    onClick={() => setAmount(amount+1)}
-                            >
-                                +
-                            </button>
-                            <button className="singleProduct__options__btn singleProduct--checked singleProduct--circle"
-                                    onClick={() => setAmount(amount-1)}
-                            >
-                                -
-                            </button>
-                        </section>
                     </div>
 
                     <div className="singleProduct__parts" dangerouslySetInnerHTML={{__html: currentDesc.split("---")[langIndex]}}>

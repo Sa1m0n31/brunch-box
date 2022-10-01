@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {deleteOrderById, getOrderDetails, getRibbons} from "../helpers/orderFunctions";
+import {deleteOrderById, getOrderDetails, getPaymentStatus, getRibbons} from "../helpers/orderFunctions";
 
 import { useLocation } from "react-router";
 import x from '../static/img/close.png'
@@ -18,6 +18,8 @@ const OrderDetailsContent = () => {
     const [modal, setModal] = useState(false);
     const [deleteMsg, setDeleteMsg] = useState("");
     const [ribbons, setRibbons] = useState([]);
+    const [paymentStatus, setPaymentStatus] = useState(false);
+    const [productsSum, setProductsSum] = useState(0);
 
     useEffect(() => {
         /* Get order id from url string */
@@ -29,9 +31,16 @@ const OrderDetailsContent = () => {
         /* Get order info */
         getOrderDetails(id, localStorage.getItem('sec-sessionKey'))
             .then(res => {
-                console.log(res.data.result);
                setCart(res.data.result);
                calculateCartSum();
+
+               getPaymentStatus(res?.data?.result[0]?.przelewy24_id)
+                   .then((res) => {
+                       const status = JSON.parse(res.data.result).status;
+                       if(status === 'CONFIRMED' || res.data.result[0]?.payment_status === 'oplacone') {
+                           setPaymentStatus(true);
+                       }
+                   });
             });
 
         /* Get ribbons info */
@@ -41,6 +50,14 @@ const OrderDetailsContent = () => {
             });
 
     }, []);
+
+    useEffect(() => {
+        if(cart?.length) {
+            setProductsSum(cart.reduce((prev, current) => {
+                return prev + getPrice(current);
+            }, 0));
+        }
+    }, [cart]);
 
     const openModal = () => {
         setModal(true);
@@ -162,12 +179,17 @@ const OrderDetailsContent = () => {
                                 <span>{item.size ? `Rozmiar: ${item.size}` : ""}</span>
                             </section>
                             <section className="panelContent__cart__column">
-                                <span>Cena: {getPrice(item)} PLN</span>
+                                <span>Cena: {item.quantity * getPrice(item)} PLN<br/>
+                                    {item.quantity > 1 ? `(${item.quantity} x ${getPrice(item)} PLN)` : ''}
+                                </span>
                             </section>
                         </section>
                     })}
 
                     <div className="panelContent__cart__sum">
+                        {cart[0].discount ? <h3>
+                            <span className="smaller">Kod rabatowy:</span> {cart[0].discount_code} (- {cart[0].discount} PLN)
+                        </h3> : ''}
                         <h3>
                             <span className="smaller">Koszt zamówienia</span> {cart[0].order_price} PLN
                         </h3>
@@ -206,14 +228,14 @@ const OrderDetailsContent = () => {
                             Płatność:
                         </h2>
                         <span>
-                            {!cart[0].payment_method ? "Przelewy24" : (cart[0].payment_method === 1 ? "Płatność przy odbiorze - gotówka" : "Płatność przy odbiorze - karta")}
+                            {!cart[0].payment_method ? "Paynow" : (cart[0].payment_method === 1 ? "Płatność przy odbiorze - gotówka" : "Płatność przy odbiorze - karta")}
                         </span>
                     </section>
 
                     <section className="panelContent__orderStatus">
                         <h2 className="panelContent__orderStatus__header">
                             Opłacone:
-                            <img className="panelContent__orderStatus__img" src={cart[0].payment_status?.toLowerCase() === "opłacone" ? tick : x} alt="oplacone" />
+                            <img className="panelContent__orderStatus__img" src={paymentStatus ? tick : x} alt="oplacone" />
                         </h2>
                     </section>
 

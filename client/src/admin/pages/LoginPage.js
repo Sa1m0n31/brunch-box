@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios'
 import auth from "../helpers/auth";
+import {Helmet} from "react-helmet";
 
 const LoginPage = () => {
     const [tried, setTried] = useState(false);
@@ -51,6 +52,9 @@ const LoginPage = () => {
     })
 
     return <main className="loginPage">
+        <Helmet>
+            <title>Brunchbox | Logowanie</title>
+        </Helmet>
         {render ? <form className="loginPage__form" onSubmit={formik.handleSubmit}>
             <label className="label">
                 Nazwa użytkownika

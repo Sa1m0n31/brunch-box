@@ -99,9 +99,6 @@ const AfterLanding = () => {
                             {/*    {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}*/}
                             {/*</p>*/}
                         </div>
-                        <button className="offerContent__item__btn">
-                            {content.offerBtn}
-                        </button>
                     </a>
                 }
                 else return "";
@@ -133,9 +130,6 @@ const AfterLanding = () => {
                             {/*    {printPrice(item.price_l_meat, item.price_m_meat, item.price_l_vege, item.price_m_vege)}*/}
                             {/*</p>*/}
                         </div>
-                        <button className="offerContent__item__btn">
-                            {content.offerBtn}
-                        </button>
                     </a>
                 }
                 else return "";

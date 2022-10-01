@@ -3,7 +3,7 @@ import { useStateWithCallbackLazy } from 'use-state-with-callback';
 import axios from 'axios'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import {getProductById} from "../helpers/productFunctions";
+import {getProductById, getSingleProduct} from "../helpers/productFunctions";
 import settings from "../admin/helpers/settings";
 import {getNextDays, numberToDayOfTheWeek} from "../helpers/datetimeFunctions";
 import { v4 as uuidv4 } from 'uuid';
@@ -12,6 +12,8 @@ import {getAllDeliveryPrices} from "../admin/helpers/deliveryFunctions";
 import deliverySchedule from "../helpers/deliverySchedule";
 import {areShopOpen} from "../helpers/openCloseAlgorithm";
 import {LangContext} from "../App";
+import {calculatePrice} from "../helpers/editCart";
+import {changePaymentId} from "../admin/helpers/orderFunctions";
 
 const ShippingAndPayment = () => {
     const { content, langIndex } = useContext(LangContext);
@@ -58,10 +60,50 @@ const ShippingAndPayment = () => {
     const [paymentAtDelivery, setPaymentAtDelivery] = useState(false);
     const [paymentAtDeliveryMethod, setPaymentAtDeliveryMethod] = useState(1);
     const [vat, setVat] = useState(false);
+    const [discountCode, setDiscountCode] = useState('');
+    const [discountInPLN, setDiscountInPLN] = useState(0);
+    const [checkbox, setCheckbox] = useState(false);
+    const [checkboxError, setCheckboxError] = useState(false);
 
     useEffect(() => {
         setCalendar(getNextDays(14, langIndex));
     }, [langIndex]);
+
+    useEffect(async () => {
+        let newArr = [];
+        if(cart) {
+            const cb = () => {
+                const cart = JSON.parse(localStorage.getItem('sec-cart'));
+                const getCartItemById = (id) => {
+                    return cart.find((item) => (item.id === id));
+                }
+
+                setAmount(newArr.reduce((prev, curr) => {
+                    const cartItem = getCartItemById(curr.id);
+                    return prev + calculatePrice(cartItem.size, cartItem.option, cartItem.quantity, {
+                        mMeat: curr.price_m_meat,
+                        lMeat: curr.price_l_meat,
+                        mVege: curr.price_m_vege,
+                        lVege: curr.price_l_vege
+                    });
+                }, 0));
+            }
+
+            let promises = [];
+
+            JSON.parse(localStorage.getItem('sec-cart'))?.forEach(async (item) => {
+                promises.push(getSingleProduct(item.id)
+                    .then(res => {
+                        newArr.push(res.data.result[0]);
+                    }));
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    cb();
+                });
+        }
+    }, []);
 
     useEffect(() => {
         const currentDate = new Date();
@@ -154,7 +196,7 @@ const ShippingAndPayment = () => {
                     }
                 }
                 else {
-                    /* During the day - block hours before current hour and next two */
+                    /* During the day - block hours before current hour and next three */
                     return {
                         day: scheduleItem.day,
                         hours: scheduleItem.hours.map((hoursItem) => {
@@ -236,12 +278,7 @@ const ShippingAndPayment = () => {
     }
 
     useEffect(() => {
-        console.log(amount);
-        console.log(deliveryPrice);
-    }, [amount, deliveryPrice]);
-
-    useEffect(() => {
-        if(!amount) window.location = "/";
+        // if(!amount) window.location = "/";
 
         /* Set fastest/choose hour based on screen resolution (mobile/desktop) */
         // if(window.innerWidth < 768) {
@@ -387,8 +424,8 @@ const ShippingAndPayment = () => {
         validationSchema: personal ? validationSchemaPersonal : validationSchema,
         onSubmit: values => {
             if(!submitted) {
-                /* Additional validation for delivery price */
-                if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))&&(deliveryPrice !== -2)) {
+                /* Additional validation for delivery price and terms of service checkbox */
+                if(((personal)||((deliveryPriceSettled))&&(deliveryPrice !== -1))&&(deliveryPrice !== -2)&&(checkbox)) {
                     setDeliveryValidate(1);
                     /* Additional validation for delivery date and time and delivery price */
                     if(((calendar[dayOfDelivery])&&(hourOfDelivery !== -1))||(fastest)) {
@@ -399,8 +436,10 @@ const ShippingAndPayment = () => {
                         setDateError(true);
                     }
                 }
+                else if(!checkbox) {
+                    setCheckboxError(true);
+                }
                 else {
-                    console.log("delivery error");
                     setDeliveryValidate(0);
                 }
             }
@@ -438,8 +477,6 @@ const ShippingAndPayment = () => {
 
     useEffect(() => {
         /* Payment */
-        console.log(formValidate);
-        console.log(deliveryValidate);
         if((formValidate)&&(deliveryValidate)) {
             const sessionId = uuidv4();
             // setFormValidate(false);
@@ -469,6 +506,8 @@ const ShippingAndPayment = () => {
                         companyPostalCode: vat ? formik.values.postalCode : null,
                         companyStreet: vat ? formik.values.companyStreet : null,
                         orderPrice: amount + deliveryPrice,
+                        discountCode: discountCode,
+                        discountInPLN: discountInPLN,
                         delivery: fastest ? "Najszybciej jak to możliwe" : calendar[dayOfDelivery].humanDate + ", godz: " + hourOfDelivery + ":00 - " + (hourOfDelivery+1) + ":00"
                     })
                         .then(res => {
@@ -543,22 +582,24 @@ const ShippingAndPayment = () => {
 
                             /* PAYMENT PROCESS */
                             if(!paymentAtDelivery) {
-                                let paymentUri = "https://secure.przelewy24.pl/trnRequest/";
-
                                 axios.post("https://brunchbox.pl/payment/payment", {
                                     sessionId,
                                     amount: amount + deliveryPrice,
                                     email: formik.values.email
                                 })
                                     .then(res => {
-                                        console.log(res.data);
                                         /* Remove cart from local storage */
                                         localStorage.removeItem('sec-cart');
                                         localStorage.removeItem('sec-amount');
                                         localStorage.removeItem('sec-cart-banquet');
 
-                                        const token = res.data.result;
-                                        window.location.href = `${paymentUri}${token}`;
+                                        const redirectUrl = res.data.result.redirectUrl;
+                                        const paymentId = res.data.result.paymentId;
+
+                                        changePaymentId(orderId, paymentId)
+                                            .then((res) => {
+                                                window.location.href = redirectUrl;
+                                            });
                                     });
                             }
                         });
@@ -588,17 +629,20 @@ const ShippingAndPayment = () => {
                 if((res.data.result)&&(!couponUsed)) {
                     setCouponUsed(true);
                     setCouponError(false);
+                    setDiscountCode(couponContent);
                     sessionStorage.setItem('brunchbox-coupon-used', 'T');
                     if(res.data.percent) {
                         /* Discount by percent */
                         const percent = res.data.percent;
-                        setAmount(Math.round(amount - amount * (percent / 100)));
+                        setAmount(amount - Math.round(amount * (percent / 100)));
                         setDiscount(percent.toString() + "%");
+                        setDiscountInPLN(Math.round(amount * (percent / 100)));
                     }
                     else {
                         /* Discount by amount */
                         setDiscount(res.data.amount.toString() + " PLN");
                         setAmount(amount - parseInt(res.data.amount));
+                        setDiscountInPLN(res.data.amount);
                     }
                 }
                 else if(!res.data.result) {
@@ -1001,6 +1045,22 @@ const ShippingAndPayment = () => {
                     value={formik.values.comment}
                     onChange={formik.handleChange}
                     placeholder={content.checkoutTextarea} />
+
+                <div>
+                    <label className="ribbonBtnLabel">
+                        <button className={checkboxError ? "ribbonBtn ribbonBtn--red" : "ribbonBtn"}
+                                onClick={(e) => { e.preventDefault(); setCheckbox(!checkbox); setCheckboxError(false); }}>
+                            <span className={checkbox ? "ribbon" : "d-none"}></span>
+                        </button>
+                        <section className="address--1">
+                            {content.checkbox1} <a href="/regulamin" target="_blank">
+                            {content.checkbox2}
+                            </a> {content.and} <a href="/polityka-prywatnosci" target="_blank">
+                            {content.checkbox3}
+                        </a>
+                        </section>
+                    </label>
+                </div>
 
             </section>
         </main>

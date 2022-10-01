@@ -20,9 +20,9 @@ const AboutUsContent = () => {
     }, []);
 
     return <main className="offerContent">
-        <h2 className="aboutUs__header">
+        <h1 className="aboutUs__header">
             {content.aboutUs}
-        </h2>
+        </h1>
         <HomePageSection />
     </main>
 }

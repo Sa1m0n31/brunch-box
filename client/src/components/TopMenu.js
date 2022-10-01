@@ -170,12 +170,12 @@ const TopMenu = () => {
             </ul>
 
             <div className="topMenu__languages">
-                <button className="topMenu__languages__btn" onClick={() => { changeLanguage(0); }}>
+                {langIndex === 1 ? <button className="topMenu__languages__btn" onClick={() => { changeLanguage(0); }}>
                     <img className="topMenu__languages__img" src={poland} alt="polski" />
-                </button>
+                </button> :
                 <button className="topMenu__languages__btn" onClick={() => { changeLanguage(1); }}>
                     <img className="topMenu__languages__img" src={uk} alt="angielski" />
-                </button>
+                </button>}
             </div>
         </menu>
 
