@@ -4,4 +4,4 @@ E-commerce project with food boxes.
 <br/>
 <b>Stack:</b> React, Node.js, Express.js, MySQL
 <br/>
-<b>Libraries:</b> react-router-dom
+<b>Website:</b> https://brunchbox.pl
